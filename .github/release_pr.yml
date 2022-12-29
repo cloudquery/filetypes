@@ -1,0 +1,45 @@
+name: filetypes
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: go
+          package-name: filetypes
+          token: ${{ secrets.GH_CQ_BOT }}
+          pull-request-title-pattern: "chore${scope}: Release${component} v${version}"
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
+      - name: Parse semver string
+        if: steps.release.outputs.release_created
+        id: semver_parser
+        uses: booxmedialtd/ws-action-parse-semver@e81ad80123156d7ddd4f6c8383e63f497f857deb
+        with:
+          input_string: ${{ steps.release.outputs.tag_name }}
+      - name: Mark as pre-release
+        if: steps.semver_parser.outputs.prerelease != ''
+        uses: tubone24/update_release@1cfa79ccf7422570d9a9c6b6de749ff4b280e48b
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        with:
+          prerelease: true
+      - name: Trigger Renovate
+        uses: actions/github-script@v6
+        if: steps.release.outputs.release_created && steps.semver_parser.outputs.prerelease == ''
+        with:
+          github-token: ${{ secrets.GH_CQ_BOT }}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: 'cloudquery',
+              repo: '.github',
+              workflow_id: 'renovate.yml',
+              ref: 'main',
+            })
