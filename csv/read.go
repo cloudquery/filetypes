@@ -9,7 +9,6 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-
 func Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
 	reader := csv.NewReader(f)
 	sourceNameIndex := table.Columns.Index(schema.CqSourceNameColumn.Name)

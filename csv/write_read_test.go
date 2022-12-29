@@ -9,8 +9,6 @@ import (
 	"github.com/cloudquery/plugin-sdk/testdata"
 )
 
-
-
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
 	table := testdata.TestTable("test")
