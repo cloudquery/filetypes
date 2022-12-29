@@ -7,9 +7,8 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-
-func WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-	writer := csv.NewWriter(w)	
+func WriteTableBatch(w io.Writer, _ *schema.Table, resources [][]any) error {
+	writer := csv.NewWriter(w)
 	for _, resource := range resources {
 		record := make([]string, len(resource))
 		for i, v := range resource {
@@ -22,5 +21,3 @@ func WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error 
 	writer.Flush()
 	return nil
 }
-
-

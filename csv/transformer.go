@@ -5,12 +5,12 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-type ReverseTransformer struct{
+type ReverseTransformer struct {
 	defaultTransformer destination.DefaultReverseTransformer
 }
 
 func (t *ReverseTransformer) ReverseTransformValues(table *schema.Table, values []any) (schema.CQTypes, error) {
-	return t.defaultTransformer.ReverseTransformValues(table, values) 
+	return t.defaultTransformer.ReverseTransformValues(table, values)
 }
 
 type Transformer struct{}
