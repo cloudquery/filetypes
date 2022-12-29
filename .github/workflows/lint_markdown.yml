@@ -15,7 +15,7 @@ jobs:
       - name: Vale
         uses: errata-ai/vale-action@v2
         with:
-          vale_flags: "--glob=!{CHANGELOG.md.github/styles/proselint/README.md}"
+          vale_flags: "--glob=!{CHANGELOG.md,.github/styles/proselint/README.md}"
           filter_mode: nofilter
           fail_on_error: true
         env:
