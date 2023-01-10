@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.4](https://github.com/cloudquery/filetypes/compare/v1.0.3...v1.0.4) (2023-01-10)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.24.0 ([#22](https://github.com/cloudquery/filetypes/issues/22)) ([7e74259](https://github.com/cloudquery/filetypes/commit/7e742594c58ab34c85a9bdcd2a8e30fecb4cf0f0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.24.1 ([#24](https://github.com/cloudquery/filetypes/issues/24)) ([7c27e2f](https://github.com/cloudquery/filetypes/commit/7c27e2f809805dff4f17d5c2f7d24a75803c03dd))
+
 ## [1.0.3](https://github.com/cloudquery/filetypes/compare/v1.0.2...v1.0.3) (2023-01-09)
 
 
