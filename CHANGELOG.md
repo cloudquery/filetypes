@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/cloudquery/filetypes/compare/v1.0.4...v1.0.5) (2023-01-11)
+
+
+### Bug Fixes
+
+* **json:** Panic when json is null ([#25](https://github.com/cloudquery/filetypes/issues/25)) ([9165281](https://github.com/cloudquery/filetypes/commit/9165281f51586cc5097c9b5ea0cb3a791e8354e6))
+
 ## [1.0.4](https://github.com/cloudquery/filetypes/compare/v1.0.3...v1.0.4) (2023-01-10)
 
 
