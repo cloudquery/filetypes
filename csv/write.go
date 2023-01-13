@@ -7,6 +7,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
+//nolint:revive
 func WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any, headers bool) error {
 	writer := csv.NewWriter(w)
 	if headers {
