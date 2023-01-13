@@ -10,43 +10,57 @@ import (
 )
 
 func TestWriteRead(t *testing.T) {
-	var b bytes.Buffer
-	table := testdata.TestTable("test")
-	cqtypes := testdata.GenTestData(table)
-	if err := cqtypes[0].Set("test-source"); err != nil {
-		t.Fatal(err)
+	cases := []struct {
+		headers     bool
+		outputCount int
+	}{
+		{headers: true, outputCount: 2},
+		{headers: false, outputCount: 1},
 	}
-	writer := bufio.NewWriter(&b)
-	transformer := &Transformer{}
-	transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-	// schema.TransformWithTransformer(tra)
-	if err := WriteTableBatch(writer, table, [][]any{transformedValues}); err != nil {
-		t.Fatal(err)
-	}
-	writer.Flush()
-	reader := bufio.NewReader(&b)
-	ch := make(chan []any)
-	var readErr error
-	go func() {
-		readErr = Read(reader, table, "test-source", ch)
-		close(ch)
-	}()
-	totalCount := 0
-	reverseTransformer := &ReverseTransformer{}
-	for row := range ch {
-		gotCqtypes, err := reverseTransformer.ReverseTransformValues(table, row)
-		if err != nil {
+
+	for _, tc := range cases {
+		var b bytes.Buffer
+		table := testdata.TestTable("test")
+		cqtypes := testdata.GenTestData(table)
+		if err := cqtypes[0].Set("test-source"); err != nil {
 			t.Fatal(err)
 		}
-		if diff := cqtypes.Diff(gotCqtypes); diff != "" {
-			t.Fatalf("got diff: %s", diff)
+		writer := bufio.NewWriter(&b)
+		transformer := &Transformer{}
+		transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
+		// schema.TransformWithTransformer(tra)
+		if err := WriteTableBatch(writer, table, [][]any{transformedValues}, tc.headers); err != nil {
+			t.Fatal(err)
 		}
-		totalCount++
-	}
-	if readErr != nil {
-		t.Fatal(readErr)
-	}
-	if totalCount != 1 {
-		t.Fatalf("expected 1 row, got %d", totalCount)
+		writer.Flush()
+		reader := bufio.NewReader(&b)
+		ch := make(chan []any)
+		var readErr error
+		go func() {
+			readErr = Read(reader, table, "test-source", ch)
+			close(ch)
+		}()
+		totalCount := 0
+		reverseTransformer := &ReverseTransformer{}
+		for row := range ch {
+			if tc.headers && totalCount == 0 {
+				totalCount++
+				continue
+			}
+			gotCqtypes, err := reverseTransformer.ReverseTransformValues(table, row)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if diff := cqtypes.Diff(gotCqtypes); diff != "" {
+				t.Fatalf("got diff: %s", diff)
+			}
+			totalCount++
+		}
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		if totalCount != tc.outputCount {
+			t.Fatalf("expected %d row, got %d", tc.outputCount, totalCount)
+		}
 	}
 }
