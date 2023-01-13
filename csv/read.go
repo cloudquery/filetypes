@@ -9,7 +9,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
+func Read(f io.Reader, table *schema.Table, _ string, res chan<- []any) error {
 	reader := csv.NewReader(f)
 	sourceNameIndex := table.Columns.Index(schema.CqSourceNameColumn.Name)
 	if sourceNameIndex == -1 {
@@ -22,9 +22,6 @@ func Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any)
 				break
 			}
 			return err
-		}
-		if record[sourceNameIndex] != sourceName {
-			continue
 		}
 		values := make([]any, len(record))
 		for i, v := range record {
