@@ -1,15 +1,9 @@
 package csv
 
-import (
-	"io"
-)
-
 type FileOption func(*Client)
 
 // Client is a csv client.
 type Client struct {
-	Writer io.Writer
-	Reader io.Reader
 	// fileFormat     string
 	IncludeHeaders bool
 	Delimiter      rune
@@ -23,18 +17,6 @@ func NewClient(options ...FileOption) (*Client, error) {
 	c.defaults()
 
 	return c, nil
-}
-
-func WithWriter(w io.Writer) FileOption {
-	return func(c *Client) {
-		c.Writer = w
-	}
-}
-
-func WithReader(r io.Reader) FileOption {
-	return func(c *Client) {
-		c.Reader = r
-	}
 }
 
 func WithHeader(include bool) FileOption {

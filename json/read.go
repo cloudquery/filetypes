@@ -11,8 +11,7 @@ import (
 
 const maxJSONSize = 1024 * 1024 * 20
 
-func (cl *Client) Read(r io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
-
+func (*Client) Read(r io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
 	sourceNameIndex := table.Columns.Index(schema.CqSourceNameColumn.Name)
 	if sourceNameIndex == -1 {
 		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
@@ -34,6 +33,5 @@ func (cl *Client) Read(r io.Reader, table *schema.Table, sourceName string, res 
 		}
 		res <- jsonArr
 	}
-
 	return scanner.Err()
 }
