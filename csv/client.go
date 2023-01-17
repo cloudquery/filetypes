@@ -1,6 +1,6 @@
 package csv
 
-type FileOption func(*Client)
+type Options func(*Client)
 
 // Client is a csv client.
 type Client struct {
@@ -9,7 +9,7 @@ type Client struct {
 	Delimiter      rune
 }
 
-func NewClient(options ...FileOption) (*Client, error) {
+func NewClient(options ...Options) (*Client, error) {
 	c := &Client{}
 	for _, option := range options {
 		option(c)
@@ -19,13 +19,13 @@ func NewClient(options ...FileOption) (*Client, error) {
 	return c, nil
 }
 
-func WithHeader(include bool) FileOption {
+func WithHeader() Options {
 	return func(c *Client) {
-		c.IncludeHeaders = include
+		c.IncludeHeaders = true
 	}
 }
 
-func WithDelimiter(delimiter rune) FileOption {
+func WithDelimiter(delimiter rune) Options {
 	return func(c *Client) {
 		c.Delimiter = delimiter
 	}

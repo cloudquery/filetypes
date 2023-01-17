@@ -11,11 +11,11 @@ import (
 
 func TestWriteRead(t *testing.T) {
 	cases := []struct {
-		headers     bool
+		options     []Options
 		outputCount int
 	}{
-		{headers: true, outputCount: 2},
-		{headers: false, outputCount: 1},
+		{options: []Options{WithHeader()}, outputCount: 2},
+		{outputCount: 1},
 	}
 
 	for _, tc := range cases {
@@ -29,9 +29,7 @@ func TestWriteRead(t *testing.T) {
 		reader := bufio.NewReader(&b)
 		transformer := &Transformer{}
 		transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-		client, err := NewClient(
-			WithHeader(tc.headers),
-		)
+		client, err := NewClient(tc.options...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -50,7 +48,7 @@ func TestWriteRead(t *testing.T) {
 		totalCount := 0
 		reverseTransformer := &ReverseTransformer{}
 		for row := range ch {
-			if tc.headers && totalCount == 0 {
+			if client.IncludeHeaders && totalCount == 0 {
 				totalCount++
 				continue
 			}
