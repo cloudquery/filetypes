@@ -14,8 +14,10 @@ func TestWriteRead(t *testing.T) {
 		options     []Options
 		outputCount int
 	}{
-		{options: []Options{WithHeader()}, outputCount: 2},
 		{outputCount: 1},
+		{options: []Options{WithHeader()}, outputCount: 2},
+		{options: []Options{WithDelimiter('\t')}, outputCount: 1},
+		{options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 2},
 	}
 
 	for _, tc := range cases {

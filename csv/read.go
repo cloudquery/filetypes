@@ -9,8 +9,9 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func (*Client) Read(r io.Reader, table *schema.Table, res chan<- []any) error {
+func (cl *Client) Read(r io.Reader, table *schema.Table, res chan<- []any) error {
 	reader := csv.NewReader(r)
+	reader.Comma = cl.Delimiter
 	sourceNameIndex := table.Columns.Index(schema.CqSourceNameColumn.Name)
 	if sourceNameIndex == -1 {
 		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
