@@ -8,7 +8,6 @@ import (
 )
 
 func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-
 	writer := csv.NewWriter(w)
 	writer.Comma = cl.Delimiter
 	if cl.IncludeHeaders {
