@@ -9,7 +9,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func (c *Client) Read(table *schema.Table, res chan<- []any) error {
+func (c *Client) Read(r io.Reader, table *schema.Table, res chan<- []any) error {
 	reader := csv.NewReader(c.Reader)
 	sourceNameIndex := table.Columns.Index(schema.CqSourceNameColumn.Name)
 	if sourceNameIndex == -1 {

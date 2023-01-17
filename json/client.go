@@ -1,32 +1,14 @@
 package json
 
-import "io"
+type Option func(*Client)
 
-type FileOption func(*Client)
+type Client struct{}
 
-// Client is a csv client.
-type Client struct {
-	Writer io.Writer
-	Reader io.Reader
-}
-
-func NewClient(options ...FileOption) (*Client, error) {
+func NewClient(options ...Option) (*Client, error) {
 	c := &Client{}
 	for _, option := range options {
 		option(c)
 	}
 
 	return c, nil
-}
-
-func WithWriter(w io.Writer) FileOption {
-	return func(c *Client) {
-		c.Writer = w
-	}
-}
-
-func WithReader(r io.Reader) FileOption {
-	return func(c *Client) {
-		c.Reader = r
-	}
 }

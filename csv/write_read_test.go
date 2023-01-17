@@ -31,14 +31,12 @@ func TestWriteRead(t *testing.T) {
 		transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
 		client, err := NewClient(
 			WithHeader(tc.headers),
-			WithWriter(writer),
-			WithReader(reader),
 		)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if err := client.WriteTableBatch(table, [][]any{transformedValues}); err != nil {
+		if err := client.WriteTableBatch(writer, table, [][]any{transformedValues}); err != nil {
 			t.Fatal(err)
 		}
 		writer.Flush()

@@ -22,14 +22,11 @@ func TestWriteRead(t *testing.T) {
 	writer := bufio.NewWriter(&b)
 	reader := bufio.NewReader(&b)
 
-	cl, err := NewClient(
-		WithWriter(writer),
-		WithReader(reader),
-	)
+	cl, err := NewClient()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := cl.WriteTableBatch(table, [][]any{transformedValues}); err != nil {
+	if err := cl.WriteTableBatch(writer, table, [][]any{transformedValues}); err != nil {
 		t.Fatal(err)
 	}
 	writer.Flush()
@@ -37,7 +34,7 @@ func TestWriteRead(t *testing.T) {
 	ch := make(chan []any)
 	var readErr error
 	go func() {
-		readErr = cl.Read(table, "test-source", ch)
+		readErr = cl.Read(reader, table, "test-source", ch)
 		close(ch)
 	}()
 	totalCount := 0

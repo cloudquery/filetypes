@@ -2,12 +2,14 @@ package csv
 
 import (
 	"encoding/csv"
+	"io"
 
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func (cl *Client) WriteTableBatch(table *schema.Table, resources [][]any) error {
-	writer := csv.NewWriter(cl.Writer)
+func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
+
+	writer := csv.NewWriter(w)
 	writer.Comma = cl.Delimiter
 	if cl.IncludeHeaders {
 		tableHeaders := make([]string, len(table.Columns))
