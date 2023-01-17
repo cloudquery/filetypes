@@ -26,18 +26,27 @@ func TestWriteRead(t *testing.T) {
 			t.Fatal(err)
 		}
 		writer := bufio.NewWriter(&b)
+		reader := bufio.NewReader(&b)
 		transformer := &Transformer{}
 		transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-		// schema.TransformWithTransformer(tra)
-		if err := WriteTableBatch(writer, table, [][]any{transformedValues}, tc.headers); err != nil {
+		client, err := NewClient(
+			WithHeader(tc.headers),
+			WithWriter(writer),
+			WithReader(reader),
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := client.WriteTableBatch(table, [][]any{transformedValues}); err != nil {
 			t.Fatal(err)
 		}
 		writer.Flush()
-		reader := bufio.NewReader(&b)
+
 		ch := make(chan []any)
 		var readErr error
 		go func() {
-			readErr = Read(reader, table, "test-source", ch)
+			readErr = client.Read(table, ch)
 			close(ch)
 		}()
 		totalCount := 0

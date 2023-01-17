@@ -2,15 +2,14 @@ package csv
 
 import (
 	"encoding/csv"
-	"io"
 
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-//nolint:revive
-func WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any, headers bool) error {
-	writer := csv.NewWriter(w)
-	if headers {
+func (cl *Client) WriteTableBatch(table *schema.Table, resources [][]any) error {
+	writer := csv.NewWriter(cl.Writer)
+	writer.Comma = cl.Delimiter
+	if cl.IncludeHeaders {
 		tableHeaders := make([]string, len(table.Columns))
 		for index, header := range table.Columns {
 			tableHeaders[index] = header.Name
