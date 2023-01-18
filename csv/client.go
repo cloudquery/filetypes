@@ -14,7 +14,9 @@ func NewClient(options ...Options) (*Client, error) {
 	for _, option := range options {
 		option(c)
 	}
-	c.defaults()
+	if c.Delimiter == 0 {
+		c.Delimiter = ','
+	}
 
 	return c, nil
 }
@@ -28,11 +30,5 @@ func WithHeader() Options {
 func WithDelimiter(delimiter rune) Options {
 	return func(c *Client) {
 		c.Delimiter = delimiter
-	}
-}
-
-func (cl *Client) defaults() {
-	if cl.Delimiter == 0 {
-		cl.Delimiter = ','
 	}
 }
