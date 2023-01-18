@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cloudquery/filetypes/compare/v1.0.6...v1.1.0) (2023-01-18)
+
+
+### Features
+
+* Include CSV headers ([#30](https://github.com/cloudquery/filetypes/issues/30)) ([9ab6df8](https://github.com/cloudquery/filetypes/commit/9ab6df880d0ee0c55c1686c365e175aeacf6abe3))
+
 ## [1.0.6](https://github.com/cloudquery/filetypes/compare/v1.0.5...v1.0.6) (2023-01-17)
 
 
