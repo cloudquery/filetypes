@@ -44,7 +44,7 @@ func TestWriteRead(t *testing.T) {
 		ch := make(chan []any)
 		var readErr error
 		go func() {
-			readErr = client.Read(reader, table, ch)
+			readErr = client.Read(reader, table, "test-source", ch)
 			close(ch)
 		}()
 		totalCount := 0
