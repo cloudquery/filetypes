@@ -33,5 +33,6 @@ func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res cha
 		}
 		res <- jsonArr
 	}
+
 	return scanner.Err()
 }
