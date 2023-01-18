@@ -11,7 +11,9 @@ func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources []
 	writer := csv.NewWriter(w)
 	writer.Comma = cl.Delimiter
 	if cl.IncludeHeaders {
-		cl.WriteTableHeaders(w, table)
+		if err := cl.WriteTableHeaders(w, table); err != nil {
+			return err
+		}
 	}
 	for _, resource := range resources {
 		record := make([]string, len(resource))

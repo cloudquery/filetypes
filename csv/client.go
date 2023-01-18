@@ -4,18 +4,16 @@ type Options func(*Client)
 
 // Client is a csv client.
 type Client struct {
-	// fileFormat     string
 	IncludeHeaders bool
 	Delimiter      rune
 }
 
 func NewClient(options ...Options) (*Client, error) {
-	c := &Client{}
+	c := &Client{
+		Delimiter: ',',
+	}
 	for _, option := range options {
 		option(c)
-	}
-	if c.Delimiter == 0 {
-		c.Delimiter = ','
 	}
 
 	return c, nil
