@@ -7,7 +7,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
+func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
 	for _, resource := range resources {
 		jsonObj := make(map[string]any, len(table.Columns))
 		for i := range resource {

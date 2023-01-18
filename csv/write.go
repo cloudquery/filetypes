@@ -7,8 +7,14 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func WriteTableBatch(w io.Writer, _ *schema.Table, resources [][]any) error {
+func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
 	writer := csv.NewWriter(w)
+	writer.Comma = cl.Delimiter
+	if cl.IncludeHeaders {
+		if err := cl.WriteTableHeaders(w, table); err != nil {
+			return err
+		}
+	}
 	for _, resource := range resources {
 		record := make([]string, len(resource))
 		for i, v := range resource {
@@ -17,6 +23,21 @@ func WriteTableBatch(w io.Writer, _ *schema.Table, resources [][]any) error {
 		if err := writer.Write(record); err != nil {
 			return err
 		}
+	}
+	writer.Flush()
+	return nil
+}
+
+func (cl *Client) WriteTableHeaders(w io.Writer, table *schema.Table) error {
+	writer := csv.NewWriter(w)
+	writer.Comma = cl.Delimiter
+
+	tableHeaders := make([]string, len(table.Columns))
+	for index, header := range table.Columns {
+		tableHeaders[index] = header.Name
+	}
+	if err := writer.Write(tableHeaders); err != nil {
+		return err
 	}
 	writer.Flush()
 	return nil
