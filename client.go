@@ -19,6 +19,12 @@ type FileSpec struct {
 	NoRotate       bool       `json:"no_rotate,omitempty"`
 }
 
+func (s *FileSpec) SetDefaults() {
+	if s.Delimiter == 0 {
+		s.Delimiter = ','
+	}
+}
+
 type Client struct {
 	spec                   *FileSpec
 	csv                    *csv.Client
