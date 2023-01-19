@@ -31,7 +31,6 @@ type Client struct {
 
 // NewClient creates a new client for the given spec
 func NewClient(spec *FileSpec) (*Client, error) {
-
 	switch spec.Format {
 	case FormatTypeCSV:
 		opts := []csv.Options{
