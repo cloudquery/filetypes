@@ -50,12 +50,10 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			return &Client{}, err
 		}
 		return &Client{
-			spec:                   spec,
-			csvTransformer:         &csv.Transformer{},
-			jsonTransformer:        &json.Transformer{},
-			csvReverseTransformer:  &csv.ReverseTransformer{},
-			jsonReverseTransformer: &json.ReverseTransformer{},
-			csv:                    client,
+			spec:                  spec,
+			csvTransformer:        &csv.Transformer{},
+			csvReverseTransformer: &csv.ReverseTransformer{},
+			csv:                   client,
 		}, nil
 
 	case FormatTypeJSON:
@@ -65,9 +63,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		}
 		return &Client{
 			spec:                   spec,
-			csvTransformer:         &csv.Transformer{},
 			jsonTransformer:        &json.Transformer{},
-			csvReverseTransformer:  &csv.ReverseTransformer{},
 			jsonReverseTransformer: &json.ReverseTransformer{},
 			json:                   client,
 		}, nil
