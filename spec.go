@@ -19,8 +19,8 @@ const (
 type FileSpec struct {
 	Format     FormatType `json:"format,omitempty"`
 	FormatSpec any        `json:"format_spec,omitempty"`
-	csvSpec    *csv.CSVSpec
-	jsonSpec   *jsonFile.JSONSpec
+	csvSpec    *csv.Spec
+	jsonSpec   *jsonFile.Spec
 }
 
 func (s *FileSpec) SetDefaults() {
@@ -56,10 +56,10 @@ func (s *FileSpec) UnmarshalSpec() error {
 
 	switch s.Format {
 	case FormatTypeCSV:
-		s.csvSpec = &csv.CSVSpec{}
+		s.csvSpec = &csv.Spec{}
 		return dec.Decode(s.csvSpec)
 	case FormatTypeJSON:
-		s.jsonSpec = &jsonFile.JSONSpec{}
+		s.jsonSpec = &jsonFile.Spec{}
 		return dec.Decode(s.jsonSpec)
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)

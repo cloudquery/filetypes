@@ -1,10 +1,9 @@
 package json
 
-//nolint:revive
-type JSONSpec struct{}
+type Spec struct{}
 
-func (*JSONSpec) SetDefaults() {}
+func (*Spec) SetDefaults() {}
 
-func (*JSONSpec) Validate() error {
+func (*Spec) Validate() error {
 	return nil
 }

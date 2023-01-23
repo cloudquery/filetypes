@@ -2,19 +2,18 @@ package csv
 
 import "fmt"
 
-// nolint:revive
-type CSVSpec struct {
+type Spec struct {
 	IncludeHeaders bool   `json:"include_headers,omitempty"`
 	Delimiter      string `json:"delimiter,omitempty"`
 }
 
-func (s *CSVSpec) SetDefaults() {
+func (s *Spec) SetDefaults() {
 	if s.Delimiter == "" {
 		s.Delimiter = ","
 	}
 }
 
-func (s *CSVSpec) Validate() error {
+func (s *Spec) Validate() error {
 	if len(s.Delimiter) != 1 {
 		return fmt.Errorf("delimiter must be a single character")
 	}
