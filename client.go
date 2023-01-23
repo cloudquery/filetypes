@@ -1,6 +1,8 @@
 package filetypes
 
 import (
+	"fmt"
+
 	"github.com/cloudquery/filetypes/csv"
 	"github.com/cloudquery/filetypes/json"
 )
@@ -13,14 +15,30 @@ const (
 )
 
 type FileSpec struct {
-	Format         FormatType `json:"format,omitempty"`
-	IncludeHeaders bool       `json:"include_headers,omitempty"`
-	Delimiter      rune       `json:"delimiter,omitempty"`
+	Format FormatType `json:"format,omitempty"`
+	*csv.CSVSpec
+	*json.JSONSpec
 }
 
 func (s *FileSpec) SetDefaults() {
-	if s.Delimiter == 0 {
-		s.Delimiter = ','
+	switch s.Format {
+	case FormatTypeCSV:
+		s.CSVSpec.SetDefaults()
+	case FormatTypeJSON:
+		s.JSONSpec.SetDefaults()
+	}
+}
+func (s *FileSpec) Validate() error {
+	if s.Format == "" {
+		return fmt.Errorf("format is required")
+	}
+	switch s.Format {
+	case FormatTypeCSV:
+		return s.CSVSpec.Validate()
+	case FormatTypeJSON:
+		return s.JSONSpec.Validate()
+	default:
+		return fmt.Errorf("unknown format %s", s.Format)
 	}
 }
 
@@ -39,7 +57,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 	switch spec.Format {
 	case FormatTypeCSV:
 		opts := []csv.Options{
-			csv.WithDelimiter(spec.Delimiter),
+			csv.WithDelimiter([]rune(spec.Delimiter)[0]),
 		}
 		if spec.IncludeHeaders {
 			opts = append(opts, csv.WithHeader())
