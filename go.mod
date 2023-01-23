@@ -2,7 +2,7 @@ module github.com/cloudquery/filetypes
 
 go 1.19
 
-require github.com/cloudquery/plugin-sdk v1.27.0
+require github.com/cloudquery/plugin-sdk v1.28.0
 
 require (
 	github.com/ghodss/yaml v1.0.0 // indirect
