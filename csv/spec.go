@@ -2,7 +2,7 @@ package csv
 
 import "fmt"
 
-//nolint:revive
+// nolint:revive
 type CSVSpec struct {
 	IncludeHeaders bool   `json:"include_headers,omitempty"`
 	Delimiter      string `json:"delimiter,omitempty"`

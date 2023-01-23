@@ -1,88 +1,61 @@
 package filetypes
 
 import (
-	"fmt"
-
-	"github.com/cloudquery/filetypes/csv"
-	"github.com/cloudquery/filetypes/json"
+	csvFile "github.com/cloudquery/filetypes/csv"
+	jsonFile "github.com/cloudquery/filetypes/json"
 )
-
-type FormatType string
-
-const (
-	FormatTypeCSV  = "csv"
-	FormatTypeJSON = "json"
-)
-
-type FileSpec struct {
-	Format FormatType `json:"format,omitempty"`
-	*csv.CSVSpec
-	*json.JSONSpec
-}
-
-func (s *FileSpec) SetDefaults() {
-	switch s.Format {
-	case FormatTypeCSV:
-		s.CSVSpec.SetDefaults()
-	case FormatTypeJSON:
-		s.JSONSpec.SetDefaults()
-	}
-}
-func (s *FileSpec) Validate() error {
-	if s.Format == "" {
-		return fmt.Errorf("format is required")
-	}
-	switch s.Format {
-	case FormatTypeCSV:
-		return s.CSVSpec.Validate()
-	case FormatTypeJSON:
-		return s.JSONSpec.Validate()
-	default:
-		return fmt.Errorf("unknown format %s", s.Format)
-	}
-}
 
 type Client struct {
 	spec                   *FileSpec
-	csv                    *csv.Client
-	json                   *json.Client
-	csvTransformer         *csv.Transformer
-	csvReverseTransformer  *csv.ReverseTransformer
-	jsonTransformer        *json.Transformer
-	jsonReverseTransformer *json.ReverseTransformer
+	csv                    *csvFile.Client
+	json                   *jsonFile.Client
+	csvTransformer         *csvFile.Transformer
+	csvReverseTransformer  *csvFile.ReverseTransformer
+	jsonTransformer        *jsonFile.Transformer
+	jsonReverseTransformer *jsonFile.ReverseTransformer
 }
 
 // NewClient creates a new client for the given spec
 func NewClient(spec *FileSpec) (*Client, error) {
+	err := spec.UnmarshalSpec()
+	if err != nil {
+		return &Client{}, err
+	}
+
+	spec.SetDefaults()
+	if err := spec.Validate(); err != nil {
+		return &Client{}, err
+	}
+
 	switch spec.Format {
 	case FormatTypeCSV:
-		opts := []csv.Options{
-			csv.WithDelimiter([]rune(spec.Delimiter)[0]),
+		opts := []csvFile.Options{
+			csvFile.WithDelimiter([]rune(spec.csvSpec.Delimiter)[0]),
 		}
-		if spec.IncludeHeaders {
-			opts = append(opts, csv.WithHeader())
+		if spec.csvSpec.IncludeHeaders {
+			opts = append(opts, csvFile.WithHeader())
 		}
 
-		client, err := csv.NewClient(opts...)
+		client, err := csvFile.NewClient(opts...)
 		if err != nil {
 			return &Client{}, err
 		}
 		return &Client{
 			spec:                  spec,
-			csvTransformer:        &csv.Transformer{},
-			csvReverseTransformer: &csv.ReverseTransformer{},
+			csvTransformer:        &csvFile.Transformer{},
+			csvReverseTransformer: &csvFile.ReverseTransformer{},
 			csv:                   client,
 		}, nil
 
 	case FormatTypeJSON:
-		client, err := json.NewClient()
+		client, err := jsonFile.NewClient()
 		if err != nil {
 			return &Client{}, err
 		}
 		return &Client{
 			spec:                   spec,
-			jsonTransformer:        &json.Transformer{},
-			jsonReverseTransformer: &json.ReverseTransformer{},
+			jsonTransformer:        &jsonFile.Transformer{},
+			jsonReverseTransformer: &jsonFile.ReverseTransformer{},
 			json:                   client,
 		}, nil
 
