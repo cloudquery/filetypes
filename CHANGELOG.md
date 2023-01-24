@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cloudquery/filetypes/compare/v1.1.1...v1.2.0) (2023-01-24)
+
+
+### Features
+
+* Simplify Destinations ([#35](https://github.com/cloudquery/filetypes/issues/35)) ([97c02e9](https://github.com/cloudquery/filetypes/commit/97c02e9fac90cb82467fad9438d978f4ca0dd873))
+
 ## [1.1.1](https://github.com/cloudquery/filetypes/compare/v1.1.0...v1.1.1) (2023-01-23)
 
 
