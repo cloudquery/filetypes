@@ -31,6 +31,7 @@ func (s *FileSpec) SetDefaults() {
 		s.jsonSpec.SetDefaults()
 	}
 }
+
 func (s *FileSpec) Validate() error {
 	if s.Format == "" {
 		return fmt.Errorf("format is required")

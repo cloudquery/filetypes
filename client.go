@@ -9,10 +9,10 @@ type Client struct {
 	spec                   *FileSpec
 	csv                    *csvFile.Client
 	json                   *jsonFile.Client
-	csvTransformer         *csvFile.Transformer
-	csvReverseTransformer  *csvFile.ReverseTransformer
-	jsonTransformer        *jsonFile.Transformer
-	jsonReverseTransformer *jsonFile.ReverseTransformer
+	csvTransformer         csvFile.Transformer
+	csvReverseTransformer  csvFile.ReverseTransformer
+	jsonTransformer        jsonFile.Transformer
+	jsonReverseTransformer jsonFile.ReverseTransformer
 }
 
 // NewClient creates a new client for the given spec
@@ -41,10 +41,8 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			return &Client{}, err
 		}
 		return &Client{
-			spec:                  spec,
-			csvTransformer:        &csvFile.Transformer{},
-			csvReverseTransformer: &csvFile.ReverseTransformer{},
-			csv:                   client,
+			spec: spec,
+			csv:  client,
 		}, nil
 
 	case FormatTypeJSON:
@@ -53,10 +51,8 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			return &Client{}, err
 		}
 		return &Client{
-			spec:                   spec,
-			jsonTransformer:        &jsonFile.Transformer{},
-			jsonReverseTransformer: &jsonFile.ReverseTransformer{},
-			json:                   client,
+			spec: spec,
+			json: client,
 		}, nil
 
 	default:
