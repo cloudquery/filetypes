@@ -3,7 +3,7 @@ module github.com/cloudquery/filetypes
 go 1.19
 
 require (
-	github.com/cloudquery/plugin-sdk v1.28.0
+	github.com/cloudquery/plugin-sdk v1.29.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.8.1
@@ -22,3 +22,5 @@ require (
 	golang.org/x/sys v0.3.0 // indirect; indirect // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
+
+require golang.org/x/text v0.5.0 // indirect
