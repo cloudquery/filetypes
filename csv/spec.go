@@ -3,8 +3,8 @@ package csv
 import "fmt"
 
 type Spec struct {
-	IncludeHeaders bool   `json:"include_headers,omitempty"`
-	Delimiter      string `json:"delimiter,omitempty"`
+	NoHeaders bool   `json:"no_headers,omitempty"`
+	Delimiter string `json:"delimiter,omitempty"`
 }
 
 func (s *Spec) SetDefaults() {
