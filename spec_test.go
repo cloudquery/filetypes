@@ -24,25 +24,25 @@ func TestSpecMethods(t *testing.T) {
 			},
 			preDefaultsCSV: &csv.Spec{},
 			postDefaultsCSV: &csv.Spec{
-				NoHeaders: false,
-				Delimiter: ",",
+				SkipHeader: false,
+				Delimiter:  ",",
 			},
 		},
 		{
 			FileSpec: &FileSpec{
 				Format: FormatTypeCSV,
 				FormatSpec: map[string]any{
-					"delimiter":  ",",
-					"no_headers": true,
+					"delimiter":   ",",
+					"skip_header": true,
 				},
 			},
 			preDefaultsCSV: &csv.Spec{
-				NoHeaders: true,
-				Delimiter: ",",
+				SkipHeader: true,
+				Delimiter:  ",",
 			},
 			postDefaultsCSV: &csv.Spec{
-				NoHeaders: true,
-				Delimiter: ",",
+				SkipHeader: true,
+				Delimiter:  ",",
 			},
 		},
 		{
@@ -51,12 +51,12 @@ func TestSpecMethods(t *testing.T) {
 				FormatSpec: map[string]any{},
 			},
 			preDefaultsCSV: &csv.Spec{
-				NoHeaders: false,
-				Delimiter: "",
+				SkipHeader: false,
+				Delimiter:  "",
 			},
 			postDefaultsCSV: &csv.Spec{
-				NoHeaders: false,
-				Delimiter: ",",
+				SkipHeader: false,
+				Delimiter:  ",",
 			},
 		},
 		{

@@ -32,7 +32,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		opts := []csvFile.Options{
 			csvFile.WithDelimiter([]rune(spec.csvSpec.Delimiter)[0]),
 		}
-		if !spec.csvSpec.NoHeaders {
+		if !spec.csvSpec.SkipHeader {
 			opts = append(opts, csvFile.WithHeader())
 		}
 
