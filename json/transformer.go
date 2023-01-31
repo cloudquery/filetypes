@@ -145,7 +145,7 @@ func (Transformer) TransformInetArray(v *schema.InetArray) any {
 	for i, e := range v.Elements {
 		res[i] = e.String()
 	}
-	return v.String()
+	return res
 }
 
 func (Transformer) TransformMacaddr(v *schema.Macaddr) any {
