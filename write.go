@@ -16,6 +16,10 @@ func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, resource
 		if err := cl.json.WriteTableBatch(w, table, resources); err != nil {
 			return err
 		}
+	case FormatTypeParquet:
+		if err := cl.parquet.WriteTableBatch(w, table, resources); err != nil {
+			return err
+		}
 	default:
 		panic("unknown format " + cl.spec.Format)
 	}

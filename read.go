@@ -16,6 +16,10 @@ func (cl *Client) Read(r io.Reader, table *schema.Table, sourceName string, res 
 		if err := cl.json.Read(r, table, sourceName, res); err != nil {
 			return err
 		}
+	case FormatTypeParquet:
+		if err := cl.parquet.Read(r, table, sourceName, res); err != nil {
+			return err
+		}
 	default:
 		panic("unknown format " + cl.spec.Format)
 	}
@@ -28,6 +32,8 @@ func (cl *Client) ReverseTransformValues(table *schema.Table, values []any) (sch
 		return cl.csvReverseTransformer.ReverseTransformValues(table, values)
 	case FormatTypeJSON:
 		return cl.jsonReverseTransformer.ReverseTransformValues(table, values)
+	case FormatTypeParquet:
+		return cl.parquetReverseTransformer.ReverseTransformValues(table, values)
 	default:
 		panic("unknown format " + cl.spec.Format)
 	}
