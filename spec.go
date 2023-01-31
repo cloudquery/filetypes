@@ -7,20 +7,23 @@ import (
 
 	"github.com/cloudquery/filetypes/csv"
 	jsonFile "github.com/cloudquery/filetypes/json"
+	"github.com/cloudquery/filetypes/parquet"
 )
 
 type FormatType string
 
 const (
-	FormatTypeCSV  = "csv"
-	FormatTypeJSON = "json"
+	FormatTypeCSV     = "csv"
+	FormatTypeJSON    = "json"
+	FormatTypeParquet = "parquet"
 )
 
 type FileSpec struct {
-	Format     FormatType `json:"format,omitempty"`
-	FormatSpec any        `json:"format_spec,omitempty"`
-	csvSpec    *csv.Spec
-	jsonSpec   *jsonFile.Spec
+	Format      FormatType `json:"format,omitempty"`
+	FormatSpec  any        `json:"format_spec,omitempty"`
+	csvSpec     *csv.Spec
+	jsonSpec    *jsonFile.Spec
+	parquetSpec *parquet.Spec
 }
 
 func (s *FileSpec) SetDefaults() {
@@ -29,6 +32,8 @@ func (s *FileSpec) SetDefaults() {
 		s.csvSpec.SetDefaults()
 	case FormatTypeJSON:
 		s.jsonSpec.SetDefaults()
+	case FormatTypeParquet:
+		s.parquetSpec.SetDefaults()
 	}
 }
 
@@ -41,6 +46,8 @@ func (s *FileSpec) Validate() error {
 		return s.csvSpec.Validate()
 	case FormatTypeJSON:
 		return s.jsonSpec.Validate()
+	case FormatTypeParquet:
+		return s.parquetSpec.Validate()
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
 	}
@@ -62,6 +69,9 @@ func (s *FileSpec) UnmarshalSpec() error {
 	case FormatTypeJSON:
 		s.jsonSpec = &jsonFile.Spec{}
 		return dec.Decode(s.jsonSpec)
+	case FormatTypeParquet:
+		s.parquetSpec = &parquet.Spec{}
+		return dec.Decode(s.parquetSpec)
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
 	}
