@@ -24,6 +24,6 @@ require (
 )
 
 require (
-	github.com/getsentry/sentry-go v0.16.0 // indirect
+	github.com/getsentry/sentry-go v0.17.0 // indirect; indirect // indirect
 	golang.org/x/text v0.5.0 // indirect
 )
