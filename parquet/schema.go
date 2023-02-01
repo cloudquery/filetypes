@@ -4,35 +4,32 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/cloudquery/plugin-sdk/schema"
 	"github.com/segmentio/parquet-go"
 )
 
-func makeStruct(cols schema.ColumnList) any {
+func (c *Client) makeStruct(cols schema.ColumnList) any {
 	sf := make([]reflect.StructField, len(cols))
 	for i := range cols {
-		sf[i] = structFieldFromColumn(i, cols[i])
+		sf[i] = c.structFieldFromColumn(i, cols[i])
 	}
 
 	return reflect.New(reflect.StructOf(sf)).Elem().Interface()
 }
 
-func formatFieldNameWithIndex(index int) string {
-	return "Field" + strconv.FormatInt(int64(index), 10)
-}
-
-func structFieldFromColumn(index int, c schema.Column) reflect.StructField {
-	el := schemaTypeToGoType(c.Type)
+func (c *Client) structFieldFromColumn(index int, col schema.Column) reflect.StructField {
+	el := schemaTypeToGoType(col.Type)
 	f := reflect.StructField{
 		Name: formatFieldNameWithIndex(index),
 		Type: reflect.TypeOf(el),
 	}
 
-	tg := `parquet:"` + c.Name
-	if !c.CreationOptions.PrimaryKey && !c.CreationOptions.IncrementalKey {
-		tg += `,optional"`
+	tg := `parquet:"` + col.Name
+	if opts := c.structOptsForColumn(col); len(opts) > 0 {
+		tg += "," + strings.Join(opts, ",")
 	}
 	tg += `"`
 
@@ -40,11 +37,37 @@ func structFieldFromColumn(index int, c schema.Column) reflect.StructField {
 	return f
 }
 
+func (c *Client) structOptsForColumn(col schema.Column) []string {
+	opts := []string{c.spec.Compression}
+
+	switch col.Type {
+	case schema.TypeJSON:
+		opts = append(opts, "json")
+	case schema.TypeUUID:
+		opts = append(opts, "uuid")
+	case schema.TypeTimestamp:
+		opts = append(opts, "timestamp")
+	case schema.TypeInt, schema.TypeString, schema.TypeByteArray:
+		opts = append(opts, "delta")
+	case schema.TypeStringArray, schema.TypeIntArray, schema.TypeUUIDArray, schema.TypeCIDRArray, schema.TypeInetArray:
+		opts = append(opts, "list")
+	}
+
+	if !col.CreationOptions.PrimaryKey && !col.CreationOptions.IncrementalKey {
+		opts = append(opts, "optional")
+	}
+
+	return opts
+}
+
+func formatFieldNameWithIndex(index int) string {
+	return "Field" + strconv.FormatInt(int64(index), 10)
+}
+
 func schemaTypeToGoType(v schema.ValueType) any {
 	switch v {
 	// Non-primitive types
 	case schema.TypeCIDR, schema.TypeInet:
-		//return &net.IPNet{}
 		return ""
 	case schema.TypeUUID:
 		return [16]byte{}
@@ -55,7 +78,6 @@ func schemaTypeToGoType(v schema.ValueType) any {
 
 	// Map types
 	case schema.TypeJSON:
-		//return map[string]any{} // TODO fix
 		return ""
 
 	// Slice types
@@ -66,7 +88,6 @@ func schemaTypeToGoType(v schema.ValueType) any {
 	case schema.TypeByteArray:
 		return []byte{}
 	case schema.TypeCIDRArray, schema.TypeInetArray:
-		//return []*net.IPNet{}
 		return []string{}
 	case schema.TypeUUIDArray:
 		return [][16]byte{}
