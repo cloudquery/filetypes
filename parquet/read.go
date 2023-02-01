@@ -25,9 +25,6 @@ func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res cha
 	}
 	seekableReader := bytes.NewReader(buf.Bytes())
 
-	// TODO use sourceNameIndex
-	_ = sourceName
-
 	r := parquet.NewReader(seekableReader, schemaSetter{Schema: s})
 	for {
 		row := reflect.New(reflect.TypeOf(aStruct)).Interface()
@@ -36,8 +33,11 @@ func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res cha
 		} else if err != nil {
 			return err
 		}
-
-		res <- structToArray(row)
+		record := structToArray(row)
+		if record[sourceNameIndex] != sourceName {
+			continue
+		}
+		res <- record
 	}
 	return nil
 }
@@ -52,6 +52,10 @@ func structToArray(s any) []any {
 	}
 	a := make([]any, v.NumField())
 	for i := 0; i < v.NumField(); i++ {
+		if formatFieldNameWithIndex(i) != v.Type().Field(i).Name {
+			panic("field name mismatch: want " + formatFieldNameWithIndex(i) + ", got " + v.Type().Field(i).Name)
+		}
+
 		a[i] = v.Field(i).Interface()
 	}
 	return a
