@@ -61,11 +61,6 @@ func (Transformer) TransformJSON(v *schema.JSON) any {
 		return nil
 	}
 	return v.String()
-	//var res any
-	//if err := json.Unmarshal(v.Bytes, &res); err != nil {
-	//	panic(err)
-	//}
-	//return res
 }
 
 func (Transformer) TransformText(v *schema.Text) any {
@@ -97,16 +92,16 @@ func (Transformer) TransformUUID(v *schema.UUID) any {
 	if v.Status != schema.Present {
 		return nil
 	}
-	return v.Bytes
+	return v.String()
 }
 
 func (Transformer) TransformUUIDArray(v *schema.UUIDArray) any {
 	if v.Status != schema.Present {
 		return nil
 	}
-	res := make([][16]byte, len(v.Elements))
-	for i := range v.Elements {
-		res[i] = v.Elements[i].Bytes
+	res := make([]string, len(v.Elements))
+	for i, e := range v.Elements {
+		res[i] = e.String()
 	}
 	return res
 }

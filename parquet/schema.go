@@ -43,11 +43,9 @@ func (c *Client) structOptsForColumn(col schema.Column) []string {
 	switch col.Type {
 	case schema.TypeJSON:
 		opts = append(opts, "json")
-	case schema.TypeUUID:
-		opts = append(opts, "uuid")
 	case schema.TypeTimestamp:
 		opts = append(opts, "timestamp")
-	case schema.TypeInt, schema.TypeString, schema.TypeByteArray:
+	case schema.TypeUUID, schema.TypeInt, schema.TypeString, schema.TypeByteArray:
 		opts = append(opts, "delta")
 	case schema.TypeStringArray, schema.TypeIntArray, schema.TypeUUIDArray, schema.TypeCIDRArray, schema.TypeInetArray:
 		opts = append(opts, "list")
@@ -70,7 +68,7 @@ func schemaTypeToGoType(v schema.ValueType) any {
 	case schema.TypeCIDR, schema.TypeInet:
 		return ""
 	case schema.TypeUUID:
-		return [16]byte{}
+		return ""
 	case schema.TypeMacAddr:
 		return ""
 	case schema.TypeTimestamp:
@@ -90,7 +88,7 @@ func schemaTypeToGoType(v schema.ValueType) any {
 	case schema.TypeCIDRArray, schema.TypeInetArray:
 		return []string{}
 	case schema.TypeUUIDArray:
-		return [][16]byte{}
+		return []string{}
 	case schema.TypeMacAddrArray:
 		return []string{}
 
