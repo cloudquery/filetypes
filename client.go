@@ -63,7 +63,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		}, nil
 
 	case FormatTypeParquet:
-		client, err := parquet.NewClient()
+		client, err := parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
 		if err != nil {
 			return &Client{}, err
 		}

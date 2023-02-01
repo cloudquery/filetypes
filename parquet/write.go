@@ -9,10 +9,9 @@ import (
 	"github.com/segmentio/parquet-go"
 )
 
-func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-	aStruct := makeStruct(table.Columns)
+func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
+	aStruct := c.makeStruct(table.Columns)
 	s := parquet.SchemaOf(aStruct)
-
 	pw := parquet.NewWriter(w, schemaSetter{Schema: s})
 
 	for i := range resources {
@@ -32,26 +31,13 @@ func arrayToStruct(a []any, wantType any) any {
 		panic(fmt.Sprintf("array length %d != struct length %d", al, sl))
 	}
 
-	//var (
-	//	settingField any
-	//	settingIndex int
-	//)
-
-	//defer func() {
-	//	if err := recover(); err != nil {
-	//		fmt.Println("settingField: ", settingIndex, settingField)
-	//		panic(err)
-	//	}
-	//}()
-
 	for i := range a {
-		//settingIndex, settingField = i, a[i]
-		n := formatFieldNameWithIndex(i)
 		val := reflect.ValueOf(a[i])
 		if a[i] == nil {
 			continue
 		}
 
+		n := formatFieldNameWithIndex(i)
 		s.FieldByName(n).Set(val)
 	}
 
