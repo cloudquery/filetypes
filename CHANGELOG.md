@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.2](https://github.com/cloudquery/filetypes/compare/v1.3.1...v1.3.2) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.33.0 ([#56](https://github.com/cloudquery/filetypes/issues/56)) ([7626357](https://github.com/cloudquery/filetypes/commit/762635724c5dbc5f03920890629b1a93b5e546e0))
+* **deps:** Update module github.com/getsentry/sentry-go to v0.17.0 ([#52](https://github.com/cloudquery/filetypes/issues/52)) ([aeb2415](https://github.com/cloudquery/filetypes/commit/aeb2415e61c848c38656f7806948cd259fea54c4))
+* **deps:** Update module github.com/rs/zerolog to v1.29.0 ([#53](https://github.com/cloudquery/filetypes/issues/53)) ([49fcbe1](https://github.com/cloudquery/filetypes/commit/49fcbe16193f3214e28589581cebffca4a27e213))
+* **deps:** Update module golang.org/x/sys to v0.4.0 ([#54](https://github.com/cloudquery/filetypes/issues/54)) ([202b0dc](https://github.com/cloudquery/filetypes/commit/202b0dcb4e3e7209e2d224333c431bba4f023d60))
+* **deps:** Update module golang.org/x/text to v0.6.0 ([#55](https://github.com/cloudquery/filetypes/issues/55)) ([a15fa24](https://github.com/cloudquery/filetypes/commit/a15fa240d4659fa40b4e963e0fbf2f6215d3d1ae))
+* JSON Inetarray ([#48](https://github.com/cloudquery/filetypes/issues/48)) ([d008c13](https://github.com/cloudquery/filetypes/commit/d008c13baa03730755c41dc7a6f45caa1ae7bc45))
+
 ## [1.3.1](https://github.com/cloudquery/filetypes/compare/v1.3.0...v1.3.1) (2023-01-30)
 
 
