@@ -1,45 +1,35 @@
 package parquet
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"reflect"
 
 	"github.com/cloudquery/plugin-sdk/schema"
-	"github.com/segmentio/parquet-go"
+	"github.com/xitongsys/parquet-go/parquet"
+	"github.com/xitongsys/parquet-go/writer"
 )
 
 func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-	aStruct := c.makeStruct(table.Columns)
-	s := parquet.SchemaOf(aStruct)
-	pw := parquet.NewWriter(w, schemaSetter{Schema: s})
+
+	pw, err := writer.NewJSONWriterFromWriter(c.makeSchema(table.Columns), w, 2)
+	if err != nil {
+		return fmt.Errorf("can't create parquet writer: %w", err)
+	}
+
+	pw.RowGroupSize = 128 * 1024 * 1024 //128M
+	pw.CompressionType = parquet.CompressionCodec_SNAPPY
 
 	for i := range resources {
-		obj := arrayToStruct(resources[i], aStruct)
-		if err := pw.Write(obj); err != nil {
+		rec := make(map[string]any, len(table.Columns))
+		for j := range table.Columns {
+			rec[table.Columns[j].Name] = resources[i][j]
+		}
+		b, _ := json.Marshal(rec)
+		if err := pw.Write(b); err != nil {
 			return err
 		}
 	}
 
-	return pw.Close()
-}
-
-func arrayToStruct(a []any, wantType any) any {
-	t := reflect.TypeOf(wantType)
-	s := reflect.New(t).Elem()
-	if al, sl := len(a), t.NumField(); al != sl {
-		panic(fmt.Sprintf("array length %d != struct length %d", al, sl))
-	}
-
-	for i := range a {
-		val := reflect.ValueOf(a[i])
-		if a[i] == nil {
-			continue
-		}
-
-		n := formatFieldNameWithIndex(i)
-		s.FieldByName(n).Set(val)
-	}
-
-	return s.Interface()
+	return pw.WriteStop()
 }

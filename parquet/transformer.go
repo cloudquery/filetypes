@@ -1,13 +1,13 @@
 package parquet
 
 import (
-	"github.com/cloudquery/plugin-sdk/plugins/destination"
+	"fmt"
+	"time"
+
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-type ReverseTransformer struct {
-	*destination.DefaultReverseTransformer
-}
+type ReverseTransformer struct{}
 
 var _ interface {
 	ReverseTransformValues(table *schema.Table, values []any) (schema.CQTypes, error)
@@ -28,7 +28,7 @@ func (Transformer) TransformBytea(v *schema.Bytea) any {
 	if v.Status != schema.Present {
 		return nil
 	}
-	return v.Bytes
+	return v.String()
 }
 
 func (Transformer) TransformFloat8(v *schema.Float8) any {
@@ -85,7 +85,7 @@ func (Transformer) TransformTimestamptz(v *schema.Timestamptz) any {
 	if v.Status != schema.Present {
 		return nil
 	}
-	return v.Time
+	return v.Time.UnixMilli()
 }
 
 func (Transformer) TransformUUID(v *schema.UUID) any {
@@ -162,4 +162,35 @@ func (Transformer) TransformMacaddrArray(v *schema.MacaddrArray) any {
 		res[i] = v.Elements[i].String()
 	}
 	return res
+}
+
+func (r ReverseTransformer) ReverseTransformValues(table *schema.Table, values []any) (schema.CQTypes, error) {
+	// Copy of *destination.DefaultReverseTransformer with timestamp millis handling
+
+	res := make(schema.CQTypes, len(values))
+
+	for i, v := range values {
+		t := schema.NewCqTypeFromValueType(table.Columns[i].Type)
+
+		// handle nil values first
+		if v == nil {
+			if err := t.Set(v); err != nil {
+				return nil, fmt.Errorf("failed to convert value %v to type %s: %w", v, table.Columns[i].Type, err)
+			}
+			continue
+		}
+
+		var err error
+		switch table.Columns[i].Type {
+		case schema.TypeTimestamp:
+			err = t.Set(time.UnixMilli(v.(int64)))
+		default:
+			err = t.Set(v)
+		}
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert value %v to type %s: %w", v, table.Columns[i].Type, err)
+		}
+		res[i] = t
+	}
+	return res, nil
 }
