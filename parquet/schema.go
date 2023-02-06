@@ -8,14 +8,14 @@ import (
 	pschema "github.com/xitongsys/parquet-go/schema"
 )
 
-func (c *Client) makeSchema(cols schema.ColumnList) string {
+func makeSchema(cols schema.ColumnList) string {
 	s := pschema.JSONSchemaItemType{
 		Tag: `name=parquet_go_root, repetitiontype=REQUIRED`,
 	}
 
 	for i := range cols {
 		tag := `name=` + cols[i].Name
-		if opts := c.structOptsForColumn(cols[i]); len(opts) > 0 {
+		if opts := structOptsForColumn(cols[i]); len(opts) > 0 {
 			tag += ", " + strings.Join(opts, ", ")
 		}
 		s.Fields = append(s.Fields, &pschema.JSONSchemaItemType{Tag: tag})
@@ -25,8 +25,7 @@ func (c *Client) makeSchema(cols schema.ColumnList) string {
 	return string(b)
 }
 
-func (c *Client) structOptsForColumn(col schema.Column) []string {
-	//opts := []string{c.spec.Compression} // TODO fix
+func structOptsForColumn(col schema.Column) []string {
 	opts := []string{}
 
 	switch col.Type {

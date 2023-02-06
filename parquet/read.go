@@ -9,7 +9,7 @@ import (
 	"github.com/xitongsys/parquet-go/reader"
 )
 
-func (c *Client) Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
+func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
 	sourceNameIndex := int64(table.Columns.Index(schema.CqSourceNameColumn.Name))
 	if sourceNameIndex == -1 {
 		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
@@ -20,7 +20,7 @@ func (c *Client) Read(f io.Reader, table *schema.Table, sourceName string, res c
 		return err
 	}
 
-	s := c.makeSchema(table.Columns)
+	s := makeSchema(table.Columns)
 	r, err := reader.NewParquetReader(newPQReader(buf.Bytes()), s, 2)
 	if err != nil {
 		return fmt.Errorf("can't create parquet reader: %w", err)

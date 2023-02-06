@@ -28,7 +28,7 @@ func (pq *pqReader) Open(string) (source.ParquetFile, error) {
 	return newPQReader(pq.data), nil
 }
 
-func (pq *pqReader) Close() error {
+func (*pqReader) Close() error {
 	return nil
 }
 
@@ -36,6 +36,6 @@ func (*pqReader) Write([]byte) (n int, err error) {
 	return 0, fmt.Errorf("not implemented")
 }
 
-func (pq *pqReader) Create(string) (source.ParquetFile, error) {
+func (*pqReader) Create(string) (source.ParquetFile, error) {
 	return nil, fmt.Errorf("not implemented")
 }

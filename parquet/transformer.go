@@ -164,7 +164,7 @@ func (Transformer) TransformMacaddrArray(v *schema.MacaddrArray) any {
 	return res
 }
 
-func (r ReverseTransformer) ReverseTransformValues(table *schema.Table, values []any) (schema.CQTypes, error) {
+func (ReverseTransformer) ReverseTransformValues(table *schema.Table, values []any) (schema.CQTypes, error) {
 	// Copy of *destination.DefaultReverseTransformer with timestamp millis handling
 
 	res := make(schema.CQTypes, len(values))
