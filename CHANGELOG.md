@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://github.com/cloudquery/filetypes/compare/v1.3.2...v1.4.0) (2023-02-07)
+
+
+### Features
+
+* Parquet format (take 2) ([#59](https://github.com/cloudquery/filetypes/issues/59)) ([b331ef6](https://github.com/cloudquery/filetypes/commit/b331ef6b2e3205f1b04487c731588d52a9eab9a3))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.33.1 ([#57](https://github.com/cloudquery/filetypes/issues/57)) ([b6bb501](https://github.com/cloudquery/filetypes/commit/b6bb501f62ea2c14604400984445a180e78f5df3))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.34.0 ([#60](https://github.com/cloudquery/filetypes/issues/60)) ([2866fa0](https://github.com/cloudquery/filetypes/commit/2866fa05ddd0f710bc7b4e507d675a7b3885f8c6))
+
 ## [1.3.2](https://github.com/cloudquery/filetypes/compare/v1.3.1...v1.3.2) (2023-02-01)
 
 
