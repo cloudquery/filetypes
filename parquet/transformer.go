@@ -177,6 +177,7 @@ func (ReverseTransformer) ReverseTransformValues(table *schema.Table, values []a
 			if err := t.Set(v); err != nil {
 				return nil, fmt.Errorf("failed to convert value %v to type %s: %w", v, table.Columns[i].Type, err)
 			}
+			//res[i] = t
 			continue
 		}
 

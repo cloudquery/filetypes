@@ -20,7 +20,7 @@ func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res cha
 		return err
 	}
 
-	s := makeSchema(table.Columns)
+	s := makeSchema(table.Name, table.Columns)
 	r, err := reader.NewParquetReader(newPQReader(buf.Bytes()), s, 2)
 	if err != nil {
 		return fmt.Errorf("can't create parquet reader: %w", err)
