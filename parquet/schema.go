@@ -27,7 +27,7 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 		case schema.TypeString /*schema.TypeUUID,*/, schema.TypeCIDR, schema.TypeInet, schema.TypeMacAddr:
 			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8")
 		case schema.TypeUUID:
-			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8", "logicaltype=UUID")
+			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8") //, "logicaltype=UUID")
 			//tag = append(tag, "type=FIXED_LEN_BYTE_ARRAY", "length=16" /*"convertedtype=UTF8",*/, "logicaltype=UUID")
 		case schema.TypeFloat:
 			tag = append(tag, "type=DOUBLE")
@@ -50,7 +50,8 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 			tag = append(tag, "type=LIST", "repetitiontype=OPTIONAL")
 			subFields = []*pschema.JSONSchemaItemType{
 				{
-					Tag: "name=element, type=BYTE_ARRAY, convertedtype=UTF8, logicaltype=UUID, repetitiontype=OPTIONAL",
+					//Tag: "name=element, type=BYTE_ARRAY, convertedtype=UTF8, logicaltype=UUID, repetitiontype=OPTIONAL",
+					Tag: "name=element, type=BYTE_ARRAY, convertedtype=UTF8, repetitiontype=OPTIONAL",
 					//Tag: "name=element, type=FIXED_LEN_BYTE_ARRAY, length=16, logicaltype=UUID, repetitiontype=OPTIONAL",
 				},
 			}
