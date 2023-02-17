@@ -19,11 +19,9 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 		tag := []string{`name=` + col.Name}
 
 		switch col.Type {
-		case schema.TypeJSON:
-			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8", "logicaltype=JSON")
 		case schema.TypeTimestamp:
 			tag = append(tag, "type=INT64", "convertedtype=TIMESTAMP_MILLIS")
-		case schema.TypeString, schema.TypeUUID, schema.TypeCIDR, schema.TypeInet, schema.TypeMacAddr:
+		case schema.TypeJSON, schema.TypeString, schema.TypeUUID, schema.TypeCIDR, schema.TypeInet, schema.TypeMacAddr:
 			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8")
 		case schema.TypeFloat:
 			tag = append(tag, "type=DOUBLE")
