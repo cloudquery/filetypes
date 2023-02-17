@@ -10,8 +10,7 @@ import (
 
 func makeSchema(tableName string, cols schema.ColumnList) string {
 	s := pschema.JSONSchemaItemType{
-		//Tag: `name=` + tableName + `_root, repetitiontype=REQUIRED`,
-		Tag: `name=parquet_go_root, repetitiontype=REQUIRED`,
+		Tag: `name=` + tableName + `_root, repetitiontype=REQUIRED`,
 	}
 
 	for _, col := range cols {
