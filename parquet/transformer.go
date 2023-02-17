@@ -93,9 +93,6 @@ func (Transformer) TransformUUID(v *schema.UUID) any {
 		return nil
 	}
 	return v.String()
-	//bb := make([]byte, 16)
-	//copy(bb, v.Bytes[:])
-	//return bb
 }
 
 func (Transformer) TransformUUIDArray(v *schema.UUIDArray) any {
@@ -186,13 +183,6 @@ func (ReverseTransformer) ReverseTransformValues(table *schema.Table, values []a
 
 		var err error
 		switch table.Columns[i].Type {
-		//case schema.TypeUUID:
-		//	b, err2 := base64.RawStdEncoding.DecodeString(v.(string))
-		//	if err2 != nil {
-		//		err = err2
-		//		break
-		//	}
-		//	err = t.Set(b)
 		case schema.TypeTimestamp:
 			err = t.Set(time.UnixMilli(v.(int64)))
 		default:
