@@ -23,11 +23,10 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8", "logicaltype=JSON")
 		case schema.TypeTimestamp:
 			tag = append(tag, "type=INT64", "convertedtype=TIMESTAMP_MILLIS")
-		case schema.TypeString /*schema.TypeUUID,*/, schema.TypeCIDR, schema.TypeInet, schema.TypeMacAddr:
+		case schema.TypeString, schema.TypeUUID, schema.TypeCIDR, schema.TypeInet, schema.TypeMacAddr:
 			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8")
-		case schema.TypeUUID:
-			tag = append(tag, "type=BYTE_ARRAY", "convertedtype=UTF8") //, "logicaltype=UUID")
-			//tag = append(tag, "type=FIXED_LEN_BYTE_ARRAY", "length=16" /*"convertedtype=UTF8",*/, "logicaltype=UUID")
+		//case schema.TypeUUID:
+		//	tag = append(tag, "type=FIXED_LEN_BYTE_ARRAY", "length=22", "logicaltype=UUID")
 		case schema.TypeFloat:
 			tag = append(tag, "type=DOUBLE")
 		case schema.TypeInt:
@@ -49,19 +48,14 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 			tag = append(tag, "type=LIST", "repetitiontype=OPTIONAL")
 			subFields = []*pschema.JSONSchemaItemType{
 				{
-					//Tag: "name=element, type=BYTE_ARRAY, convertedtype=UTF8, logicaltype=UUID, repetitiontype=OPTIONAL",
 					Tag: "name=element, type=BYTE_ARRAY, convertedtype=UTF8, repetitiontype=OPTIONAL",
-					//Tag: "name=element, type=FIXED_LEN_BYTE_ARRAY, length=16, logicaltype=UUID, repetitiontype=OPTIONAL",
 				},
 			}
 		default:
 			panic("unhandled type: " + col.Type.String())
 		}
 
-		switch col.Type {
-		case schema.TypeStringArray, schema.TypeIntArray, schema.TypeUUIDArray, schema.TypeCIDRArray, schema.TypeInetArray, schema.TypeMacAddrArray:
-			// no repetitiontype: handled above
-		default:
+		if !isArray(col.Type) { // array types are handled differently, see above
 			if col.CreationOptions.PrimaryKey || col.CreationOptions.IncrementalKey {
 				tag = append(tag, "repetitiontype=REQUIRED")
 			} else {
@@ -77,4 +71,27 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 
 	b, _ := json.Marshal(s)
 	return string(b)
+}
+
+func isArray(t schema.ValueType) bool {
+	return arrayElement(t) != schema.TypeInvalid
+}
+
+func arrayElement(t schema.ValueType) schema.ValueType {
+	switch t {
+	case schema.TypeIntArray:
+		return schema.TypeInt
+	case schema.TypeStringArray:
+		return schema.TypeString
+	case schema.TypeUUIDArray:
+		return schema.TypeUUID
+	case schema.TypeCIDRArray:
+		return schema.TypeCIDR
+	case schema.TypeInetArray:
+		return schema.TypeInet
+	case schema.TypeMacAddrArray:
+		return schema.TypeMacAddr
+	default:
+		return schema.TypeInvalid
+	}
 }
