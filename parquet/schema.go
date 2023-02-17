@@ -32,7 +32,12 @@ func makeSchema(tableName string, cols schema.ColumnList) string {
 		case schema.TypeBool:
 			tag = append(tag, "type=BOOLEAN")
 		case schema.TypeIntArray:
-			tag = append(tag, "type=INT64", "repetitiontype=REPEATED")
+			tag = append(tag, "type=LIST", "repetitiontype=OPTIONAL")
+			subFields = []*pschema.JSONSchemaItemType{
+				{
+					Tag: "name=element, type=INT64, repetitiontype=OPTIONAL",
+				},
+			}
 		case schema.TypeStringArray, schema.TypeUUIDArray, schema.TypeCIDRArray, schema.TypeInetArray, schema.TypeMacAddrArray:
 			tag = append(tag, "type=LIST", "repetitiontype=OPTIONAL")
 			subFields = []*pschema.JSONSchemaItemType{
