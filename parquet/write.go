@@ -11,7 +11,7 @@ import (
 )
 
 func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-	pw, err := writer.NewJSONWriterFromWriter(makeSchema(table.Columns), w, 2)
+	pw, err := writer.NewJSONWriterFromWriter(makeSchema(table.Name, table.Columns), w, 2)
 	if err != nil {
 		return fmt.Errorf("can't create parquet writer: %w", err)
 	}
