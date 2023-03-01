@@ -30,7 +30,7 @@ require (
 	github.com/apache/thrift v0.14.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/xitongsys/parquet-go-source v0.0.0-20221025031416-9877e685ef65 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect; indirect // indirect
 )
 
 require (
