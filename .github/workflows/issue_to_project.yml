@@ -12,7 +12,7 @@ jobs:
     if: github.event.issue.user.login != 'cq-bot'
     steps:
       - name: Add issue to Public Roadmap
-        uses: leonsteinhaeuser/project-beta-automations@v2.0.1
+        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
         with:
           gh_token: ${{ secrets.GH_CQ_BOT }}
           organization: cloudquery
