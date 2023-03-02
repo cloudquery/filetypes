@@ -3,7 +3,7 @@ module github.com/cloudquery/filetypes
 go 1.19
 
 require (
-	github.com/cloudquery/plugin-sdk v1.40.0
+	github.com/cloudquery/plugin-sdk v1.41.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.8.2
@@ -24,6 +24,8 @@ require (
 )
 
 require github.com/xitongsys/parquet-go v1.6.2
+
+require golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2 // indirect
 
 require (
 	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516 // indirect
