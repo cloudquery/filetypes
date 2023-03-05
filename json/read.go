@@ -18,6 +18,23 @@ func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res cha
 	}
 	scanner := bufio.NewScanner(f)
 	scanner.Buffer(make([]byte, maxJSONSize), maxJSONSize)
+	// arrowSchema := cqarrow.CQSchemaToArrow(table)
+	// st := arrow.StructOf(arrowSchema.Fields()...)
+	// arr, _, err := array.FromJSON(memory.DefaultAllocator, st, f)
+	// if err != nil {
+	// 	return err
+	// }
+	// bldr := array.NewStructBuilder(memory.DefaultAllocator, st)
+	// defer bldr.Release()
+
+	// dec := json.NewDecoder(r)
+	// defer func() {
+	// 	if errors.Is(err, io.EOF) {
+	// 		err = fmt.Errorf("failed parsing json: %w", io.ErrUnexpectedEOF)
+	// 	}
+	// }()
+	// res <- arr
+	// arr.Data()
 	for scanner.Scan() {
 		jsonObj := make(map[string]any, len(table.Columns))
 		row := scanner.Bytes()
