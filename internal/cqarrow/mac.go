@@ -124,7 +124,7 @@ func (a MacArray) String() string {
 
 func (a *MacArray) MarshalJSON() ([]byte, error) {
 	arr := a.Storage().(*array.Binary)
-	vals := make([]interface{}, a.Len())
+	vals := make([]any, a.Len())
 	for i := 0; i < a.Len(); i++ {
 		if a.IsValid(i) {
 			vals[i] = net.HardwareAddr(arr.Value(i)).String()
@@ -135,7 +135,7 @@ func (a *MacArray) MarshalJSON() ([]byte, error) {
 	return json.Marshal(vals)
 }
 
-func (a *MacArray) GetOneForMarshal(i int) interface{} {
+func (a *MacArray) GetOneForMarshal(i int) any {
 	arr := a.Storage().(*array.Binary)
 	if a.IsValid(i) {
 		return net.HardwareAddr(arr.Value(i)).String()

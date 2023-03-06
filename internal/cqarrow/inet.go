@@ -125,7 +125,7 @@ func (a InetArray) String() string {
 	return o.String()
 }
 
-func (a *InetArray) GetOneForMarshal(i int) interface{} {
+func (a *InetArray) GetOneForMarshal(i int) any {
 	arr := a.Storage().(*array.String)
 	if a.IsValid(i) {
 		_, ipnet, err := net.ParseCIDR(arr.Value(i))
@@ -181,6 +181,6 @@ func (u InetType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return u.ExtensionName() == other.ExtensionName()
 }
 
-func (InetType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
+func (InetType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
 	return NewInetBuilder(mem, dt)
 }

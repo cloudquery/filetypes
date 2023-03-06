@@ -140,7 +140,7 @@ func (a UUIDArray) String() string {
 
 func (a *UUIDArray) MarshalJSON() ([]byte, error) {
 	arr := a.Storage().(*array.FixedSizeBinary)
-	vals := make([]interface{}, a.Len())
+	vals := make([]any, a.Len())
 	for i := 0; i < a.Len(); i++ {
 		if a.IsValid(i) {
 			uuidStr, err := uuid.FromBytes(arr.Value(i))
@@ -155,7 +155,7 @@ func (a *UUIDArray) MarshalJSON() ([]byte, error) {
 	return json.Marshal(vals)
 }
 
-func (a *UUIDArray) GetOneForMarshal(i int) interface{} {
+func (a *UUIDArray) GetOneForMarshal(i int) any {
 	arr := a.Storage().(*array.FixedSizeBinary)
 	if a.IsValid(i) {
 		uuidObj, err := uuid.FromBytes(arr.Value(i))
@@ -220,6 +220,6 @@ func (e UUIDType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return e.ExtensionName() == other.ExtensionName()
 }
 
-func (UUIDType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
+func (UUIDType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
 	return NewUUIDBuilder(mem, dt)
 }

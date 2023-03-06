@@ -96,7 +96,7 @@ func (a JSONArray) String() string {
 
 func (a *JSONArray) MarshalJSON() ([]byte, error) {
 	arr := a.Storage().(*array.Binary)
-	vals := make([]interface{}, a.Len())
+	vals := make([]any, a.Len())
 	for i := 0; i < a.Len(); i++ {
 		if a.IsValid(i) {
 			err := json.Unmarshal(arr.Value(i), &vals[i])
@@ -110,7 +110,7 @@ func (a *JSONArray) MarshalJSON() ([]byte, error) {
 	return json.Marshal(vals)
 }
 
-func (a *JSONArray) GetOneForMarshal(i int) interface{} {
+func (a *JSONArray) GetOneForMarshal(i int) any {
 	arr := a.Storage().(*array.Binary)
 	if a.IsValid(i) {
 		var data any
@@ -176,6 +176,6 @@ func (e JSONType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return e.ExtensionName() == other.ExtensionName()
 }
 
-func (JSONType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
+func (JSONType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
 	return NewJSONBuilder(mem, dt)
 }
