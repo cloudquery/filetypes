@@ -158,14 +158,18 @@ func NewMacType() *MacType {
 }
 
 // ArrayType returns TypeOf(MacArray) for constructing mac arrays
-func (MacType) ArrayType() reflect.Type { return reflect.TypeOf(MacArray{}) }
+func (MacType) ArrayType() reflect.Type {
+	return reflect.TypeOf(MacArray{})
+}
 
-func (MacType) InetType() reflect.Type { return reflect.TypeOf(MacArray{}) }
-
-func (MacType) ExtensionName() string { return "mac" }
+func (MacType) ExtensionName() string {
+	return "mac"
+}
 
 // Serialize returns "mac-serialized" for testing proper metadata passing
-func (MacType) Serialize() string { return "mac-serialized" }
+func (MacType) Serialize() string {
+	return "mac-serialized"
+}
 
 // Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
 // "mac-serialized" in order to correctly create a MacType for testing deserialize.

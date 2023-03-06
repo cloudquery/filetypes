@@ -151,14 +151,18 @@ func NewInetType() *InetType {
 			Storage: &arrow.StringType{}}}
 }
 
-func (InetType) ArrayType() reflect.Type { return reflect.TypeOf(InetArray{}) }
+func (InetType) ArrayType() reflect.Type {
+	return reflect.TypeOf(InetArray{})
+}
 
-func (InetType) InetType() reflect.Type { return reflect.TypeOf(InetArray{}) }
-
-func (InetType) ExtensionName() string { return "inet" }
+func (InetType) ExtensionName() string {
+	return "inet"
+}
 
 // Serialize returns "inet-serialized" for testing proper metadata passing
-func (InetType) Serialize() string { return "inet-serialized" }
+func (InetType) Serialize() string {
+	return "inet-serialized"
+}
 
 // Deserialize expects storageType to be StringType and the data to be
 // "inet-serialized" in order to correctly create a InetType for testing deserialize.

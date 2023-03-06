@@ -182,18 +182,26 @@ func NewUUIDType() *UUIDType {
 }
 
 // ArrayType returns TypeOf(UuidArray) for constructing uuid arrays
-func (UUIDType) ArrayType() reflect.Type { return reflect.TypeOf(UUIDArray{}) }
+func (UUIDType) ArrayType() reflect.Type {
+	return reflect.TypeOf(UUIDArray{})
+}
 
-func (UUIDType) ExtensionName() string { return "uuid" }
+func (UUIDType) ExtensionName() string {
+	return "uuid"
+}
 
-func (e UUIDType) String() string { return fmt.Sprintf("extension_type<storage=%s>", e.Storage) }
+func (e UUIDType) String() string {
+	return fmt.Sprintf("extension_type<storage=%s>", e.Storage)
+}
 
 func (e UUIDType) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`{"name":"%s","metadata":%s}`, e.ExtensionName(), e.Serialize())), nil
 }
 
 // Serialize returns "uuid-serialized" for testing proper metadata passing
-func (UUIDType) Serialize() string { return "uuid-serialized" }
+func (UUIDType) Serialize() string {
+	return "uuid-serialized"
+}
 
 // Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
 // "uuid-serialized" in order to correctly create a UuidType for testing deserialize.

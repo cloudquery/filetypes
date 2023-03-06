@@ -138,18 +138,26 @@ func NewJSONType() *JSONType {
 }
 
 // ArrayType returns TypeOf(JSONType) for constructing JSON arrays
-func (JSONType) ArrayType() reflect.Type { return reflect.TypeOf(JSONArray{}) }
+func (JSONType) ArrayType() reflect.Type {
+	return reflect.TypeOf(JSONArray{})
+}
 
-func (JSONType) ExtensionName() string { return "json" }
+func (JSONType) ExtensionName() string {
+	return "json"
+}
 
-func (e JSONType) String() string { return fmt.Sprintf("extension_type<storage=%s>", e.Storage) }
+func (e JSONType) String() string {
+	return fmt.Sprintf("extension_type<storage=%s>", e.Storage)
+}
 
 func (e JSONType) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`{"name":"%s","metadata":%s}`, e.ExtensionName(), e.Serialize())), nil
 }
 
 // Serialize returns "json-serialized" for testing proper metadata passing
-func (JSONType) Serialize() string { return "json-serialized" }
+func (JSONType) Serialize() string {
+	return "json-serialized"
+}
 
 // Deserialize expects storageType to be BinaryBuilder and the data to be
 // "json-serialized" in order to correctly create a JSONType for testing deserialize.
