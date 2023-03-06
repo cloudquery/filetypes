@@ -4,21 +4,29 @@ import (
 	"encoding/json"
 	"io"
 
+	"github.com/apache/arrow/go/v12/arrow/array"
+	"github.com/apache/arrow/go/v12/arrow/memory"
+	"github.com/cloudquery/filetypes/internal/cqarrow"
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
 func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-	for _, resource := range resources {
-		jsonObj := make(map[string]any, len(table.Columns))
-		for i := range resource {
-			jsonObj[table.Columns[i].Name] = resource[i]
+	arrowSchema := cqarrow.CQSchemaToArrow(table)
+	cqTypes := make([]schema.CQTypes, len(resources))
+	for i := range resources {
+		cqTypes[i] = make(schema.CQTypes, len(resources[i]))
+		for j := range resources[i] {
+			cqTypes[i][j] = resources[i][j].(schema.CQType)
 		}
-		b, err := json.Marshal(jsonObj)
-		if err != nil {
-			return err
-		}
-		b = append(b, '\n')
-		if _, err := w.Write(b); err != nil {
+	}
+	record := cqarrow.CQTypesToRecord(memory.DefaultAllocator, cqTypes, arrowSchema)
+	defer record.Release()
+
+	arr := array.RecordToStructArray(record)
+	defer arr.Release()
+	enc := json.NewEncoder(w)
+	for i := 0; i < arr.Len(); i++ {
+		if err := enc.Encode(arr.GetOneForMarshal(i)); err != nil {
 			return err
 		}
 	}
