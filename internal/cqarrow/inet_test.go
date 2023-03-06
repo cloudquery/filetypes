@@ -40,10 +40,10 @@ func TestInetBuilder(t *testing.T) {
 
 	a := b.NewArray()
 
-	// check state of builder after NewUUIDBuilder
-	require.Zero(t, b.Len(), "unexpected ArrayBuilder.Len(), NewInetBuilder did not reset state")
-	require.Zero(t, b.Cap(), "unexpected ArrayBuilder.Cap(), NewInetBuilder did not reset state")
-	require.Zero(t, b.NullN(), "unexpected ArrayBuilder.NullN(), NewInetBuilder did not reset state")
+	// check state of builder after NewInetBuilder
+	require.Zero(t, b.Len(), "unexpected ArrayBuilder.Len(), did not reset state")
+	require.Zero(t, b.Cap(), "unexpected ArrayBuilder.Cap(), did not reset state")
+	require.Zero(t, b.NullN(), "unexpected ArrayBuilder.NullN(), did not reset state")
 
 	require.Equal(t, `["192.168.0.0/24" (null) "192.168.0.0/25" (null) "192.168.0.0/26" "192.168.0.0/27"]`, a.String())
 	st, err := a.MarshalJSON()

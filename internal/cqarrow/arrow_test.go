@@ -80,7 +80,7 @@ func TestCQTypesToRecord(t *testing.T) {
 	testCqTypes := testdata.GenTestData(testTable)
 	arrowSchema := CQSchemaToArrow(testTable)
 	mem := memory.NewGoAllocator()
-	record := CqTypesToRecord(mem, []schema.CQTypes{testCqTypes}, arrowSchema)
+	record := CQTypesToRecord(mem, []schema.CQTypes{testCqTypes}, arrowSchema)
 	str, err := json.MarshalIndent(record, "", "  ")
 	if err != nil {
 		t.Error(err)

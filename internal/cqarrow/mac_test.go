@@ -40,10 +40,10 @@ func TestMacBuilder(t *testing.T) {
 
 	a := b.NewArray()
 
-	// check state of builder after NewUUIDBuilder
-	require.Zero(t, b.Len(), "unexpected ArrayBuilder.Len(), NewUUIDBuilder did not reset state")
-	require.Zero(t, b.Cap(), "unexpected ArrayBuilder.Cap(), NewUUIDBuilder did not reset state")
-	require.Zero(t, b.NullN(), "unexpected ArrayBuilder.NullN(), NewUUIDBuilder did not reset state")
+	// check state of builder after NewArray
+	require.Zero(t, b.Len(), "unexpected ArrayBuilder.Len(), did not reset state")
+	require.Zero(t, b.Cap(), "unexpected ArrayBuilder.Cap(), did not reset state")
+	require.Zero(t, b.NullN(), "unexpected ArrayBuilder.NullN(), did not reset state")
 
 	require.Equal(t, `["00:00:00:00:00:01" (null) "00:00:00:00:00:02" (null) "00:00:00:00:00:03" "00:00:00:00:00:04"]`, a.String())
 	st, err := a.MarshalJSON()

@@ -97,7 +97,7 @@ func (b *MacBuilder) UnmarshalJSON(data []byte) error {
 	return b.Unmarshal(dec)
 }
 
-// UUIDArray is a simple array which is a FixedSizeBinary(16)
+// MacArray is a simple array which is a wrapper around a BinaryArray
 type MacArray struct {
 	array.ExtensionArrayBase
 }
@@ -143,8 +143,8 @@ func (a *MacArray) GetOneForMarshal(i int) interface{} {
 	return nil
 }
 
-// InetType is a simple extension type that represents a FixedSizeBinary(16)
-// to be used for representing UUIDs
+// MacType is a simple extension type that represents a BinaryType
+// to be used for representing mac addresses.
 type MacType struct {
 	arrow.ExtensionBase
 }

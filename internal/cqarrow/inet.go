@@ -101,7 +101,7 @@ func (b *InetBuilder) UnmarshalJSON(data []byte) error {
 	return b.Unmarshal(dec)
 }
 
-// UUIDArray is a simple array which is a FixedSizeBinary(16)
+// InetArray is a simple array which is a FixedSizeBinary(16)
 type InetArray struct {
 	array.ExtensionArrayBase
 }
@@ -137,13 +137,13 @@ func (a *InetArray) GetOneForMarshal(i int) interface{} {
 	return nil
 }
 
-// InetType is a simple extension type that represents a FixedSizeBinary(16)
-// to be used for representing UUIDs
+// InetType is a simple extension type that represents a StringType
+// to be used for representing IP Addresses and CIDRs
 type InetType struct {
 	arrow.ExtensionBase
 }
 
-// NewInetType is a convenience function to create an instance of UuidType
+// NewInetType is a convenience function to create an instance of InetType
 // with the correct storage type
 func NewInetType() *InetType {
 	return &InetType{
@@ -157,11 +157,11 @@ func (InetType) InetType() reflect.Type { return reflect.TypeOf(InetArray{}) }
 
 func (InetType) ExtensionName() string { return "inet" }
 
-// Serialize returns "uuid-serialized" for testing proper metadata passing
+// Serialize returns "inet-serialized" for testing proper metadata passing
 func (InetType) Serialize() string { return "inet-serialized" }
 
-// Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
-// "uuid-serialized" in order to correctly create a UuidType for testing deserialize.
+// Deserialize expects storageType to be StringType and the data to be
+// "inet-serialized" in order to correctly create a InetType for testing deserialize.
 func (InetType) Deserialize(storageType arrow.DataType, data string) (arrow.ExtensionType, error) {
 	if data != "inet-serialized" {
 		return nil, fmt.Errorf("type identifier did not match: '%s'", data)
@@ -172,7 +172,7 @@ func (InetType) Deserialize(storageType arrow.DataType, data string) (arrow.Exte
 	return NewInetType(), nil
 }
 
-// UuidTypes are equal if both are named "uuid"
+// InetType are equal if both are named "inet"
 func (u InetType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return u.ExtensionName() == other.ExtensionName()
 }

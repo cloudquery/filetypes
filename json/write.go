@@ -19,7 +19,7 @@ func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]a
 			cqTypes[i][j] = resources[i][j].(schema.CQType)
 		}
 	}
-	record := cqarrow.CqTypesToRecord(memory.DefaultAllocator, cqTypes, arrowSchema)
+	record := cqarrow.CQTypesToRecord(memory.DefaultAllocator, cqTypes, arrowSchema)
 	defer record.Release()
 
 	arr := array.RecordToStructArray(record)

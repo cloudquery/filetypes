@@ -57,49 +57,6 @@ func (b *JSONBuilder) AppendValues(v []any, valid []bool) {
 	b.ExtensionBuilder.Builder.(*array.BinaryBuilder).AppendValues(data, valid)
 }
 
-// func (b *JSONBuilder) UnmarshalOne(dec *json.Decoder) error {
-// 	t, err := dec.Token()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	var data any
-// 	switch v := t.(type) {
-// 	case string:
-// 		err := json.Unmarshal([]byte(v), &data)
-// 		if err != nil {
-// 			return err
-// 		}
-// 	case []byte:
-// 		err := json.Unmarshal(v, &data)
-// 		if err != nil {
-// 			return err
-// 		}
-// 	case nil:
-// 		b.AppendNull()
-// 		return nil
-// 	default:
-// 		return &json.UnmarshalTypeError{
-// 			Value:  fmt.Sprint(t),
-// 			Type:   reflect.TypeOf([]byte{}),
-// 			Offset: dec.InputOffset(),
-// 			Struct: "JSONBuilder",
-// 		}
-// 	}
-
-// 	b.Append(data)
-// 	return nil
-// }
-
-// func (b *JSONBuilder) Unmarshal(dec *json.Decoder) error {
-// 	for dec.More() {
-// 		if err := b.UnmarshalOne(dec); err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
-
 func (b *JSONBuilder) UnmarshalJSON(data []byte) error {
 	var a []any
 	if err := json.Unmarshal(data, &a); err != nil {
@@ -110,17 +67,6 @@ func (b *JSONBuilder) UnmarshalJSON(data []byte) error {
 		valid[i] = a[i] != nil
 	}
 	b.AppendValues(a, valid)
-	// dec := json.NewDecoder(bytes.NewReader(data))
-	// t, err := dec.Token()
-	// if err != nil {
-	// 	return err
-	// }
-
-	// if delim, ok := t.(json.Delim); !ok || delim != '[' {
-	// 	return fmt.Errorf("json builder must unpack from json array, found %s", delim)
-	// }
-
-	// return b.Unmarshal(dec)
 	return nil
 }
 
@@ -177,7 +123,7 @@ func (a *JSONArray) GetOneForMarshal(i int) interface{} {
 	return nil
 }
 
-// JSONType is a simple extension type that represents a FixedSizeBinary(16)
+// JSONType is a simple extension type that represents a BinaryType
 // to be used for representing JSONs
 type JSONType struct {
 	arrow.ExtensionBase
@@ -205,8 +151,8 @@ func (e JSONType) MarshalJSON() ([]byte, error) {
 // Serialize returns "json-serialized" for testing proper metadata passing
 func (JSONType) Serialize() string { return "json-serialized" }
 
-// Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
-// "json-serialized" in order to correctly create a UuidType for testing deserialize.
+// Deserialize expects storageType to be BinaryBuilder and the data to be
+// "json-serialized" in order to correctly create a JSONType for testing deserialize.
 func (JSONType) Deserialize(storageType arrow.DataType, data string) (arrow.ExtensionType, error) {
 	if data != "json-serialized" {
 		return nil, fmt.Errorf("type identifier did not match: '%s'", data)
