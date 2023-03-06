@@ -174,7 +174,7 @@ func (MacType) Deserialize(storageType arrow.DataType, data string) (arrow.Exten
 		return nil, fmt.Errorf("type identifier did not match: '%s'", data)
 	}
 	if !arrow.TypeEqual(storageType, &arrow.BinaryType{}) {
-		return nil, fmt.Errorf("invalid storage type for InetType: %s", storageType.Name())
+		return nil, fmt.Errorf("invalid storage type for MacType: %s", storageType.Name())
 	}
 	return NewInetType(), nil
 }
