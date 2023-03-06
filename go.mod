@@ -10,8 +10,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/cloudquery/plugin-sdk => ../plugin-sdk-split
-
 require (
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/google/uuid v1.3.0
