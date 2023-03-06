@@ -16,7 +16,6 @@ func mustParseInet(s string) net.IPNet {
 	return *ipnet
 }
 
-
 func TestInetBuilder(t *testing.T) {
 	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	defer mem.AssertSize(t, 0)

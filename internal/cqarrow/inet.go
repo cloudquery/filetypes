@@ -163,8 +163,8 @@ func (InetType) Serialize() string { return "inet-serialized" }
 // Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
 // "uuid-serialized" in order to correctly create a UuidType for testing deserialize.
 func (InetType) Deserialize(storageType arrow.DataType, data string) (arrow.ExtensionType, error) {
-	if string(data) != "inet-serialized" {
-		return nil, fmt.Errorf("type identifier did not match: '%s'", string(data))
+	if data != "inet-serialized" {
+		return nil, fmt.Errorf("type identifier did not match: '%s'", data)
 	}
 	if !arrow.TypeEqual(storageType, &arrow.StringType{}) {
 		return nil, fmt.Errorf("invalid storage type for InetType: %s", storageType.Name())
@@ -177,6 +177,6 @@ func (u InetType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return u.ExtensionName() == other.ExtensionName()
 }
 
-func (u InetType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
+func (InetType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
 	return NewInetBuilder(mem, dt)
 }

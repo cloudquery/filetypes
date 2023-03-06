@@ -41,10 +41,10 @@ func GenTestSourceTable(name string) *schema.Table {
 				Name: "text_with_null",
 				Type: schema.TypeString,
 			},
-			// {
-			// 	Name: "bytea",
-			// 	Type: schema.TypeByteArray,
-			// },
+			{
+				Name: "bytea",
+				Type: schema.TypeByteArray,
+			},
 			{
 				Name: "text_array",
 				Type: schema.TypeStringArray,
@@ -57,10 +57,10 @@ func GenTestSourceTable(name string) *schema.Table {
 				Name: "int_array",
 				Type: schema.TypeIntArray,
 			},
-			// {
-			// 	Name: "timestamp",
-			// 	Type: schema.TypeTimestamp,
-			// },
+			{
+				Name: "timestamp",
+				Type: schema.TypeTimestamp,
+			},
 			{
 				Name: "json",
 				Type: schema.TypeJSON,
@@ -99,16 +99,14 @@ func GenTestSourceTable(name string) *schema.Table {
 
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
-	// table := testdata.TestTable("test")
-	table := GenTestSourceTable("test")
+	table := testdata.TestTable("test")
+	// table := GenTestSourceTable("test")
 	cqtypes := testdata.GenTestData(table)
 	if err := cqtypes[0].Set("test-source"); err != nil {
 		t.Fatal(err)
 	}
 	transformer := &schema.DefaultTransformer{}
 	transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-	// expectedRecord := cqarrow.CqTypesToRecord(memory.DefaultAllocator, []schema.CQTypes{cqtypes}, cqarrow.CQSchemaToArrow(table))
-
 	cl, err := NewClient()
 	if err != nil {
 		t.Fatal(err)

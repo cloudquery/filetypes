@@ -4,6 +4,7 @@ import (
 	csvFile "github.com/cloudquery/filetypes/csv"
 	jsonFile "github.com/cloudquery/filetypes/json"
 	"github.com/cloudquery/filetypes/parquet"
+	"github.com/cloudquery/plugin-sdk/schema"
 )
 
 type Client struct {
@@ -14,7 +15,7 @@ type Client struct {
 	csvReverseTransformer csvFile.ReverseTransformer
 
 	json                   *jsonFile.Client
-	jsonTransformer        jsonFile.Transformer
+	jsonTransformer        schema.DefaultTransformer
 	jsonReverseTransformer jsonFile.ReverseTransformer
 
 	parquet                   *parquet.Client

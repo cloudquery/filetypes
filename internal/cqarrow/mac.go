@@ -170,8 +170,8 @@ func (MacType) Serialize() string { return "mac-serialized" }
 // Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
 // "mac-serialized" in order to correctly create a MacType for testing deserialize.
 func (MacType) Deserialize(storageType arrow.DataType, data string) (arrow.ExtensionType, error) {
-	if string(data) != "mac-serialized" {
-		return nil, fmt.Errorf("type identifier did not match: '%s'", string(data))
+	if data != "mac-serialized" {
+		return nil, fmt.Errorf("type identifier did not match: '%s'", data)
 	}
 	if !arrow.TypeEqual(storageType, &arrow.BinaryType{}) {
 		return nil, fmt.Errorf("invalid storage type for InetType: %s", storageType.Name())
@@ -184,6 +184,6 @@ func (u MacType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return u.ExtensionName() == other.ExtensionName()
 }
 
-func (u MacType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
+func (MacType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
 	return NewMacBuilder(mem, dt)
 }

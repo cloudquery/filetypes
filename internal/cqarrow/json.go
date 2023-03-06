@@ -201,14 +201,15 @@ func (e JSONType) String() string { return fmt.Sprintf("extension_type<storage=%
 func (e JSONType) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`{"name":"%s","metadata":%s}`, e.ExtensionName(), e.Serialize())), nil
 }
+
 // Serialize returns "json-serialized" for testing proper metadata passing
 func (JSONType) Serialize() string { return "json-serialized" }
 
 // Deserialize expects storageType to be FixedSizeBinaryType{ByteWidth: 16} and the data to be
 // "json-serialized" in order to correctly create a UuidType for testing deserialize.
 func (JSONType) Deserialize(storageType arrow.DataType, data string) (arrow.ExtensionType, error) {
-	if string(data) != "json-serialized" {
-		return nil, fmt.Errorf("type identifier did not match: '%s'", string(data))
+	if data != "json-serialized" {
+		return nil, fmt.Errorf("type identifier did not match: '%s'", data)
 	}
 	if !arrow.TypeEqual(storageType, &arrow.BinaryType{}) {
 		return nil, fmt.Errorf("invalid storage type for JSONType: %s", storageType.Name())
@@ -217,10 +218,10 @@ func (JSONType) Deserialize(storageType arrow.DataType, data string) (arrow.Exte
 }
 
 // UuidTypes are equal if both are named "uuid"
-func (u JSONType) ExtensionEquals(other arrow.ExtensionType) bool {
-	return u.ExtensionName() == other.ExtensionName()
+func (e JSONType) ExtensionEquals(other arrow.ExtensionType) bool {
+	return e.ExtensionName() == other.ExtensionName()
 }
 
-func (u JSONType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
+func (JSONType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) interface{} {
 	return NewJSONBuilder(mem, dt)
 }

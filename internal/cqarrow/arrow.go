@@ -1,9 +1,9 @@
 package cqarrow
 
 import (
-	"github.com/apache/arrow/go/arrow/memory"
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/array"
+	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/cloudquery/plugin-sdk/schema"
 	"github.com/goccy/go-json"
 )
@@ -74,8 +74,7 @@ func CQSchemaToArrow(table *schema.Table) *arrow.Schema {
 	return arrow.NewSchema(fields, nil)
 }
 
-
-func CqTypesToRecord(mem memory.Allocator ,c []schema.CQTypes, arrowSchema *arrow.Schema) arrow.Record {
+func CqTypesToRecord(mem memory.Allocator, c []schema.CQTypes, arrowSchema *arrow.Schema) arrow.Record {
 	bldr := array.NewRecordBuilder(mem, arrowSchema)
 	fields := bldr.Fields()
 	for i := range fields {
@@ -104,7 +103,7 @@ func CqTypesToRecord(mem memory.Allocator ,c []schema.CQTypes, arrowSchema *arro
 					listBldr.ValueBuilder().(*array.Int64Builder).Append(e.Int)
 				}
 			case schema.TypeTimestamp:
-				bldr.Field(i).(*array.TimestampBuilder).Append(arrow.Timestamp(c[j][i].(*schema.Timestamptz).Time.UnixMilli()))
+				bldr.Field(i).(*array.TimestampBuilder).Append(arrow.Timestamp(c[j][i].(*schema.Timestamptz).Time.UnixMicro()))
 			case schema.TypeJSON:
 				var d any
 				if err := json.Unmarshal(c[j][i].(*schema.JSON).Bytes, &d); err != nil {
