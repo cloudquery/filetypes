@@ -30,10 +30,10 @@ func TestJSONBuilder(t *testing.T) {
 
 	a := b.NewArray()
 
-	// check state of builder after NewUUIDBuilder
-	require.Zero(t, b.Len(), "unexpected ArrayBuilder.Len(), NewUUIDBuilder did not reset state")
-	require.Zero(t, b.Cap(), "unexpected ArrayBuilder.Cap(), NewUUIDBuilder did not reset state")
-	require.Zero(t, b.NullN(), "unexpected ArrayBuilder.NullN(), NewUUIDBuilder did not reset state")
+	// check state of builder after NewJSONBuilder
+	require.Zero(t, b.Len(), "unexpected ArrayBuilder.Len(), NewJSONBuilder did not reset state")
+	require.Zero(t, b.Cap(), "unexpected ArrayBuilder.Cap(), NewJSONBuilder did not reset state")
+	require.Zero(t, b.NullN(), "unexpected ArrayBuilder.NullN(), NewJSONBuilder did not reset state")
 	require.Equal(t, `["{"a":1,"b":2}" (null) "{"c":3,"d":4}" (null) "{"e":5,"f":6}" "{"g":7,"h":8}"]`, a.String())
 	st, err := a.MarshalJSON()
 	require.NoError(t, err)
