@@ -30,7 +30,7 @@ require (
 	github.com/xitongsys/parquet-go v1.6.2
 )
 
-replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230306072451-b6560ef2e6c1
+replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230306000349-d5b3b4737838
 
 require golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2 // indirect
 
