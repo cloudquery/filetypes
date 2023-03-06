@@ -81,66 +81,134 @@ func CQTypesToRecord(mem memory.Allocator, c []schema.CQTypes, arrowSchema *arro
 		for j := range c {
 			switch c[j][i].Type() {
 			case schema.TypeBool:
-				bldr.Field(i).(*array.BooleanBuilder).Append(c[j][i].(*schema.Bool).Bool)
+				if c[j][i].(*schema.Bool).Status == schema.Present {
+					bldr.Field(i).(*array.BooleanBuilder).Append(c[j][i].(*schema.Bool).Bool)
+				} else {
+					bldr.Field(i).(*array.BooleanBuilder).AppendNull()
+				}
 			case schema.TypeInt:
-				bldr.Field(i).(*array.Int64Builder).Append(c[j][i].(*schema.Int8).Int)
+				if c[j][i].(*schema.Int8).Status == schema.Present {
+					bldr.Field(i).(*array.Int64Builder).Append(c[j][i].(*schema.Int8).Int)
+				} else {
+					bldr.Field(i).(*array.Int64Builder).AppendNull()
+				}
 			case schema.TypeFloat:
-				bldr.Field(i).(*array.Float64Builder).Append(c[j][i].(*schema.Float8).Float)
+				if c[j][i].(*schema.Float8).Status == schema.Present {
+					bldr.Field(i).(*array.Float64Builder).Append(c[j][i].(*schema.Float8).Float)
+				} else {
+					bldr.Field(i).(*array.Float64Builder).AppendNull()
+				}
 			case schema.TypeString:
-				bldr.Field(i).(*array.StringBuilder).Append(c[j][i].(*schema.Text).Str)
+				if c[j][i].(*schema.Text).Status == schema.Present {
+					bldr.Field(i).(*array.StringBuilder).Append(c[j][i].(*schema.Text).Str)
+				} else {
+					bldr.Field(i).(*array.StringBuilder).AppendNull()
+				}
 			case schema.TypeByteArray:
-				bldr.Field(i).(*array.BinaryBuilder).Append(c[j][i].(*schema.Bytea).Bytes)
+				if c[j][i].(*schema.Bytea).Status == schema.Present {
+					bldr.Field(i).(*array.BinaryBuilder).Append(c[j][i].(*schema.Bytea).Bytes)
+				} else {
+					bldr.Field(i).(*array.BinaryBuilder).AppendNull()
+				}
 			case schema.TypeStringArray:
-				listBldr := bldr.Field(i).(*array.ListBuilder)
-				listBldr.Append(true)
-				for _, str := range c[j][i].(*schema.TextArray).Elements {
-					listBldr.ValueBuilder().(*array.StringBuilder).Append(str.Str)
+				if c[j][i].(*schema.TextArray).Status == schema.Present {
+					listBldr := bldr.Field(i).(*array.ListBuilder)
+					listBldr.Append(true)
+					for _, str := range c[j][i].(*schema.TextArray).Elements {
+						listBldr.ValueBuilder().(*array.StringBuilder).Append(str.Str)
+					}
+				} else {
+					bldr.Field(i).(*array.ListBuilder).AppendNull()
 				}
 			case schema.TypeIntArray:
-				listBldr := bldr.Field(i).(*array.ListBuilder)
-				listBldr.Append(true)
-				for _, e := range c[j][i].(*schema.Int8Array).Elements {
-					listBldr.ValueBuilder().(*array.Int64Builder).Append(e.Int)
+				if c[j][i].(*schema.Int8Array).Status == schema.Present {
+					listBldr := bldr.Field(i).(*array.ListBuilder)
+					listBldr.Append(true)
+					for _, e := range c[j][i].(*schema.Int8Array).Elements {
+						listBldr.ValueBuilder().(*array.Int64Builder).Append(e.Int)
+					}
+				} else {
+					bldr.Field(i).(*array.ListBuilder).AppendNull()
 				}
 			case schema.TypeTimestamp:
-				bldr.Field(i).(*array.TimestampBuilder).Append(arrow.Timestamp(c[j][i].(*schema.Timestamptz).Time.UnixMicro()))
-			case schema.TypeJSON:
-				var d any
-				if err := json.Unmarshal(c[j][i].(*schema.JSON).Bytes, &d); err != nil {
-					panic(err)
+				if c[j][i].(*schema.Timestamptz).Status == schema.Present {
+					bldr.Field(i).(*array.TimestampBuilder).Append(arrow.Timestamp(c[j][i].(*schema.Timestamptz).Time.UnixMicro()))
+				} else {
+					bldr.Field(i).(*array.TimestampBuilder).AppendNull()
 				}
-				bldr.Field(i).(*JSONBuilder).Append(d)
+			case schema.TypeJSON:
+				if c[j][i].(*schema.JSON).Status == schema.Present {
+					var d any
+					if err := json.Unmarshal(c[j][i].(*schema.JSON).Bytes, &d); err != nil {
+						panic(err)
+					}
+					bldr.Field(i).(*JSONBuilder).Append(d)
+				} else {
+					bldr.Field(i).(*JSONBuilder).AppendNull()
+				}
 			case schema.TypeUUID:
-				bldr.Field(i).(*UUIDBuilder).Append(c[j][i].(*schema.UUID).Bytes)
+				if c[j][i].(*schema.UUID).Status == schema.Present {
+					bldr.Field(i).(*UUIDBuilder).Append(c[j][i].(*schema.UUID).Bytes)
+				} else {
+					bldr.Field(i).(*UUIDBuilder).AppendNull()
+				}
 			case schema.TypeUUIDArray:
-				listBldr := bldr.Field(i).(*array.ListBuilder)
-				listBldr.Append(true)
-				for _, e := range c[j][i].(*schema.UUIDArray).Elements {
-					listBldr.ValueBuilder().(*UUIDBuilder).Append(e.Bytes)
+				if c[j][i].(*schema.UUIDArray).Status == schema.Present {
+					listBldr := bldr.Field(i).(*array.ListBuilder)
+					listBldr.Append(true)
+					for _, e := range c[j][i].(*schema.UUIDArray).Elements {
+						listBldr.ValueBuilder().(*UUIDBuilder).Append(e.Bytes)
+					}
+				} else {
+					bldr.Field(i).(*array.ListBuilder).AppendNull()
 				}
 			case schema.TypeInet:
-				bldr.Field(i).(*InetBuilder).Append(*c[j][i].(*schema.Inet).IPNet)
+				if c[j][i].(*schema.Inet).Status == schema.Present {
+					bldr.Field(i).(*InetBuilder).Append(*c[j][i].(*schema.Inet).IPNet)
+				} else {
+					bldr.Field(i).(*InetBuilder).AppendNull()
+				}
 			case schema.TypeInetArray:
-				listBldr := bldr.Field(i).(*array.ListBuilder)
-				listBldr.Append(true)
-				for _, e := range c[j][i].(*schema.InetArray).Elements {
-					listBldr.ValueBuilder().(*InetBuilder).Append(*e.IPNet)
+				if c[j][i].(*schema.InetArray).Status == schema.Present {
+					listBldr := bldr.Field(i).(*array.ListBuilder)
+					listBldr.Append(true)
+					for _, e := range c[j][i].(*schema.InetArray).Elements {
+						listBldr.ValueBuilder().(*InetBuilder).Append(*e.IPNet)
+					}
+				} else {
+					bldr.Field(i).(*array.ListBuilder).AppendNull()
 				}
 			case schema.TypeCIDR:
-				bldr.Field(i).(*InetBuilder).Append(*c[j][i].(*schema.CIDR).IPNet)
+				if c[j][i].(*schema.CIDR).Status == schema.Present {
+					bldr.Field(i).(*InetBuilder).Append(*c[j][i].(*schema.CIDR).IPNet)
+				} else {
+					bldr.Field(i).(*InetBuilder).AppendNull()
+				}
 			case schema.TypeCIDRArray:
-				listBldr := bldr.Field(i).(*array.ListBuilder)
-				listBldr.Append(true)
-				for _, e := range c[j][i].(*schema.CIDRArray).Elements {
-					listBldr.ValueBuilder().(*InetBuilder).Append(*e.IPNet)
+				if c[j][i].(*schema.CIDRArray).Status == schema.Present {
+					listBldr := bldr.Field(i).(*array.ListBuilder)
+					listBldr.Append(true)
+					for _, e := range c[j][i].(*schema.CIDRArray).Elements {
+						listBldr.ValueBuilder().(*InetBuilder).Append(*e.IPNet)
+					}
+				} else {
+					bldr.Field(i).(*array.ListBuilder).AppendNull()
 				}
 			case schema.TypeMacAddr:
-				bldr.Field(i).(*MacBuilder).Append(c[j][i].(*schema.Macaddr).Addr)
+				if c[j][i].(*schema.Macaddr).Status == schema.Present {
+					bldr.Field(i).(*MacBuilder).Append(c[j][i].(*schema.Macaddr).Addr)
+				} else {
+					bldr.Field(i).(*MacBuilder).AppendNull()
+				}
 			case schema.TypeMacAddrArray:
-				listBldr := bldr.Field(i).(*array.ListBuilder)
-				listBldr.Append(true)
-				for _, e := range c[j][i].(*schema.MacaddrArray).Elements {
-					listBldr.ValueBuilder().(*MacBuilder).Append(e.Addr)
+				if c[j][i].(*schema.MacaddrArray).Status == schema.Present {
+					listBldr := bldr.Field(i).(*array.ListBuilder)
+					listBldr.Append(true)
+					for _, e := range c[j][i].(*schema.MacaddrArray).Elements {
+						listBldr.ValueBuilder().(*MacBuilder).Append(e.Addr)
+					}
+				} else {
+					bldr.Field(i).(*array.ListBuilder).AppendNull()
 				}
 			}
 		}
