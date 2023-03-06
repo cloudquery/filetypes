@@ -74,7 +74,7 @@ func CQSchemaToArrow(table *schema.Table) *arrow.Schema {
 	return arrow.NewSchema(fields, nil)
 }
 
-func CqTypesToRecord(mem memory.Allocator, c []schema.CQTypes, arrowSchema *arrow.Schema) arrow.Record {
+func CQTypesToRecord(mem memory.Allocator, c []schema.CQTypes, arrowSchema *arrow.Schema) arrow.Record {
 	bldr := array.NewRecordBuilder(mem, arrowSchema)
 	fields := bldr.Fields()
 	for i := range fields {
