@@ -217,7 +217,7 @@ func (JSONType) Deserialize(storageType arrow.DataType, data string) (arrow.Exte
 	return NewJSONType(), nil
 }
 
-// UuidTypes are equal if both are named "uuid"
+// ExtensionEquals returns true if both extensions have the same name
 func (e JSONType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return e.ExtensionName() == other.ExtensionName()
 }
