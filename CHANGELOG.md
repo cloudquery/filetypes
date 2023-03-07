@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.5.0](https://github.com/cloudquery/filetypes/compare/v1.4.2...v1.5.0) (2023-03-06)
+
+
+### Features
+
+* Arrow migration ([#87](https://github.com/cloudquery/filetypes/issues/87)) ([135f022](https://github.com/cloudquery/filetypes/commit/135f02274b79adfd04aa1145f248043f10a22300))
+
+
+### Bug Fixes
+
+* **deps:** Update golang.org/x/xerrors digest to 04be3eb ([#78](https://github.com/cloudquery/filetypes/issues/78)) ([5d47135](https://github.com/cloudquery/filetypes/commit/5d47135ccc3178f19867321f8083c2f758d8a0ff))
+* **deps:** Update module github.com/apache/thrift to v0.18.0 ([#83](https://github.com/cloudquery/filetypes/issues/83)) ([bce51fa](https://github.com/cloudquery/filetypes/commit/bce51fa3f647fdf7ca8984072996c330f45b6e8b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.38.1 ([#72](https://github.com/cloudquery/filetypes/issues/72)) ([0eadcfd](https://github.com/cloudquery/filetypes/commit/0eadcfd48ab9a90a86d9b4a58238ea37cebb6a32))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.38.2 ([#74](https://github.com/cloudquery/filetypes/issues/74)) ([90bdbba](https://github.com/cloudquery/filetypes/commit/90bdbba2e6530f1cef497b204a20d4623ac17d83))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.39.0 ([#75](https://github.com/cloudquery/filetypes/issues/75)) ([b65db2e](https://github.com/cloudquery/filetypes/commit/b65db2e3af2afffc0014c6361a899fadae804926))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.39.1 ([#76](https://github.com/cloudquery/filetypes/issues/76)) ([c03025e](https://github.com/cloudquery/filetypes/commit/c03025e61b1d2f6e8121f5c4b4aa208b26c5caf3))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.40.0 ([#77](https://github.com/cloudquery/filetypes/issues/77)) ([7ec1df0](https://github.com/cloudquery/filetypes/commit/7ec1df0a5a7b7e6819e0252e4996a8fa72a60658))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.41.0 ([#86](https://github.com/cloudquery/filetypes/issues/86)) ([5b89f33](https://github.com/cloudquery/filetypes/commit/5b89f33269692077f6a805c87bd5af107d6bea0f))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.42.0 ([#88](https://github.com/cloudquery/filetypes/issues/88)) ([99da3b2](https://github.com/cloudquery/filetypes/commit/99da3b247c45abcd2cac04e26b28808dcdb5aeaf))
+* **deps:** Update module github.com/klauspost/compress to v1.16.0 ([#84](https://github.com/cloudquery/filetypes/issues/84)) ([a9c9da3](https://github.com/cloudquery/filetypes/commit/a9c9da3c1ca421b0603e8677a81cde63e3d60de6))
+* **deps:** Update module github.com/pierrec/lz4/v4 to v4.1.17 ([#79](https://github.com/cloudquery/filetypes/issues/79)) ([fbc42d4](https://github.com/cloudquery/filetypes/commit/fbc42d4bcff3750dd9e24501d1aa3157669488a8))
+* **deps:** Update module github.com/stretchr/testify to v1.8.2 ([#80](https://github.com/cloudquery/filetypes/issues/80)) ([b080141](https://github.com/cloudquery/filetypes/commit/b08014127c41f1d832ff09b86a21adb3bd2b6d5f))
+
 ## [1.4.2](https://github.com/cloudquery/filetypes/compare/v1.4.1...v1.4.2) (2023-02-19)
 
 
