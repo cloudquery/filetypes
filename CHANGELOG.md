@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cloudquery/filetypes/compare/v1.5.1...v1.6.0) (2023-03-17)
+
+
+### Features
+
+* Move csv writer to arrow CSV writer ([#94](https://github.com/cloudquery/filetypes/issues/94)) ([2ab9820](https://github.com/cloudquery/filetypes/commit/2ab982097c925929693bee70775edb1a12d95975))
+
 ## [1.5.1](https://github.com/cloudquery/filetypes/compare/v1.5.0...v1.5.1) (2023-03-14)
 
 
