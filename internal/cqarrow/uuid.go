@@ -144,7 +144,7 @@ func (a *UUIDArray) MarshalJSON() ([]byte, error) {
 			if err != nil {
 				panic(fmt.Errorf("invalid uuid: %w", err))
 			}
-			vals[i] = uuidStr
+			vals[i] = uuidStr.String()
 		} else {
 			vals[i] = nil
 		}

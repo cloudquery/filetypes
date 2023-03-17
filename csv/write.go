@@ -23,7 +23,7 @@ func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources []
 	record := cqarrow.CQTypesToRecord(memory.DefaultAllocator, cqTypes, arrowSchema)
 	defer record.Release()
 
-	writer := csv.NewWriter(w, arrowSchema, csv.WithComma(cl.Delimiter), csv.WithHeader(cl.IncludeHeaders))
+	writer := csv.NewWriter(w, arrowSchema, csv.WithComma(cl.Delimiter), csv.WithHeader(cl.IncludeHeaders), csv.WithNullWriter(""))
 	if err := writer.Write(record); err != nil {
 		return fmt.Errorf("failed to write record to csv: %w", err)
 	}
