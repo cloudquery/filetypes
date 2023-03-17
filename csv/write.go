@@ -32,4 +32,3 @@ func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources []
 	}
 	return nil
 }
-
