@@ -44,7 +44,7 @@ func TestUUIDBuilder(t *testing.T) {
 
 	b.Release()
 	a.Release()
-	
+
 	b = NewUUIDBuilder(array.NewExtensionBuilder(mem, NewUUIDType()))
 	err = b.UnmarshalJSON(st)
 	require.NoError(t, err)

@@ -11,7 +11,7 @@ import (
 func TestJSONBuilder(t *testing.T) {
 	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	defer mem.AssertSize(t, 0)
-	
+
 	b := NewJSONBuilder(array.NewExtensionBuilder(mem, NewJSONType()))
 	b.Append(map[string]any{"a": 1, "b": 2})
 	b.AppendNull()

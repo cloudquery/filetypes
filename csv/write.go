@@ -32,7 +32,6 @@ func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources []
 	}
 	return nil
 
-
 	// writer := csv.NewWriter(w)
 	// writer.Comma = cl.Delimiter
 	// if cl.IncludeHeaders {
