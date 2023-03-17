@@ -24,19 +24,19 @@ require (
 )
 
 require (
+	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516
 	github.com/apache/arrow/go/v12 v12.0.0-20230306000349-d5b3b4737838
 	github.com/goccy/go-json v0.9.11
 	github.com/google/go-cmp v0.5.9
 	github.com/xitongsys/parquet-go v1.6.2
 )
 
-replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230306072451-b6560ef2e6c1
+replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230317103356-3818eab063a2
 
 require golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516 // indirect
 	github.com/apache/thrift v0.16.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect

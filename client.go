@@ -11,7 +11,7 @@ type Client struct {
 	spec *FileSpec
 
 	csv                   *csvFile.Client
-	csvTransformer        csvFile.Transformer
+	csvTransformer        schema.DefaultTransformer
 	csvReverseTransformer csvFile.ReverseTransformer
 
 	json                   *jsonFile.Client

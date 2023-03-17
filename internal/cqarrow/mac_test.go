@@ -4,6 +4,7 @@ import (
 	"net"
 	"testing"
 
+	"github.com/apache/arrow/go/v12/arrow/array"
 	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/stretchr/testify/require"
 )
@@ -20,7 +21,7 @@ func TestMacBuilder(t *testing.T) {
 	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	defer mem.AssertSize(t, 0)
 
-	b := NewMacBuilder(mem, NewMacType())
+	b := NewMacBuilder(array.NewExtensionBuilder(mem, NewMacType()))
 
 	b.Append(mustParseMac("00:00:00:00:00:01"))
 	b.AppendNull()
@@ -52,7 +53,7 @@ func TestMacBuilder(t *testing.T) {
 	b.Release()
 	a.Release()
 
-	b = NewMacBuilder(mem, NewMacType())
+	b = NewMacBuilder(array.NewExtensionBuilder(mem, NewMacType()))
 	err = b.UnmarshalJSON(st)
 	require.NoError(t, err)
 

@@ -3,6 +3,7 @@ package cqarrow
 import (
 	"testing"
 
+	"github.com/apache/arrow/go/v12/arrow/array"
 	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/stretchr/testify/require"
 )
@@ -10,8 +11,8 @@ import (
 func TestJSONBuilder(t *testing.T) {
 	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	defer mem.AssertSize(t, 0)
-
-	b := NewJSONBuilder(mem, NewJSONType())
+	
+	b := NewJSONBuilder(array.NewExtensionBuilder(mem, NewJSONType()))
 	b.Append(map[string]any{"a": 1, "b": 2})
 	b.AppendNull()
 	b.Append(map[string]any{"c": 3, "d": 4})
@@ -41,7 +42,7 @@ func TestJSONBuilder(t *testing.T) {
 	b.Release()
 	a.Release()
 
-	b = NewJSONBuilder(mem, NewJSONType())
+	b = NewJSONBuilder(array.NewExtensionBuilder(mem, NewJSONType()))
 	err = b.UnmarshalJSON(st)
 	require.NoError(t, err)
 

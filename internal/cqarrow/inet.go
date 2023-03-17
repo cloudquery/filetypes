@@ -9,19 +9,16 @@ import (
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/array"
-	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/goccy/go-json"
 )
 
 type InetBuilder struct {
 	*array.ExtensionBuilder
-	dtype *InetType
 }
 
-func NewInetBuilder(mem memory.Allocator, dtype arrow.ExtensionType) *InetBuilder {
+func NewInetBuilder(bldr *array.ExtensionBuilder) *InetBuilder {
 	b := &InetBuilder{
-		ExtensionBuilder: array.NewExtensionBuilder(mem, dtype),
-		dtype:            dtype.(*InetType),
+		ExtensionBuilder: bldr,
 	}
 	return b
 }
@@ -181,6 +178,6 @@ func (u InetType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return u.ExtensionName() == other.ExtensionName()
 }
 
-func (InetType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
-	return NewInetBuilder(mem, dt)
+func (InetType) NewBuilder(bldr *array.ExtensionBuilder) array.Builder {
+	return NewInetBuilder(bldr)
 }

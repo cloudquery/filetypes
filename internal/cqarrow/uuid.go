@@ -10,19 +10,16 @@ import (
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/array"
-	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/google/uuid"
 )
 
 type UUIDBuilder struct {
 	*array.ExtensionBuilder
-	dtype *UUIDType
 }
 
-func NewUUIDBuilder(mem memory.Allocator, dtype arrow.ExtensionType) *UUIDBuilder {
+func NewUUIDBuilder(bldr *array.ExtensionBuilder) *UUIDBuilder {
 	b := &UUIDBuilder{
-		ExtensionBuilder: array.NewExtensionBuilder(mem, dtype),
-		dtype:            dtype.(*UUIDType),
+		ExtensionBuilder: bldr,
 	}
 	return b
 }
@@ -220,6 +217,6 @@ func (e UUIDType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return e.ExtensionName() == other.ExtensionName()
 }
 
-func (UUIDType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
-	return NewUUIDBuilder(mem, dt)
+func (UUIDType) NewBuilder(bldr *array.ExtensionBuilder) array.Builder {
+	return NewUUIDBuilder(bldr)
 }

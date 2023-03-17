@@ -9,18 +9,15 @@ import (
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/array"
-	"github.com/apache/arrow/go/v12/arrow/memory"
 )
 
 type JSONBuilder struct {
 	*array.ExtensionBuilder
-	dtype *JSONType
 }
 
-func NewJSONBuilder(mem memory.Allocator, dtype arrow.ExtensionType) *JSONBuilder {
+func NewJSONBuilder(bldr *array.ExtensionBuilder) *JSONBuilder {
 	b := &JSONBuilder{
-		ExtensionBuilder: array.NewExtensionBuilder(mem, dtype),
-		dtype:            dtype.(*JSONType),
+		ExtensionBuilder: bldr,
 	}
 	return b
 }
@@ -176,6 +173,6 @@ func (e JSONType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return e.ExtensionName() == other.ExtensionName()
 }
 
-func (JSONType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
-	return NewJSONBuilder(mem, dt)
+func (JSONType) NewBuilder(bldr *array.ExtensionBuilder) array.Builder {
+	return NewJSONBuilder(bldr)
 }
