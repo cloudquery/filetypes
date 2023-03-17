@@ -9,19 +9,16 @@ import (
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/array"
-	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/goccy/go-json"
 )
 
 type MacBuilder struct {
 	*array.ExtensionBuilder
-	dtype *MacType
 }
 
-func NewMacBuilder(mem memory.Allocator, dtype arrow.ExtensionType) *MacBuilder {
+func NewMacBuilder(bldr *array.ExtensionBuilder) *MacBuilder {
 	b := &MacBuilder{
-		ExtensionBuilder: array.NewExtensionBuilder(mem, dtype),
-		dtype:            dtype.(*MacType),
+		ExtensionBuilder: bldr,
 	}
 	return b
 }
@@ -188,6 +185,6 @@ func (u MacType) ExtensionEquals(other arrow.ExtensionType) bool {
 	return u.ExtensionName() == other.ExtensionName()
 }
 
-func (MacType) NewBuilder(mem memory.Allocator, dt arrow.ExtensionType) any {
-	return NewMacBuilder(mem, dt)
+func (MacType) NewBuilder(bldr *array.ExtensionBuilder) array.Builder {
+	return NewMacBuilder(bldr)
 }

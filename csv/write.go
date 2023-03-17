@@ -1,44 +1,34 @@
 package csv
 
 import (
-	"encoding/csv"
+	// "encoding/csv"
+	"fmt"
 	"io"
 
+	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow/go/v12/arrow/csv"
+	"github.com/cloudquery/filetypes/internal/cqarrow"
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
 func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]any) error {
-	writer := csv.NewWriter(w)
-	writer.Comma = cl.Delimiter
-	if cl.IncludeHeaders {
-		if err := cl.WriteTableHeaders(w, table); err != nil {
-			return err
+	arrowSchema := cqarrow.CQSchemaToArrow(table)
+	cqTypes := make([]schema.CQTypes, len(resources))
+	for i := range resources {
+		cqTypes[i] = make(schema.CQTypes, len(resources[i]))
+		for j := range resources[i] {
+			cqTypes[i][j] = resources[i][j].(schema.CQType)
 		}
 	}
-	for _, resource := range resources {
-		record := make([]string, len(resource))
-		for i, v := range resource {
-			record[i] = v.(string)
-		}
-		if err := writer.Write(record); err != nil {
-			return err
-		}
-	}
-	writer.Flush()
-	return nil
-}
+	record := cqarrow.CQTypesToRecord(memory.DefaultAllocator, cqTypes, arrowSchema)
+	defer record.Release()
 
-func (cl *Client) WriteTableHeaders(w io.Writer, table *schema.Table) error {
-	writer := csv.NewWriter(w)
-	writer.Comma = cl.Delimiter
-
-	tableHeaders := make([]string, len(table.Columns))
-	for index, header := range table.Columns {
-		tableHeaders[index] = header.Name
+	writer := csv.NewWriter(w, arrowSchema, csv.WithComma(cl.Delimiter), csv.WithHeader(cl.IncludeHeaders), csv.WithNullWriter(""))
+	if err := writer.Write(record); err != nil {
+		return fmt.Errorf("failed to write record to csv: %w", err)
 	}
-	if err := writer.Write(tableHeaders); err != nil {
-		return err
+	if err := writer.Flush(); err != nil {
+		return fmt.Errorf("failed to flush csv writer: %w", err)
 	}
-	writer.Flush()
 	return nil
 }

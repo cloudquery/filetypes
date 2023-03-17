@@ -31,7 +31,7 @@ func TestWriteRead(t *testing.T) {
 			}
 			writer := bufio.NewWriter(&b)
 			reader := bufio.NewReader(&b)
-			transformer := &Transformer{}
+			transformer := &schema.DefaultTransformer{}
 			transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
 			client, err := NewClient(tc.options...)
 			if err != nil {
