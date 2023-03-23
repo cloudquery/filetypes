@@ -16,7 +16,7 @@ func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, resources [][]a
 		return fmt.Errorf("can't create parquet writer: %w", err)
 	}
 
-	pw.RowGroupSize = 128 * 1024 * 1024 //128M
+	pw.RowGroupSize = 128 * 1024 * 1024 // 128M
 	pw.CompressionType = parquet.CompressionCodec_SNAPPY
 
 	for i := range resources {
