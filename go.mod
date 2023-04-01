@@ -25,7 +25,7 @@ require (
 
 require (
 	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516
-	github.com/apache/arrow/go/v12 v12.0.0-20230306000349-d5b3b4737838
+	github.com/apache/arrow/go/v12 v12.0.0-20230331222054-7e19111f2f81
 	github.com/goccy/go-json v0.9.11
 	github.com/google/go-cmp v0.5.9
 	github.com/xitongsys/parquet-go v1.6.2
@@ -33,7 +33,7 @@ require (
 
 replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230317130341-c648117570af
 
-require golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2 // indirect
+require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
@@ -44,7 +44,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.1.0 // indirect
 	github.com/minio/asm2plan9s v0.0.0-20200509001527-cdd76441f9d8 // indirect
 	github.com/minio/c2goasm v0.0.0-20190812172519-36a3d3bbc4f3 // indirect
-	github.com/xitongsys/parquet-go-source v0.0.0-20221025031416-9877e685ef65 // indirect
+	github.com/xitongsys/parquet-go-source v0.0.0-20230312005205-fbbcdea5f512 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
