@@ -25,7 +25,7 @@ require (
 
 require (
 	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516
-	github.com/apache/arrow/go/v12 v12.0.0-20230306000349-d5b3b4737838
+	github.com/apache/arrow/go/v12 v12.0.0-20230331222054-7e19111f2f81
 	github.com/goccy/go-json v0.9.11
 	github.com/google/go-cmp v0.5.9
 	github.com/xitongsys/parquet-go v1.6.2
