@@ -26,7 +26,7 @@ require (
 require (
 	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516
 	github.com/apache/arrow/go/v12 v12.0.0-20230331222054-7e19111f2f81
-	github.com/goccy/go-json v0.9.11
+	github.com/goccy/go-json v0.10.2
 	github.com/google/go-cmp v0.5.9
 	github.com/xitongsys/parquet-go v1.6.2
 )
@@ -37,7 +37,7 @@ require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/apache/thrift v0.16.0 // indirect
+	github.com/apache/thrift v0.18.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
@@ -52,7 +52,7 @@ require (
 )
 
 require (
-	github.com/getsentry/sentry-go v0.18.0 // indirect; indirect // indirect
+	github.com/getsentry/sentry-go v0.20.0 // indirect; indirect // indirect
 	github.com/klauspost/compress v1.16.3 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect; indirect // indirect
 	golang.org/x/text v0.8.0 // indirect; indirect // indirect
