@@ -15,11 +15,11 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.17 // indirect; indirect // indirect
+	github.com/mattn/go-isatty v0.0.18 // indirect; indirect // indirect
 	github.com/rs/zerolog v1.29.0 // indirect; indirect // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect; indirect // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect; indirect // indirect // indirect
+	golang.org/x/sys v0.6.0 // indirect; indirect // indirect // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
