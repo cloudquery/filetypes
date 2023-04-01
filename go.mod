@@ -37,7 +37,7 @@ require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/apache/thrift v0.16.0 // indirect
+	github.com/apache/thrift v0.18.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
