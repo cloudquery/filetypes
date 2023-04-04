@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/apache/arrow/go/v12/arrow"
+	"github.com/apache/arrow/go/v12/arrow/array"
+	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/cloudquery/plugin-sdk/schema"
 	"github.com/xitongsys/parquet-go/reader"
 )
 
-func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
+func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res chan<- arrow.Record) error {
 	sourceNameIndex := int64(table.Columns.Index(schema.CqSourceNameColumn.Name))
 	if sourceNameIndex == -1 {
 		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
@@ -27,22 +30,23 @@ func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res cha
 	}
 	defer r.ReadStop()
 
+	arrowSchema := table.ToArrowSchema()
 	for row := int64(0); row < r.GetNumRows(); row++ {
-		record := make([]any, len(table.Columns))
+		rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
 		for col := 0; col < len(table.Columns); col++ {
 			vals, _, _, err := r.ReadColumnByIndex(int64(col), 1)
 			if err != nil {
 				return err
 			}
 			if len(vals) == 1 {
-				record[col] = vals[0]
+				rb.Field(col) = vals[0]
 			} else {
 				record[col] = vals
 			}
 		}
 
 		if record[sourceNameIndex] == sourceName {
-			res <- record
+			res <- schema.CQTypesToRecord(memory.DefaultAllocator, record, arrowSchema)
 		}
 	}
 

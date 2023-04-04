@@ -1,12 +1,15 @@
 package csv
 
 import (
-	"bufio"
 	"bytes"
 	"testing"
+	"time"
 
-	"github.com/cloudquery/plugin-sdk/schema"
+	"github.com/apache/arrow/go/v12/arrow"
+	"github.com/apache/arrow/go/v12/arrow/memory"
+	"github.com/cloudquery/plugin-sdk/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/testdata"
+	"github.com/google/uuid"
 )
 
 func TestWriteRead(t *testing.T) {
@@ -18,58 +21,58 @@ func TestWriteRead(t *testing.T) {
 		{name: "default", outputCount: 1},
 		{name: "with_headers", options: []Options{WithHeader()}, outputCount: 1},
 		{name: "with_delimiter", options: []Options{WithDelimiter('\t')}, outputCount: 1},
-		{name: "with_delimter_headers", options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 1},
+		{name: "with_delimiter_headers", options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 1},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			var b bytes.Buffer
 			table := testdata.TestTable("test")
-			cqtypes := testdata.GenTestData(table)
-			if err := cqtypes[0].Set("test-source"); err != nil {
-				t.Fatal(err)
+			sch := table.ToArrowSchema()
+			sourceName := "test-source"
+			syncTime := time.Now().UTC().Round(1 * time.Second)
+			mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
+			defer mem.AssertSize(t, 0)
+			opts := testdata.GenTestDataOptions{
+				SourceName: sourceName,
+				SyncTime:   syncTime,
+				MaxRows:    1,
+				StableUUID: uuid.Nil,
 			}
-			writer := bufio.NewWriter(&b)
-			reader := bufio.NewReader(&b)
-			transformer := &schema.DefaultTransformer{}
-			transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-			client, err := NewClient(tc.options...)
+			records := testdata.GenTestData(mem, sch, opts)
+			defer func() {
+				for _, r := range records {
+					r.Release()
+				}
+			}()
+			cl, err := NewClient(tc.options...)
 			if err != nil {
 				t.Fatal(err)
 			}
-
-			if err := client.WriteTableBatch(writer, table, [][]any{transformedValues}); err != nil {
+			if err := cl.WriteTableBatch(&b, table, records); err != nil {
 				t.Fatal(err)
 			}
-			writer.Flush()
 
-			ch := make(chan []any)
+			ch := make(chan arrow.Record)
 			var readErr error
 			go func() {
-				readErr = client.Read(reader, table, "test-source", ch)
+				readErr = cl.Read(&b, table, "test-source", ch)
 				close(ch)
 			}()
 			totalCount := 0
-			reverseTransformer := &ReverseTransformer{}
-			for row := range ch {
-				if client.IncludeHeaders && totalCount == 0 {
-					totalCount++
-					continue
-				}
-				gotCqtypes, err := reverseTransformer.ReverseTransformValues(table, row)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if diff := cqtypes.Diff(gotCqtypes); diff != "" {
+			for got := range ch {
+				if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
+					got.Release()
 					t.Fatalf("got diff: %s", diff)
 				}
+				got.Release()
 				totalCount++
 			}
 			if readErr != nil {
 				t.Fatal(readErr)
 			}
 			if totalCount != tc.outputCount {
-				t.Fatalf("expected %d row, got %d", tc.outputCount, totalCount)
+				t.Fatalf("got %d row(s), want %d", totalCount, tc.outputCount)
 			}
 		})
 	}

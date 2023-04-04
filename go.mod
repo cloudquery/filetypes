@@ -10,6 +10,8 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
+replace github.com/cloudquery/plugin-sdk v1.44.1 => ../plugin-sdk
+
 require (
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/google/uuid v1.3.0
@@ -18,20 +20,19 @@ require (
 	github.com/mattn/go-isatty v0.0.18 // indirect; indirect // indirect
 	github.com/rs/zerolog v1.29.0 // indirect; indirect // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect; indirect // indirect
-	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect; indirect // indirect // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (
 	github.com/apache/arrow/go/arrow v0.0.0-20200730104253-651201b0f516
-	github.com/apache/arrow/go/v12 v12.0.0-20230331222054-7e19111f2f81
+	github.com/apache/arrow/go/v12 v12.0.0-20230401212133-adf33cc43010
 	github.com/goccy/go-json v0.10.2
 	github.com/google/go-cmp v0.5.9
 	github.com/xitongsys/parquet-go v1.6.2
 )
 
-replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230317130341-c648117570af
+replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230403113355-afc433992be2
 
 require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 
