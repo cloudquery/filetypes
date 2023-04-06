@@ -1,24 +1,24 @@
 package filetypes
 
 import (
-	"io"
+	"os"
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func (cl *Client) Read(r io.Reader, table *schema.Table, sourceName string, res chan<- arrow.Record) error {
+func (cl *Client) Read(f *os.File, table *schema.Table, sourceName string, res chan<- arrow.Record) error {
 	switch cl.spec.Format {
 	case FormatTypeCSV:
-		if err := cl.csv.Read(r, table, sourceName, res); err != nil {
+		if err := cl.csv.Read(f, table, sourceName, res); err != nil {
 			return err
 		}
 	case FormatTypeJSON:
-		if err := cl.json.Read(r, table, sourceName, res); err != nil {
+		if err := cl.json.Read(f, table, sourceName, res); err != nil {
 			return err
 		}
 	case FormatTypeParquet:
-		if err := cl.parquet.Read(r, table, sourceName, res); err != nil {
+		if err := cl.parquet.Read(f, table, sourceName, res); err != nil {
 			return err
 		}
 	default:
