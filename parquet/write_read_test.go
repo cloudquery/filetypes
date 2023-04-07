@@ -45,7 +45,10 @@ func TestWriteRead(t *testing.T) {
 	if err := cl.WriteTableBatch(writer, table, records); err != nil {
 		t.Fatal(err)
 	}
-	writer.Flush()
+	err = writer.Flush()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	rawBytes, err := io.ReadAll(reader)
 	if err != nil {

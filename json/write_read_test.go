@@ -11,6 +11,35 @@ import (
 	"github.com/cloudquery/plugin-sdk/testdata"
 )
 
+func TestWrite(t *testing.T) {
+	var b bytes.Buffer
+	table := testdata.TestTable("test")
+	sch := table.ToArrowSchema()
+	sourceName := "test-source"
+	syncTime := time.Now().UTC().Round(1 * time.Second)
+	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
+	defer mem.AssertSize(t, 0)
+	opts := testdata.GenTestDataOptions{
+		SourceName: sourceName,
+		SyncTime:   syncTime,
+		MaxRows:    1,
+	}
+	records := testdata.GenTestData(mem, sch, opts)
+	defer func() {
+		for _, r := range records {
+			r.Release()
+		}
+	}()
+	cl, err := NewClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := cl.WriteTableBatch(&b, table, records); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(b.String())
+}
+
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
 	table := testdata.TestTable("test")
