@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.6.2](https://github.com/cloudquery/filetypes/compare/v1.6.1...v1.6.2) (2023-04-04)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.44.2 ([#118](https://github.com/cloudquery/filetypes/issues/118)) ([e26d635](https://github.com/cloudquery/filetypes/commit/e26d63576fe0e0e7bc6be11101ab22579c2517a7))
+
+## [1.6.1](https://github.com/cloudquery/filetypes/compare/v1.6.0...v1.6.1) (2023-04-04)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v12 digest to 7e19111 ([#100](https://github.com/cloudquery/filetypes/issues/100)) ([817984b](https://github.com/cloudquery/filetypes/commit/817984b5ccc185306be0caf33bec160e1d1da5a8))
+* **deps:** Update github.com/xitongsys/parquet-go-source digest to fbbcdea ([#101](https://github.com/cloudquery/filetypes/issues/101)) ([2f2b881](https://github.com/cloudquery/filetypes/commit/2f2b881b96e09976216728cfb222985b4310e678))
+* **deps:** Update golang.org/x/exp digest to 10a5072 ([#102](https://github.com/cloudquery/filetypes/issues/102)) ([5942727](https://github.com/cloudquery/filetypes/commit/5942727fed972b2b8b208b7005befa9367e4fe31))
+* **deps:** Update module github.com/andybalholm/brotli to v1.0.5 ([#104](https://github.com/cloudquery/filetypes/issues/104)) ([bfd9e17](https://github.com/cloudquery/filetypes/commit/bfd9e17d5ce13538204d6f10eafbd848ab2fc560))
+* **deps:** Update module github.com/apache/thrift to v0.18.1 ([#108](https://github.com/cloudquery/filetypes/issues/108)) ([f504a86](https://github.com/cloudquery/filetypes/commit/f504a86d170f9c52161281b26adb1ac0fb7fb52c))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.44.0 ([#96](https://github.com/cloudquery/filetypes/issues/96)) ([8c213c0](https://github.com/cloudquery/filetypes/commit/8c213c08e7ea6a41470b0492d26772d1c067baa3))
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.44.1 ([#99](https://github.com/cloudquery/filetypes/issues/99)) ([f95e303](https://github.com/cloudquery/filetypes/commit/f95e3039166858ebbf9dfccb48bae479cdfc4d1e))
+* **deps:** Update module github.com/getsentry/sentry-go to v0.20.0 ([#109](https://github.com/cloudquery/filetypes/issues/109)) ([7d27ba4](https://github.com/cloudquery/filetypes/commit/7d27ba4c64eb44720eee2d2db963ce84235404f1))
+* **deps:** Update module github.com/goccy/go-json to v0.10.2 ([#110](https://github.com/cloudquery/filetypes/issues/110)) ([623624f](https://github.com/cloudquery/filetypes/commit/623624f55523af2406d8257bba53947057703a50))
+* **deps:** Update module github.com/klauspost/compress to v1.16.3 ([#105](https://github.com/cloudquery/filetypes/issues/105)) ([75f2d9a](https://github.com/cloudquery/filetypes/commit/75f2d9a2dab905ea0d98215bf08b93f555f11e40))
+* **deps:** Update module github.com/klauspost/cpuid/v2 to v2.2.4 ([#111](https://github.com/cloudquery/filetypes/issues/111)) ([6734b49](https://github.com/cloudquery/filetypes/commit/6734b497c99767afdf6006d41ec6b5dab71c4214))
+* **deps:** Update module github.com/mattn/go-isatty to v0.0.18 ([#106](https://github.com/cloudquery/filetypes/issues/106)) ([eaa89b9](https://github.com/cloudquery/filetypes/commit/eaa89b9be8a319a485946e18448cc90fe76aee3d))
+* **deps:** Update module golang.org/x/mod to v0.9.0 ([#112](https://github.com/cloudquery/filetypes/issues/112)) ([224f81f](https://github.com/cloudquery/filetypes/commit/224f81f70f0b56a099b7a7976df6e361a394458d))
+* **deps:** Update module golang.org/x/text to v0.8.0 ([#114](https://github.com/cloudquery/filetypes/issues/114)) ([68d2702](https://github.com/cloudquery/filetypes/commit/68d270229d0e5faddaa470390390522a1bb1b500))
+* **deps:** Update module golang.org/x/tools to v0.7.0 ([#115](https://github.com/cloudquery/filetypes/issues/115)) ([633720a](https://github.com/cloudquery/filetypes/commit/633720aa79ae1040839b09988bb57ca27c6cd4c0))
+
 ## [1.6.0](https://github.com/cloudquery/filetypes/compare/v1.5.1...v1.6.0) (2023-03-17)
 
 
