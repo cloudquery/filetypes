@@ -2,6 +2,7 @@ package parquet
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"github.com/apache/arrow/go/v12/arrow"
@@ -16,21 +17,24 @@ type ReaderAtSeeker interface {
 	io.Seeker
 }
 
-func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, sourceName string, res chan<- arrow.Record) error {
+func (*Client) Read(f ReaderAtSeeker, _ *arrow.Schema, _ string, res chan<- arrow.Record) error {
 	mem := memory.DefaultAllocator
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create new parquet reader: %w", err)
 	}
 	arrProps := pqarrow.ArrowReadProperties{
 		Parallel:  false,
 		BatchSize: 1024,
 	}
 	fr, err := pqarrow.NewFileReader(rdr, arrProps, mem)
+	if err != nil {
+		return fmt.Errorf("failed to create new parquet file reader: %w", err)
+	}
 	rr, err := fr.GetRecordReader(ctx, nil, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
 	for rr.Next() {
 		rec := rr.Record()
@@ -40,7 +44,7 @@ func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, sourceName stri
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return err
+			return fmt.Errorf("error while reading record: %w", err)
 		}
 	}
 	rr.Release()

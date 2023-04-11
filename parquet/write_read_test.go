@@ -109,7 +109,8 @@ func castExtensionColsToStorageType(mem memory.Allocator, rec arrow.Record) (arr
 	defer rb.Release()
 	for c := 0; c < int(rec.NumCols()); c++ {
 		col := rec.Column(c)
-		if col.DataType().ID() == arrow.EXTENSION {
+		switch {
+		case col.DataType().ID() == arrow.EXTENSION:
 			storageType := col.DataType().(arrow.ExtensionType).StorageType()
 			arr, err := compute.CastToType(ctx, rec.Column(c), storageType)
 			if err != nil {
@@ -123,15 +124,27 @@ func castExtensionColsToStorageType(mem memory.Allocator, rec arrow.Record) (arr
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
-		} else if arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewUUIDType())) {
-			castListOf(ctx, rec, c, rb, types.NewUUIDType().StorageType())
-		} else if arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewJSONType())) {
-			castListOf(ctx, rec, c, rb, types.NewJSONType().StorageType())
-		} else if arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewInetType())) {
-			castListOf(ctx, rec, c, rb, types.NewInetType().StorageType())
-		} else if arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMacType())) {
-			castListOf(ctx, rec, c, rb, types.NewMacType().StorageType())
-		} else {
+		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewUUIDType())):
+			err := castListOf(ctx, rec, c, rb, types.NewUUIDType().StorageType())
+			if err != nil {
+				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
+			}
+		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewJSONType())):
+			err := castListOf(ctx, rec, c, rb, types.NewJSONType().StorageType())
+			if err != nil {
+				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
+			}
+		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewInetType())):
+			err := castListOf(ctx, rec, c, rb, types.NewInetType().StorageType())
+			if err != nil {
+				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
+			}
+		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMacType())):
+			err := castListOf(ctx, rec, c, rb, types.NewMacType().StorageType())
+			if err != nil {
+				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
+			}
+		default:
 			b, err := rec.Column(c).MarshalJSON()
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)

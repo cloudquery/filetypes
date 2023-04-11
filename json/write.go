@@ -10,7 +10,7 @@ import (
 
 func (c *Client) WriteTableBatch(w io.Writer, _ *arrow.Schema, records []arrow.Record) error {
 	for _, r := range records {
-		err := c.writeTableBatch(w, r)
+		err := c.writeRecord(w, r)
 		if err != nil {
 			return err
 		}
@@ -18,7 +18,7 @@ func (c *Client) WriteTableBatch(w io.Writer, _ *arrow.Schema, records []arrow.R
 	return nil
 }
 
-func (c *Client) writeTableBatch(w io.Writer, record arrow.Record) error {
+func (*Client) writeRecord(w io.Writer, record arrow.Record) error {
 	arr := array.RecordToStructArray(record)
 	defer arr.Release()
 	enc := json.NewEncoder(w)
