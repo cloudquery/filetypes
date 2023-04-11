@@ -14,7 +14,6 @@ const maxJSONSize = 1024 * 1024 * 20
 func (*Client) Read(r io.Reader, arrowSchema *arrow.Schema, sourceName string, res chan<- arrow.Record) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, maxJSONSize), maxJSONSize)
-	//arrowSchema := table.ToArrowSchema()
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
 	defer rb.Release()
 	for scanner.Scan() {
