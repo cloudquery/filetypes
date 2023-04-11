@@ -6,13 +6,12 @@ import (
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/parquet"
 	"github.com/apache/arrow/go/v12/parquet/pqarrow"
-	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
+func (*Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
 	props := parquet.NewWriterProperties()
 	arrprops := pqarrow.DefaultWriterProps()
-	fw, err := pqarrow.NewFileWriter(table.ToArrowSchema(), w, props, arrprops)
+	fw, err := pqarrow.NewFileWriter(arrowSchema, w, props, arrprops)
 	if err != nil {
 		return err
 	}

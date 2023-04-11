@@ -2,14 +2,12 @@ package parquet
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/apache/arrow/go/v12/parquet/file"
 	"github.com/apache/arrow/go/v12/parquet/pqarrow"
-	"github.com/cloudquery/plugin-sdk/schema"
 )
 
 type ReaderAtSeeker interface {
@@ -18,12 +16,7 @@ type ReaderAtSeeker interface {
 	io.Seeker
 }
 
-func (*Client) Read(f ReaderAtSeeker, table *schema.Table, sourceName string, res chan<- arrow.Record) error {
-	// arrowSchema := table.ToArrowSchema()
-	sourceNameIndex := int64(table.Columns.Index(schema.CqSourceNameColumn.Name))
-	if sourceNameIndex == -1 {
-		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
-	}
+func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, sourceName string, res chan<- arrow.Record) error {
 	mem := memory.DefaultAllocator
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)

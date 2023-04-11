@@ -7,8 +7,8 @@ import (
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/memory"
-	"github.com/cloudquery/plugin-sdk/plugins/destination"
-	"github.com/cloudquery/plugin-sdk/testdata"
+	"github.com/cloudquery/plugin-sdk/v2/plugins/destination"
+	"github.com/cloudquery/plugin-sdk/v2/testdata"
 	"github.com/google/uuid"
 )
 
@@ -28,7 +28,7 @@ func TestWriteRead(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var b bytes.Buffer
 			table := testdata.TestTable("test")
-			sch := table.ToArrowSchema()
+			arrowSchema := table.ToArrowSchema()
 			sourceName := "test-source"
 			syncTime := time.Now().UTC().Round(1 * time.Second)
 			mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
@@ -39,7 +39,7 @@ func TestWriteRead(t *testing.T) {
 				MaxRows:    1,
 				StableUUID: uuid.Nil,
 			}
-			records := testdata.GenTestData(mem, sch, opts)
+			records := testdata.GenTestData(mem, arrowSchema, opts)
 			defer func() {
 				for _, r := range records {
 					r.Release()
@@ -49,14 +49,14 @@ func TestWriteRead(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if err := cl.WriteTableBatch(&b, table, records); err != nil {
+			if err := cl.WriteTableBatch(&b, arrowSchema, records); err != nil {
 				t.Fatal(err)
 			}
 
 			ch := make(chan arrow.Record)
 			var readErr error
 			go func() {
-				readErr = cl.Read(&b, table, "test-source", ch)
+				readErr = cl.Read(&b, arrowSchema, "test-source", ch)
 				close(ch)
 			}()
 			totalCount := 0
