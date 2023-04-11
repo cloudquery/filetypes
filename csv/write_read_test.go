@@ -1,12 +1,15 @@
 package csv
 
 import (
+	"bufio"
 	"bytes"
+	"io"
 	"testing"
 	"time"
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/memory"
+	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/cloudquery/plugin-sdk/v2/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v2/testdata"
 	"github.com/google/uuid"
@@ -18,10 +21,10 @@ func TestWriteRead(t *testing.T) {
 		options     []Options
 		outputCount int
 	}{
-		{name: "default", outputCount: 1},
-		{name: "with_headers", options: []Options{WithHeader()}, outputCount: 1},
-		{name: "with_delimiter", options: []Options{WithDelimiter('\t')}, outputCount: 1},
-		{name: "with_delimiter_headers", options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 1},
+		{name: "default", outputCount: 2},
+		{name: "with_headers", options: []Options{WithHeader()}, outputCount: 2},
+		{name: "with_delimiter", options: []Options{WithDelimiter('\t')}, outputCount: 2},
+		{name: "with_delimiter_headers", options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 2},
 	}
 
 	for _, tc := range cases {
@@ -30,14 +33,15 @@ func TestWriteRead(t *testing.T) {
 			table := testdata.TestTable("test")
 			arrowSchema := table.ToArrowSchema()
 			sourceName := "test-source"
-			syncTime := time.Now().UTC().Round(1 * time.Second)
+			syncTime := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 			mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 			defer mem.AssertSize(t, 0)
 			opts := testdata.GenTestDataOptions{
 				SourceName: sourceName,
 				SyncTime:   syncTime,
-				MaxRows:    1,
-				StableUUID: uuid.Nil,
+				MaxRows:    2,
+				StableUUID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
 			records := testdata.GenTestData(mem, arrowSchema, opts)
 			defer func() {
@@ -49,21 +53,34 @@ func TestWriteRead(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if err := cl.WriteTableBatch(&b, arrowSchema, records); err != nil {
+
+			writer := bufio.NewWriter(&b)
+			reader := bufio.NewReader(&b)
+
+			if err := cl.WriteTableBatch(writer, arrowSchema, records); err != nil {
 				t.Fatal(err)
 			}
+
+			rawBytes, err := io.ReadAll(reader)
+			if err != nil {
+				t.Fatal(err)
+			}
+			snap := cupaloy.New(cupaloy.SnapshotFileExtension(".csv"))
+			snap.SnapshotT(t, string(rawBytes))
+
+			byteReader := bytes.NewReader(rawBytes)
 
 			ch := make(chan arrow.Record)
 			var readErr error
 			go func() {
-				readErr = cl.Read(&b, arrowSchema, "test-source", ch)
+				readErr = cl.Read(byteReader, arrowSchema, "test-source", ch)
 				close(ch)
 			}()
 			totalCount := 0
 			for got := range ch {
 				if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
 					got.Release()
-					t.Fatalf("got diff: %s", diff)
+					t.Errorf("got diff: %s", diff)
 				}
 				got.Release()
 				totalCount++
@@ -72,7 +89,7 @@ func TestWriteRead(t *testing.T) {
 				t.Fatal(readErr)
 			}
 			if totalCount != tc.outputCount {
-				t.Fatalf("got %d row(s), want %d", totalCount, tc.outputCount)
+				t.Errorf("got %d row(s), want %d", totalCount, tc.outputCount)
 			}
 		})
 	}
