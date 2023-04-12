@@ -22,6 +22,7 @@ func (*Client) writeRecord(w io.Writer, record arrow.Record) error {
 	arr := array.RecordToStructArray(record)
 	defer arr.Release()
 	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(false)
 	for i := 0; i < arr.Len(); i++ {
 		if err := enc.Encode(arr.GetOneForMarshal(i)); err != nil {
 			return err

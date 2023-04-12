@@ -29,7 +29,6 @@ func TestWriteRead(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			var b bytes.Buffer
 			table := testdata.TestTable("test")
 			arrowSchema := table.ToArrowSchema()
 			sourceName := "test-source"
@@ -54,13 +53,15 @@ func TestWriteRead(t *testing.T) {
 				t.Fatal(err)
 			}
 
+			var b bytes.Buffer
 			writer := bufio.NewWriter(&b)
 			reader := bufio.NewReader(&b)
 
 			if err := cl.WriteTableBatch(writer, arrowSchema, records); err != nil {
 				t.Fatal(err)
 			}
-
+			writer.Flush()
+			
 			rawBytes, err := io.ReadAll(reader)
 			if err != nil {
 				t.Fatal(err)
