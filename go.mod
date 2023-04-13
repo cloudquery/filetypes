@@ -23,16 +23,16 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-require github.com/apache/arrow/go/v12 v12.0.0-20230401212133-adf33cc43010
+require (
+	github.com/apache/arrow/go/v12 v12.0.0-20230401212133-adf33cc43010
+	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
+)
 
 replace github.com/apache/arrow/go/v12 => ../arrow/go
 
 replace github.com/cloudquery/plugin-sdk/v2 => ../plugin-sdk
 
-require (
-	github.com/bradleyjkemp/cupaloy/v2 v2.8.0 // indirect
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
-)
+require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
