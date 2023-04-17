@@ -1,14 +1,12 @@
 package parquet
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/apache/arrow/go/v12/arrow"
 	"github.com/apache/arrow/go/v12/arrow/array"
-	"github.com/apache/arrow/go/v12/arrow/compute"
 	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/apache/arrow/go/v12/parquet"
 	"github.com/apache/arrow/go/v12/parquet/pqarrow"
@@ -141,20 +139,4 @@ func castExtensionColsToString(mem memory.Allocator, rec arrow.Record) (arrow.Re
 		}
 	}
 	return rb.NewRecord(), nil
-}
-
-func castListOf(ctx context.Context, rec arrow.Record, c int, rb *array.RecordBuilder, storageType arrow.DataType) error {
-	arr, err := compute.CastToType(ctx, rec.Column(c), arrow.ListOf(storageType))
-	if err != nil {
-		return fmt.Errorf("failed to cast col %v to %v: %w", rec.ColumnName(c), storageType, err)
-	}
-	b, err := arr.MarshalJSON()
-	if err != nil {
-		return fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-	}
-	err = rb.Field(c).UnmarshalJSON(b)
-	if err != nil {
-		return fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-	}
-	return nil
 }
