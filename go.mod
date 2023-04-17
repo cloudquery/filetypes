@@ -24,11 +24,14 @@ require (
 )
 
 require (
-	github.com/apache/arrow/go/v12 v12.0.0-20230401212133-adf33cc43010
+	github.com/apache/arrow/go/v12 v12.0.0-20230417014917-9888ac36c142
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 )
 
-replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230417085404-0d8ebd3b01ce
+replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230417154311-f9add0212acd
+
+//replace github.com/apache/arrow/go/v12 => ../arrow/go
+replace github.com/cloudquery/plugin-sdk/v2 v2.2.0 => ../plugin-sdk
 
 require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 

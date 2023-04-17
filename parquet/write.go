@@ -97,6 +97,7 @@ func castExtensionColsToString(mem memory.Allocator, rec arrow.Record) (arrow.Re
 			for _, v := range a {
 				if v == nil {
 					rb.Field(c).(*array.StringBuilder).AppendNull()
+					continue
 				}
 				b, err := json.Marshal(v)
 				if err != nil {
@@ -115,7 +116,6 @@ func castExtensionColsToString(mem memory.Allocator, rec arrow.Record) (arrow.Re
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
 		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewUUIDType())),
-			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewJSONType())),
 			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewInetType())),
 			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMacType())):
 			arr := col.(*array.List)

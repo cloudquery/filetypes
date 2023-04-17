@@ -10,7 +10,11 @@ import (
 )
 
 func (cl *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	writer := csv.NewWriter(w, arrowSchema, csv.WithComma(cl.Delimiter), csv.WithHeader(cl.IncludeHeaders), csv.WithNullWriter(""))
+	writer := csv.NewWriter(w, arrowSchema,
+		csv.WithComma(cl.Delimiter),
+		csv.WithHeader(cl.IncludeHeaders),
+		csv.WithNullWriter(""),
+	)
 	for _, record := range records {
 		if err := writer.Write(record); err != nil {
 			return fmt.Errorf("failed to write record to csv: %w", err)

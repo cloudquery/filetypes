@@ -63,11 +63,7 @@ func TestWriteRead(t *testing.T) {
 	}()
 	totalCount := 0
 	for got := range ch {
-		baseRecord, err := castExtensionColsToString(mem, records[totalCount])
-		if err != nil {
-			t.Fatalf("failed to cast extensions to storage type for comparison: %v", err)
-		}
-		if diff := destination.RecordDiff(baseRecord, got); diff != "" {
+		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
 			t.Fatalf("got diff: %s", diff)
 		}
 		totalCount++

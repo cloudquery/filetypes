@@ -8,7 +8,11 @@ import (
 )
 
 func (cl *Client) Read(r io.Reader, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
-	reader := csv.NewReader(r, arrowSchema, csv.WithComma(cl.Delimiter), csv.WithHeader(cl.IncludeHeaders), csv.WithNullReader(true, ""))
+	reader := csv.NewReader(r, arrowSchema,
+		csv.WithComma(cl.Delimiter),
+		csv.WithHeader(cl.IncludeHeaders),
+		csv.WithNullReader(true, ""),
+	)
 	for reader.Next() {
 		if reader.Err() != nil {
 			return reader.Err()
