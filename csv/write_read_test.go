@@ -80,10 +80,10 @@ func TestWriteRead(t *testing.T) {
 			for got := range ch {
 				// TODO: compare records. This is currently failing because the CSV reader fails
 				//       to read the JSON column properly. We rely on snapshot tests for now.
-				//if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
+				// if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
 				//	got.Release()
 				//	t.Errorf("got diff: %s", diff)
-				//}
+				// }
 				got.Release()
 				totalCount++
 			}

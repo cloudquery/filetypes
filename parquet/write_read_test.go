@@ -19,8 +19,8 @@ func TestWriteRead(t *testing.T) {
 	arrowSchema := table.ToArrowSchema()
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(1 * time.Second)
-	// TODO: use checked allocator here; can't right now because there
-	//       are memory leaks in the arrow parquet reader implementation :(
+	// TODO: use checked allocator here; there are some memory leaks in the parquet writer
+	//       at the time of writing, so leaving this as a to-do
 	// mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	// defer mem.AssertSize(t, 0)
 	mem := memory.NewGoAllocator()
@@ -79,77 +79,3 @@ func TestWriteRead(t *testing.T) {
 		t.Fatalf("expected 1 row, got %d", totalCount)
 	}
 }
-
-//
-//func castExtensionColsToStringType(mem memory.Allocator, rec arrow.Record) (arrow.Record, error) {
-//	oldFields := rec.Schema().Fields()
-//	fields := make([]arrow.Field, len(oldFields))
-//	copy(fields, oldFields)
-//	for i, f := range fields {
-//		switch {
-//		case f.Type.ID() == arrow.EXTENSION:
-//			fields[i].Type = f.Type.(arrow.ExtensionType).StorageType()
-//		case arrow.TypeEqual(f.Type, arrow.ListOf(types.NewUUIDType())),
-//			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewInetType())),
-//			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewJSONType())),
-//			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewMacType())):
-//			fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
-//		}
-//	}
-//
-//	md := rec.Schema().Metadata()
-//	newSchema := arrow.NewSchema(fields, &md)
-//	ctx := context.Background()
-//	rb := array.NewRecordBuilder(mem, newSchema)
-//
-//	defer rb.Release()
-//	for c := 0; c < int(rec.NumCols()); c++ {
-//		col := rec.Column(c)
-//		switch {
-//		case col.DataType().ID() == arrow.EXTENSION:
-//			storageType := col.DataType().(arrow.ExtensionType).StorageType()
-//			arr, err := compute.CastToType(ctx, rec.Column(c), storageType)
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to cast col %v to %v: %w", rec.ColumnName(c), storageType, err)
-//			}
-//			b, err := arr.MarshalJSON()
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-//			}
-//			err = rb.Field(c).UnmarshalJSON(b)
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-//			}
-//		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewUUIDType())):
-//			err := castListOf(ctx, rec, c, rb, types.NewUUIDType().StorageType())
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
-//			}
-//		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewJSONType())):
-//			err := castListOf(ctx, rec, c, rb, types.NewJSONType().StorageType())
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
-//			}
-//		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewInetType())):
-//			err := castListOf(ctx, rec, c, rb, types.NewInetType().StorageType())
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
-//			}
-//		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMacType())):
-//			err := castListOf(ctx, rec, c, rb, types.NewMacType().StorageType())
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to cast col %v: %w", rec.ColumnName(c), err)
-//			}
-//		default:
-//			b, err := rec.Column(c).MarshalJSON()
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-//			}
-//			err = rb.Field(c).UnmarshalJSON(b)
-//			if err != nil {
-//				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-//			}
-//		}
-//	}
-//	return rb.NewRecord(), nil
-//}
