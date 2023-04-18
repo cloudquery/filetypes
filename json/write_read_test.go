@@ -82,7 +82,10 @@ func TestWriteRead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	snap := cupaloy.New(cupaloy.SnapshotFileExtension(".jsonl"))
+	snap := cupaloy.New(
+		cupaloy.SnapshotFileExtension(".jsonl"),
+		cupaloy.SnapshotSubdirectory("testdata"),
+	)
 	snap.SnapshotT(t, string(rawBytes))
 
 	byteReader := bytes.NewReader(rawBytes)

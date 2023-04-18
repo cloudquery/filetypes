@@ -1,4 +1,4 @@
-module github.com/cloudquery/filetypes
+module github.com/cloudquery/filetypes/v2
 
 go 1.19
 
@@ -30,7 +30,6 @@ require (
 
 replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230417154311-f9add0212acd
 
-//replace github.com/apache/arrow/go/v12 => ../arrow/go
 replace github.com/cloudquery/plugin-sdk/v2 v2.2.0 => ../plugin-sdk
 
 require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
