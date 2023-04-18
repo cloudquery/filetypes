@@ -19,11 +19,8 @@ func TestWriteRead(t *testing.T) {
 	arrowSchema := table.ToArrowSchema()
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(1 * time.Second)
-	// TODO: use checked allocator here; there are some memory leaks in the parquet writer
-	//       at the time of writing, so leaving this as a to-do
-	// mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
-	// defer mem.AssertSize(t, 0)
-	mem := memory.NewGoAllocator()
+	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
+	defer mem.AssertSize(t, 0)
 	opts := testdata.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
