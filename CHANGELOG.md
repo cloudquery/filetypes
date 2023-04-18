@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/cloudquery/filetypes/compare/v1.6.2...v2.0.0) (2023-04-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* Move to Arrow implementation ([#120](https://github.com/cloudquery/filetypes/issues/120))
+
+### Features
+
+* Move to Arrow implementation ([#120](https://github.com/cloudquery/filetypes/issues/120)) ([b4fb660](https://github.com/cloudquery/filetypes/commit/b4fb6603833d40ad818b56c1e4c779ef246dccc3))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk to v1.45.0 ([#123](https://github.com/cloudquery/filetypes/issues/123)) ([a5deffa](https://github.com/cloudquery/filetypes/commit/a5deffa7b17b18702ab980d9edee0839050189f8))
+* **deps:** Update module golang.org/x/sys to v0.7.0 ([#113](https://github.com/cloudquery/filetypes/issues/113)) ([bce7524](https://github.com/cloudquery/filetypes/commit/bce75245afd8d7be160ec8252a09a03d0a26c74a))
+
 ## [1.6.2](https://github.com/cloudquery/filetypes/compare/v1.6.1...v1.6.2) (2023-04-04)
 
 
