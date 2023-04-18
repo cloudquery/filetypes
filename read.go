@@ -1,12 +1,18 @@
 package filetypes
 
 import (
-	"os"
+	"io"
 
 	"github.com/apache/arrow/go/v12/arrow"
 )
 
-func (cl *Client) Read(f *os.File, sc *arrow.Schema, sourceName string, res chan<- arrow.Record) error {
+type ReaderAtSeeker interface {
+	io.Reader
+	io.ReaderAt
+	io.Seeker
+}
+
+func (cl *Client) Read(f ReaderAtSeeker, sc *arrow.Schema, sourceName string, res chan<- arrow.Record) error {
 	switch cl.spec.Format {
 	case FormatTypeCSV:
 		if err := cl.csv.Read(f, sc, sourceName, res); err != nil {
