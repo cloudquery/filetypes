@@ -1,26 +1,17 @@
 package filetypes
 
 import (
-	csvFile "github.com/cloudquery/filetypes/csv"
-	jsonFile "github.com/cloudquery/filetypes/json"
-	"github.com/cloudquery/filetypes/parquet"
-	"github.com/cloudquery/plugin-sdk/schema"
+	csvFile "github.com/cloudquery/filetypes/v2/csv"
+	jsonFile "github.com/cloudquery/filetypes/v2/json"
+	"github.com/cloudquery/filetypes/v2/parquet"
 )
 
 type Client struct {
 	spec *FileSpec
 
-	csv                   *csvFile.Client
-	csvTransformer        schema.DefaultTransformer
-	csvReverseTransformer csvFile.ReverseTransformer
-
-	json                   *jsonFile.Client
-	jsonTransformer        schema.DefaultTransformer
-	jsonReverseTransformer jsonFile.ReverseTransformer
-
-	parquet                   *parquet.Client
-	parquetTransformer        parquet.Transformer
-	parquetReverseTransformer parquet.ReverseTransformer
+	csv     *csvFile.Client
+	json    *jsonFile.Client
+	parquet *parquet.Client
 }
 
 // NewClient creates a new client for the given spec

@@ -1,43 +1,25 @@
 package csv
 
 import (
-	"encoding/csv"
-	"errors"
-	"fmt"
 	"io"
 
-	"github.com/cloudquery/plugin-sdk/schema"
+	"github.com/apache/arrow/go/v12/arrow"
+	"github.com/apache/arrow/go/v12/arrow/csv"
 )
 
-func (cl *Client) Read(r io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
-	reader := csv.NewReader(r)
-	reader.Comma = cl.Delimiter
-	sourceNameIndex := table.Columns.Index(schema.CqSourceNameColumn.Name)
-	if sourceNameIndex == -1 {
-		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
-	}
-	if cl.IncludeHeaders {
-		_, err := reader.Read()
-		if err != nil {
-			return err
+func (cl *Client) Read(r io.Reader, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
+	reader := csv.NewReader(r, arrowSchema,
+		csv.WithComma(cl.Delimiter),
+		csv.WithHeader(cl.IncludeHeaders),
+		csv.WithNullReader(true, ""),
+	)
+	for reader.Next() {
+		if reader.Err() != nil {
+			return reader.Err()
 		}
-	}
-	for {
-		record, err := reader.Read()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				break
-			}
-			return err
-		}
-		if record[sourceNameIndex] != sourceName {
-			continue
-		}
-		values := make([]any, len(record))
-		for i, v := range record {
-			values[i] = v
-		}
-		res <- values
+		rec := reader.Record()
+		rec.Retain()
+		res <- rec
 	}
 	return nil
 }

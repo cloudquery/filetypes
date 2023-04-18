@@ -3,22 +3,35 @@ package parquet
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"testing"
+	"time"
 
-	"github.com/cloudquery/plugin-sdk/schema"
-	"github.com/cloudquery/plugin-sdk/testdata"
+	"github.com/apache/arrow/go/v12/arrow"
+	"github.com/apache/arrow/go/v12/arrow/memory"
+	"github.com/cloudquery/plugin-sdk/v2/plugins/destination"
+	"github.com/cloudquery/plugin-sdk/v2/testdata"
 )
 
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
 	table := testdata.TestTable("test")
-	cqtypes := testdata.GenTestData(table)
-	if err := cqtypes[0].Set("test-source"); err != nil {
-		t.Fatal(err)
+	arrowSchema := table.ToArrowSchema()
+	sourceName := "test-source"
+	syncTime := time.Now().UTC().Round(1 * time.Second)
+	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
+	defer mem.AssertSize(t, 0)
+	opts := testdata.GenTestDataOptions{
+		SourceName: sourceName,
+		SyncTime:   syncTime,
+		MaxRows:    1,
 	}
-	transformer := &Transformer{}
-	transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-
+	records := testdata.GenTestData(mem, arrowSchema, opts)
+	defer func() {
+		for _, r := range records {
+			r.Release()
+		}
+	}()
 	writer := bufio.NewWriter(&b)
 	reader := bufio.NewReader(&b)
 
@@ -26,25 +39,28 @@ func TestWriteRead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := cl.WriteTableBatch(writer, table, [][]any{transformedValues}); err != nil {
+	if err := cl.WriteTableBatch(writer, arrowSchema, records); err != nil {
 		t.Fatal(err)
 	}
-	writer.Flush()
+	err = writer.Flush()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	ch := make(chan []any)
+	rawBytes, err := io.ReadAll(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	byteReader := bytes.NewReader(rawBytes)
+	ch := make(chan arrow.Record)
 	var readErr error
 	go func() {
-		readErr = cl.Read(reader, table, "test-source", ch)
+		readErr = cl.Read(byteReader, arrowSchema, "test-source", ch)
 		close(ch)
 	}()
 	totalCount := 0
-	reverseTransformer := &ReverseTransformer{}
-	for resource := range ch {
-		gotCqtypes, err := reverseTransformer.ReverseTransformValues(table, resource)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if diff := cqtypes.Diff(gotCqtypes); diff != "" {
+	for got := range ch {
+		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
 			t.Fatalf("got diff: %s", diff)
 		}
 		totalCount++

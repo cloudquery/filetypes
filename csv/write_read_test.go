@@ -3,10 +3,16 @@ package csv
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"testing"
+	"time"
 
-	"github.com/cloudquery/plugin-sdk/schema"
-	"github.com/cloudquery/plugin-sdk/testdata"
+	"github.com/apache/arrow/go/v12/arrow"
+	"github.com/apache/arrow/go/v12/arrow/memory"
+	"github.com/bradleyjkemp/cupaloy/v2"
+	"github.com/cloudquery/plugin-sdk/v2/plugins/destination"
+	"github.com/cloudquery/plugin-sdk/v2/testdata"
+	"github.com/google/uuid"
 )
 
 func TestWriteRead(t *testing.T) {
@@ -15,61 +21,79 @@ func TestWriteRead(t *testing.T) {
 		options     []Options
 		outputCount int
 	}{
-		{name: "default", outputCount: 1},
-		{name: "with_headers", options: []Options{WithHeader()}, outputCount: 1},
-		{name: "with_delimiter", options: []Options{WithDelimiter('\t')}, outputCount: 1},
-		{name: "with_delimter_headers", options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 1},
+		{name: "default", outputCount: 2},
+		{name: "with_headers", options: []Options{WithHeader()}, outputCount: 2},
+		{name: "with_delimiter", options: []Options{WithDelimiter('\t')}, outputCount: 2},
+		{name: "with_delimiter_headers", options: []Options{WithDelimiter('\t'), WithHeader()}, outputCount: 2},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			var b bytes.Buffer
 			table := testdata.TestTable("test")
-			cqtypes := testdata.GenTestData(table)
-			if err := cqtypes[0].Set("test-source"); err != nil {
-				t.Fatal(err)
+			arrowSchema := table.ToArrowSchema()
+			sourceName := "test-source"
+			syncTime := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
+			mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
+			defer mem.AssertSize(t, 0)
+			opts := testdata.GenTestDataOptions{
+				SourceName: sourceName,
+				SyncTime:   syncTime,
+				MaxRows:    2,
+				StableUUID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
-			writer := bufio.NewWriter(&b)
-			reader := bufio.NewReader(&b)
-			transformer := &schema.DefaultTransformer{}
-			transformedValues := schema.TransformWithTransformer(transformer, cqtypes)
-			client, err := NewClient(tc.options...)
+			records := testdata.GenTestData(mem, arrowSchema, opts)
+			defer func() {
+				for _, r := range records {
+					r.Release()
+				}
+			}()
+			cl, err := NewClient(tc.options...)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			if err := client.WriteTableBatch(writer, table, [][]any{transformedValues}); err != nil {
+			var b bytes.Buffer
+			writer := bufio.NewWriter(&b)
+			reader := bufio.NewReader(&b)
+
+			if err := cl.WriteTableBatch(writer, arrowSchema, records); err != nil {
 				t.Fatal(err)
 			}
 			writer.Flush()
 
-			ch := make(chan []any)
+			rawBytes, err := io.ReadAll(reader)
+			if err != nil {
+				t.Fatal(err)
+			}
+			snap := cupaloy.New(
+				cupaloy.SnapshotFileExtension(".csv"),
+				cupaloy.SnapshotSubdirectory("testdata"),
+			)
+			snap.SnapshotT(t, string(rawBytes))
+
+			byteReader := bytes.NewReader(rawBytes)
+
+			ch := make(chan arrow.Record)
 			var readErr error
 			go func() {
-				readErr = client.Read(reader, table, "test-source", ch)
+				readErr = cl.Read(byteReader, arrowSchema, "test-source", ch)
 				close(ch)
 			}()
 			totalCount := 0
-			reverseTransformer := &ReverseTransformer{}
-			for row := range ch {
-				if client.IncludeHeaders && totalCount == 0 {
-					totalCount++
-					continue
+			for got := range ch {
+				if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
+					got.Release()
+					t.Errorf("got diff: %s", diff)
 				}
-				gotCqtypes, err := reverseTransformer.ReverseTransformValues(table, row)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if diff := cqtypes.Diff(gotCqtypes); diff != "" {
-					t.Fatalf("got diff: %s", diff)
-				}
+				got.Release()
 				totalCount++
 			}
 			if readErr != nil {
 				t.Fatal(readErr)
 			}
 			if totalCount != tc.outputCount {
-				t.Fatalf("expected %d row, got %d", tc.outputCount, totalCount)
+				t.Errorf("got %d row(s), want %d", totalCount, tc.outputCount)
 			}
 		})
 	}

@@ -3,21 +3,27 @@ package filetypes
 import (
 	"io"
 
-	"github.com/cloudquery/plugin-sdk/schema"
+	"github.com/apache/arrow/go/v12/arrow"
 )
 
-func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, resources [][]any) error {
+func (cl *Client) WriteTableBatchFile(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
+	defer func() {
+		for _, r := range records {
+			r.Release()
+		}
+	}()
+
 	switch cl.spec.Format {
 	case FormatTypeCSV:
-		if err := cl.csv.WriteTableBatch(w, table, resources); err != nil {
+		if err := cl.csv.WriteTableBatch(w, arrowSchema, records); err != nil {
 			return err
 		}
 	case FormatTypeJSON:
-		if err := cl.json.WriteTableBatch(w, table, resources); err != nil {
+		if err := cl.json.WriteTableBatch(w, arrowSchema, records); err != nil {
 			return err
 		}
 	case FormatTypeParquet:
-		if err := cl.parquet.WriteTableBatch(w, table, resources); err != nil {
+		if err := cl.parquet.WriteTableBatch(w, arrowSchema, records); err != nil {
 			return err
 		}
 	default:

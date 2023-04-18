@@ -1,50 +1,146 @@
 package parquet
 
 import (
-	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
-	"github.com/cloudquery/plugin-sdk/schema"
-	"github.com/xitongsys/parquet-go/reader"
+	"github.com/apache/arrow/go/v12/arrow"
+	"github.com/apache/arrow/go/v12/arrow/array"
+	"github.com/apache/arrow/go/v12/arrow/memory"
+	"github.com/apache/arrow/go/v12/parquet/file"
+	"github.com/apache/arrow/go/v12/parquet/pqarrow"
+	"github.com/cloudquery/plugin-sdk/v2/types"
 )
 
-func (*Client) Read(f io.Reader, table *schema.Table, sourceName string, res chan<- []any) error {
-	sourceNameIndex := int64(table.Columns.Index(schema.CqSourceNameColumn.Name))
-	if sourceNameIndex == -1 {
-		return fmt.Errorf("could not find column %s in table %s", schema.CqSourceNameColumn.Name, table.Name)
-	}
+type ReaderAtSeeker interface {
+	io.Reader
+	io.ReaderAt
+	io.Seeker
+}
 
-	buf := &bytes.Buffer{}
-	if _, err := io.Copy(buf, f); err != nil {
-		return err
-	}
-
-	s := makeSchema(table.Name, table.Columns)
-	r, err := reader.NewParquetReader(newPQReader(buf.Bytes()), s, 2)
+func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
+	mem := memory.DefaultAllocator
+	ctx := context.Background()
+	rdr, err := file.NewParquetReader(f)
 	if err != nil {
-		return fmt.Errorf("can't create parquet reader: %w", err)
+		return fmt.Errorf("failed to create new parquet reader: %w", err)
 	}
-	defer r.ReadStop()
-
-	for row := int64(0); row < r.GetNumRows(); row++ {
-		record := make([]any, len(table.Columns))
-		for col := 0; col < len(table.Columns); col++ {
-			vals, _, _, err := r.ReadColumnByIndex(int64(col), 1)
-			if err != nil {
-				return err
-			}
-			if len(vals) == 1 {
-				record[col] = vals[0]
-			} else {
-				record[col] = vals
-			}
+	arrProps := pqarrow.ArrowReadProperties{
+		Parallel:  false,
+		BatchSize: 1024,
+	}
+	fr, err := pqarrow.NewFileReader(rdr, arrProps, mem)
+	if err != nil {
+		return fmt.Errorf("failed to create new parquet file reader: %w", err)
+	}
+	rr, err := fr.GetRecordReader(ctx, nil, nil)
+	if err != nil {
+		return fmt.Errorf("failed to get parquet record reader: %w", err)
+	}
+	for rr.Next() {
+		rec := rr.Record()
+		castRec, err := castStringsToExtensions(mem, rec, arrowSchema)
+		if err != nil {
+			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
-
-		if record[sourceNameIndex] == sourceName {
-			res <- record
+		castRec.Retain()
+		res <- castRec
+		_, err = rr.Read()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return fmt.Errorf("error while reading record: %w", err)
 		}
 	}
+	rr.Release()
 
 	return nil
+}
+
+func castStringsToExtensions(mem memory.Allocator, rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+	rb := array.NewRecordBuilder(mem, arrowSchema)
+
+	defer rb.Release()
+	for c := 0; c < int(rec.NumCols()); c++ {
+		col := rec.Column(c)
+		switch {
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewUUIDType()):
+			arr := col.(*array.String)
+			b, err := arr.MarshalJSON()
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
+			}
+			err = rb.Field(c).UnmarshalJSON(b)
+			if err != nil {
+				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewInetType()):
+			arr := col.(*array.String)
+			b, err := arr.MarshalJSON()
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
+			}
+			err = rb.Field(c).UnmarshalJSON(b)
+			if err != nil {
+				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewJSONType()):
+			arr := col.(*array.String)
+			b, err := arr.MarshalJSON()
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
+			}
+			a := make([]any, arr.Len())
+			err = json.Unmarshal(b, &a)
+			if err != nil {
+				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+			for _, v := range a {
+				if v == nil {
+					rb.Field(c).(*types.JSONBuilder).AppendNull()
+					continue
+				}
+				var v2 any
+				err = json.Unmarshal([]byte(v.(string)), &v2)
+				if err != nil {
+					return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+				}
+				rb.Field(c).(*types.JSONBuilder).Append(v2)
+			}
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewMacType()):
+			arr := col.(*array.String)
+			b, err := arr.MarshalJSON()
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
+			}
+			err = rb.Field(c).UnmarshalJSON(b)
+			if err != nil {
+				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewUUIDType())),
+			arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewInetType())),
+			arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewMacType())):
+			arr := col.(*array.List)
+			b, err := arr.MarshalJSON()
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
+			}
+			err = rb.Field(c).UnmarshalJSON(b)
+			if err != nil {
+				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+		default:
+			b, err := rec.Column(c).MarshalJSON()
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
+			}
+			err = rb.Field(c).UnmarshalJSON(b)
+			if err != nil {
+				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+		}
+	}
+	return rb.NewRecord(), nil
 }
