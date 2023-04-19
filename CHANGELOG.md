@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/cloudquery/filetypes/compare/v2.0.0...v2.0.1) (2023-04-19)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.3.1 ([#124](https://github.com/cloudquery/filetypes/issues/124)) ([dbd02cd](https://github.com/cloudquery/filetypes/commit/dbd02cdeaa19986c4ede1dc98e883b753ddcc776))
+* Update plugin-sdk to v2.3.2, Arrow to latest cqmain ([#126](https://github.com/cloudquery/filetypes/issues/126)) ([bb952f4](https://github.com/cloudquery/filetypes/commit/bb952f404976a78f93b58b68a8bfc98526d00233))
+
 ## [2.0.0](https://github.com/cloudquery/filetypes/compare/v1.6.2...v2.0.0) (2023-04-18)
 
 
