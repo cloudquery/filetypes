@@ -20,6 +20,10 @@ func TestWriteRead(t *testing.T) {
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(1 * time.Second)
 	mem := memory.DefaultAllocator
+	// TODO: The checked allocator is commented out because it reports
+	//       a leak in the Parquet reader. It seems to be from within
+	//       the pqarrow library. Commenting this out for now because
+	//       the reading aspect is only used in tests.
 	//mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	//defer mem.AssertSize(t, 0)
 	opts := testdata.GenTestDataOptions{
