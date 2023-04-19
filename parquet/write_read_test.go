@@ -29,7 +29,7 @@ func TestWriteRead(t *testing.T) {
 	opts := testdata.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
-		MaxRows:    1,
+		MaxRows:    2,
 	}
 	records := testdata.GenTestData(mem, arrowSchema, opts)
 	for _, r := range records {
@@ -79,7 +79,7 @@ func TestWriteRead(t *testing.T) {
 	if readErr != nil {
 		t.Fatal(readErr)
 	}
-	if totalCount != 1 {
-		t.Fatalf("expected 1 row, got %d", totalCount)
+	if totalCount != 2 {
+		t.Fatalf("expected 2 rows, got %d", totalCount)
 	}
 }

@@ -39,19 +39,32 @@ func (c *Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res
 		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
 	defer rr.Release()
+
 	for rr.Next() {
 		rec := rr.Record()
 		castRec, err := castStringsToExtensions(c.mem, rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
-		res <- castRec
+		castRecs := convertToSingleRowRecords(castRec)
+		for _, r := range castRecs {
+			res <- r
+		}
+		castRec.Release()
 	}
 	if rr.Err() != nil && rr.Err() != io.EOF {
 		return fmt.Errorf("failed to read parquet record: %w", rr.Err())
 	}
 
 	return nil
+}
+
+func convertToSingleRowRecords(rec arrow.Record) []arrow.Record {
+	records := make([]arrow.Record, rec.NumRows())
+	for i := int64(0); i < rec.NumRows(); i++ {
+		records[i] = rec.NewSlice(i, i+1)
+	}
+	return records
 }
 
 // castExtensionColsToString casts extension columns to string. It does not release the original record.
