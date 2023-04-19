@@ -9,6 +9,8 @@ import (
 )
 
 func (c *Client) WriteTableBatch(w io.Writer, _ *arrow.Schema, records []arrow.Record) error {
+	defer releaseRecords(records)
+
 	for _, r := range records {
 		err := c.writeRecord(w, r)
 		if err != nil {
@@ -16,6 +18,12 @@ func (c *Client) WriteTableBatch(w io.Writer, _ *arrow.Schema, records []arrow.R
 		}
 	}
 	return nil
+}
+
+func releaseRecords(records []arrow.Record) {
+	for _, rec := range records {
+		rec.Release()
+	}
 }
 
 func (*Client) writeRecord(w io.Writer, record arrow.Record) error {

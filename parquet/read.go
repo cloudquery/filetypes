@@ -20,8 +20,7 @@ type ReaderAtSeeker interface {
 	io.Seeker
 }
 
-func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
-	mem := memory.DefaultAllocator
+func (c *Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {
@@ -31,7 +30,7 @@ func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res c
 		Parallel:  false,
 		BatchSize: 1024,
 	}
-	fr, err := pqarrow.NewFileReader(rdr, arrProps, mem)
+	fr, err := pqarrow.NewFileReader(rdr, arrProps, c.mem)
 	if err != nil {
 		return fmt.Errorf("failed to create new parquet file reader: %w", err)
 	}
@@ -39,26 +38,23 @@ func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res c
 	if err != nil {
 		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
+	defer rr.Release()
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castStringsToExtensions(mem, rec, arrowSchema)
+		castRec, err := castStringsToExtensions(c.mem, rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
-		castRec.Retain()
 		res <- castRec
-		_, err = rr.Read()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			return fmt.Errorf("error while reading record: %w", err)
-		}
 	}
-	rr.Release()
+	if rr.Err() != nil && rr.Err() != io.EOF {
+		return fmt.Errorf("failed to read parquet record: %w", rr.Err())
+	}
 
 	return nil
 }
 
+// castExtensionColsToString casts extension columns to string. It does not release the original record.
 func castStringsToExtensions(mem memory.Allocator, rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
 	rb := array.NewRecordBuilder(mem, arrowSchema)
 

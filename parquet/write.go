@@ -13,7 +13,9 @@ import (
 	"github.com/cloudquery/plugin-sdk/v2/types"
 )
 
-func (*Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
+func (c *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
+	defer releaseRecords(records)
+
 	props := parquet.NewWriterProperties()
 	arrprops := pqarrow.DefaultWriterProps()
 	newSchema := convertSchema(arrowSchema)
@@ -21,17 +23,31 @@ func (*Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records [
 	if err != nil {
 		return err
 	}
-	mem := memory.DefaultAllocator
 	for _, rec := range records {
-		castRec, err := castExtensionColsToString(mem, rec)
+		err := c.writeRecord(rec, fw)
 		if err != nil {
-			return fmt.Errorf("failed to cast to string: %w", err)
-		}
-		if err := fw.Write(castRec); err != nil {
 			return err
 		}
 	}
 	return fw.Close()
+}
+
+func (c *Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
+	castRec, err := castExtensionColsToString(c.mem, rec)
+	if err != nil {
+		return fmt.Errorf("failed to cast to string: %w", err)
+	}
+	defer castRec.Release()
+	if err := fw.Write(castRec); err != nil {
+		return err
+	}
+	return nil
+}
+
+func releaseRecords(records []arrow.Record) {
+	for _, rec := range records {
+		rec.Release()
+	}
 }
 
 func convertSchema(sch *arrow.Schema) *arrow.Schema {
@@ -55,6 +71,7 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 	return newSchema
 }
 
+// castExtensionColsToString casts extension columns to string. It does not release the original record.
 func castExtensionColsToString(mem memory.Allocator, rec arrow.Record) (arrow.Record, error) {
 	newSchema := convertSchema(rec.Schema())
 	rb := array.NewRecordBuilder(mem, newSchema)

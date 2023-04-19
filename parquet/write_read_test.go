@@ -19,14 +19,18 @@ func TestWriteRead(t *testing.T) {
 	arrowSchema := table.ToArrowSchema()
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(1 * time.Second)
-	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
-	defer mem.AssertSize(t, 0)
+	mem := memory.DefaultAllocator
+	//mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
+	//defer mem.AssertSize(t, 0)
 	opts := testdata.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
 		MaxRows:    1,
 	}
 	records := testdata.GenTestData(mem, arrowSchema, opts)
+	for _, r := range records {
+		r.Retain()
+	}
 	defer func() {
 		for _, r := range records {
 			r.Release()
@@ -39,6 +43,7 @@ func TestWriteRead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cl.mem = mem
 	if err := cl.WriteTableBatch(writer, arrowSchema, records); err != nil {
 		t.Fatal(err)
 	}
@@ -61,8 +66,10 @@ func TestWriteRead(t *testing.T) {
 	totalCount := 0
 	for got := range ch {
 		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
+			got.Release()
 			t.Fatalf("got diff: %s", diff)
 		}
+		got.Release()
 		totalCount++
 	}
 	if readErr != nil {

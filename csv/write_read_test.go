@@ -43,6 +43,9 @@ func TestWriteRead(t *testing.T) {
 				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
 			records := testdata.GenTestData(mem, arrowSchema, opts)
+			for _, r := range records {
+				r.Retain()
+			}
 			defer func() {
 				for _, r := range records {
 					r.Release()
@@ -83,10 +86,8 @@ func TestWriteRead(t *testing.T) {
 			totalCount := 0
 			for got := range ch {
 				if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
-					got.Release()
 					t.Errorf("got diff: %s", diff)
 				}
-				got.Release()
 				totalCount++
 			}
 			if readErr != nil {
