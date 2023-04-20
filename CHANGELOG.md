@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.2](https://github.com/cloudquery/filetypes/compare/v2.0.1...v2.0.2) (2023-04-20)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.3.3 ([#127](https://github.com/cloudquery/filetypes/issues/127)) ([7117ddf](https://github.com/cloudquery/filetypes/commit/7117ddf874049d2534b94c36a04f4a3846f21a36))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.3.4 ([#129](https://github.com/cloudquery/filetypes/issues/129)) ([19b35be](https://github.com/cloudquery/filetypes/commit/19b35be34c29b143653b960b98776b6b58e49db0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.3.5 ([#130](https://github.com/cloudquery/filetypes/issues/130)) ([b45fa1f](https://github.com/cloudquery/filetypes/commit/b45fa1f57a681c33b72d209b0072c3f759a5d78e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.3.6 ([#132](https://github.com/cloudquery/filetypes/issues/132)) ([2157205](https://github.com/cloudquery/filetypes/commit/215720545ab784e4bacfa1cd07e60906069b98b7))
+* Fix memory management ([#131](https://github.com/cloudquery/filetypes/issues/131)) ([9b97bae](https://github.com/cloudquery/filetypes/commit/9b97bae2be2da8dcabeacffbf2c23d5e4fe770e1))
+
 ## [2.0.1](https://github.com/cloudquery/filetypes/compare/v2.0.0...v2.0.1) (2023-04-19)
 
 
