@@ -7,12 +7,6 @@ import (
 )
 
 func (cl *Client) WriteTableBatchFile(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
-
 	switch cl.spec.Format {
 	case FormatTypeCSV:
 		if err := cl.csv.WriteTableBatch(w, arrowSchema, records); err != nil {

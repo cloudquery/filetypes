@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/apache/arrow/go/v12/arrow"
-	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/cloudquery/plugin-sdk/v2/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v2/testdata"
@@ -21,19 +20,12 @@ func TestWrite(t *testing.T) {
 	arrowSchema := table.ToArrowSchema()
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(1 * time.Second)
-	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
-	defer mem.AssertSize(t, 0)
 	opts := testdata.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
 		MaxRows:    1,
 	}
-	records := testdata.GenTestData(mem, arrowSchema, opts)
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
+	records := testdata.GenTestData(arrowSchema, opts)
 	cl, err := NewClient()
 	if err != nil {
 		t.Fatal(err)
@@ -49,8 +41,6 @@ func TestWriteRead(t *testing.T) {
 	arrowSchema := table.ToArrowSchema()
 	sourceName := "test-source"
 	syncTime := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
-	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
-	defer mem.AssertSize(t, 0)
 	opts := testdata.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
@@ -58,12 +48,7 @@ func TestWriteRead(t *testing.T) {
 		StableUUID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 		StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 	}
-	records := testdata.GenTestData(mem, arrowSchema, opts)
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
+	records := testdata.GenTestData(arrowSchema, opts)
 	cl, err := NewClient()
 	if err != nil {
 		t.Fatal(err)

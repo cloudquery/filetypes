@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/apache/arrow/go/v12/arrow"
-	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/cloudquery/plugin-sdk/v2/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v2/testdata"
 )
@@ -19,19 +18,12 @@ func TestWriteRead(t *testing.T) {
 	arrowSchema := table.ToArrowSchema()
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(1 * time.Second)
-	mem := memory.NewCheckedAllocator(memory.NewGoAllocator())
-	defer mem.AssertSize(t, 0)
 	opts := testdata.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
-		MaxRows:    1,
+		MaxRows:    2,
 	}
-	records := testdata.GenTestData(mem, arrowSchema, opts)
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
+	records := testdata.GenTestData(arrowSchema, opts)
 	writer := bufio.NewWriter(&b)
 	reader := bufio.NewReader(&b)
 
@@ -68,7 +60,7 @@ func TestWriteRead(t *testing.T) {
 	if readErr != nil {
 		t.Fatal(readErr)
 	}
-	if totalCount != 1 {
-		t.Fatalf("expected 1 row, got %d", totalCount)
+	if totalCount != 2 {
+		t.Fatalf("expected 2 rows, got %d", totalCount)
 	}
 }

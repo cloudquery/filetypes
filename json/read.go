@@ -15,7 +15,6 @@ func (*Client) Read(r io.Reader, arrowSchema *arrow.Schema, _ string, res chan<-
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, maxJSONSize), maxJSONSize)
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
-	defer rb.Release()
 	for scanner.Scan() {
 		b := scanner.Bytes()
 		err := rb.UnmarshalJSON(b)

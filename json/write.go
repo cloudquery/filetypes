@@ -20,7 +20,6 @@ func (c *Client) WriteTableBatch(w io.Writer, _ *arrow.Schema, records []arrow.R
 
 func (*Client) writeRecord(w io.Writer, record arrow.Record) error {
 	arr := array.RecordToStructArray(record)
-	defer arr.Release()
 	enc := json.NewEncoder(w)
 	enc.SetEscapeHTML(false)
 	for i := 0; i < arr.Len(); i++ {

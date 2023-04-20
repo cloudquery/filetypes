@@ -21,7 +21,6 @@ type ReaderAtSeeker interface {
 }
 
 func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
-	mem := memory.DefaultAllocator
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {
@@ -31,7 +30,7 @@ func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res c
 		Parallel:  false,
 		BatchSize: 1024,
 	}
-	fr, err := pqarrow.NewFileReader(rdr, arrProps, mem)
+	fr, err := pqarrow.NewFileReader(rdr, arrProps, memory.DefaultAllocator)
 	if err != nil {
 		return fmt.Errorf("failed to create new parquet file reader: %w", err)
 	}
@@ -39,30 +38,36 @@ func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res c
 	if err != nil {
 		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
+
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castStringsToExtensions(mem, rec, arrowSchema)
+		castRec, err := castStringsToExtensions(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
-		castRec.Retain()
-		res <- castRec
-		_, err = rr.Read()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			return fmt.Errorf("error while reading record: %w", err)
+		castRecs := convertToSingleRowRecords(castRec)
+		for _, r := range castRecs {
+			res <- r
 		}
 	}
-	rr.Release()
+	if rr.Err() != nil && rr.Err() != io.EOF {
+		return fmt.Errorf("failed to read parquet record: %w", rr.Err())
+	}
 
 	return nil
 }
 
-func castStringsToExtensions(mem memory.Allocator, rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
-	rb := array.NewRecordBuilder(mem, arrowSchema)
+func convertToSingleRowRecords(rec arrow.Record) []arrow.Record {
+	records := make([]arrow.Record, rec.NumRows())
+	for i := int64(0); i < rec.NumRows(); i++ {
+		records[i] = rec.NewSlice(i, i+1)
+	}
+	return records
+}
 
-	defer rb.Release()
+// castExtensionColsToString casts extension columns to string.
+func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+	rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
 	for c := 0; c < int(rec.NumCols()); c++ {
 		col := rec.Column(c)
 		switch {
