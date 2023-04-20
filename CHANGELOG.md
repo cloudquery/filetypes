@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.3](https://github.com/cloudquery/filetypes/compare/v2.0.2...v2.0.3) (2023-04-20)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.3.8 ([#134](https://github.com/cloudquery/filetypes/issues/134)) ([5c79803](https://github.com/cloudquery/filetypes/commit/5c79803f02b132c626bb58c5b4a9d101b563ca22))
+* Optimize Parquet writer/reader ([#136](https://github.com/cloudquery/filetypes/issues/136)) ([e8e7cb8](https://github.com/cloudquery/filetypes/commit/e8e7cb8f7a5e9b88411c04a07f767f5696217ebe))
+
 ## [2.0.2](https://github.com/cloudquery/filetypes/compare/v2.0.1...v2.0.2) (2023-04-20)
 
 
