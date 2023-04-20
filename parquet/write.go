@@ -33,7 +33,7 @@ func (c *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records
 }
 
 func (c *Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
-	castRec, err := castExtensionColsToString(c.mem, rec)
+	castRec, err := castExtensionColsToString(rec)
 	if err != nil {
 		return fmt.Errorf("failed to cast to string: %w", err)
 	}
@@ -72,9 +72,9 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 }
 
 // castExtensionColsToString casts extension columns to string. It does not release the original record.
-func castExtensionColsToString(mem memory.Allocator, rec arrow.Record) (arrow.Record, error) {
+func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 	newSchema := convertSchema(rec.Schema())
-	rb := array.NewRecordBuilder(mem, newSchema)
+	rb := array.NewRecordBuilder(memory.DefaultAllocator, newSchema)
 
 	defer rb.Release()
 	for c := 0; c < int(rec.NumCols()); c++ {

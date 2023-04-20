@@ -30,7 +30,7 @@ func (c *Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res
 		Parallel:  false,
 		BatchSize: 1024,
 	}
-	fr, err := pqarrow.NewFileReader(rdr, arrProps, c.mem)
+	fr, err := pqarrow.NewFileReader(rdr, arrProps, memory.DefaultAllocator)
 	if err != nil {
 		return fmt.Errorf("failed to create new parquet file reader: %w", err)
 	}
@@ -42,7 +42,7 @@ func (c *Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res
 
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castStringsToExtensions(c.mem, rec, arrowSchema)
+		castRec, err := castStringsToExtensions(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
@@ -68,8 +68,8 @@ func convertToSingleRowRecords(rec arrow.Record) []arrow.Record {
 }
 
 // castExtensionColsToString casts extension columns to string. It does not release the original record.
-func castStringsToExtensions(mem memory.Allocator, rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
-	rb := array.NewRecordBuilder(mem, arrowSchema)
+func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+	rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
 
 	defer rb.Release()
 	for c := 0; c < int(rec.NumCols()); c++ {

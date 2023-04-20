@@ -1,17 +1,11 @@
 package json
 
-import "github.com/apache/arrow/go/v12/arrow/memory"
-
 type Option func(*Client)
 
-type Client struct {
-	mem memory.Allocator
-}
+type Client struct{}
 
 func NewClient(options ...Option) (*Client, error) {
-	c := &Client{
-		mem: memory.DefaultAllocator,
-	}
+	c := &Client{}
 	for _, option := range options {
 		option(c)
 	}
