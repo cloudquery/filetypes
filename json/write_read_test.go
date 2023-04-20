@@ -26,14 +26,6 @@ func TestWrite(t *testing.T) {
 		MaxRows:    1,
 	}
 	records := testdata.GenTestData(arrowSchema, opts)
-	for _, r := range records {
-		r.Retain()
-	}
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
 	cl, err := NewClient()
 	if err != nil {
 		t.Fatal(err)
@@ -57,14 +49,6 @@ func TestWriteRead(t *testing.T) {
 		StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 	}
 	records := testdata.GenTestData(arrowSchema, opts)
-	for _, r := range records {
-		r.Retain()
-	}
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
 	cl, err := NewClient()
 	if err != nil {
 		t.Fatal(err)
@@ -100,10 +84,8 @@ func TestWriteRead(t *testing.T) {
 	totalCount := 0
 	for got := range ch {
 		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
-			got.Release()
 			t.Fatalf("got diff: %s", diff)
 		}
-		got.Release()
 		totalCount++
 	}
 	if readErr != nil {

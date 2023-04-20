@@ -24,14 +24,6 @@ func TestWriteRead(t *testing.T) {
 		MaxRows:    2,
 	}
 	records := testdata.GenTestData(arrowSchema, opts)
-	for _, r := range records {
-		r.Retain()
-	}
-	defer func() {
-		for _, r := range records {
-			r.Release()
-		}
-	}()
 	writer := bufio.NewWriter(&b)
 	reader := bufio.NewReader(&b)
 
@@ -61,10 +53,8 @@ func TestWriteRead(t *testing.T) {
 	totalCount := 0
 	for got := range ch {
 		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
-			got.Release()
 			t.Fatalf("got diff: %s", diff)
 		}
-		got.Release()
 		totalCount++
 	}
 	if readErr != nil {

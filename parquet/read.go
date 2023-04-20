@@ -38,7 +38,6 @@ func (c *Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res
 	if err != nil {
 		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
-	defer rr.Release()
 
 	for rr.Next() {
 		rec := rr.Record()
@@ -50,7 +49,6 @@ func (c *Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res
 		for _, r := range castRecs {
 			res <- r
 		}
-		castRec.Release()
 	}
 	if rr.Err() != nil && rr.Err() != io.EOF {
 		return fmt.Errorf("failed to read parquet record: %w", rr.Err())
@@ -67,11 +65,9 @@ func convertToSingleRowRecords(rec arrow.Record) []arrow.Record {
 	return records
 }
 
-// castExtensionColsToString casts extension columns to string. It does not release the original record.
+// castExtensionColsToString casts extension columns to string.
 func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
-
-	defer rb.Release()
 	for c := 0; c < int(rec.NumCols()); c++ {
 		col := rec.Column(c)
 		switch {

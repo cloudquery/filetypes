@@ -10,7 +10,6 @@ import (
 )
 
 func (cl *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	defer releaseRecords(records)
 	writer := csv.NewWriter(w, arrowSchema,
 		csv.WithComma(cl.Delimiter),
 		csv.WithHeader(cl.IncludeHeaders),
@@ -25,10 +24,4 @@ func (cl *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, record
 		}
 	}
 	return nil
-}
-
-func releaseRecords(records []arrow.Record) {
-	for _, rec := range records {
-		rec.Release()
-	}
 }

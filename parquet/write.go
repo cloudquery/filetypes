@@ -14,8 +14,6 @@ import (
 )
 
 func (c *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	defer releaseRecords(records)
-
 	props := parquet.NewWriterProperties()
 	arrprops := pqarrow.DefaultWriterProps()
 	newSchema := convertSchema(arrowSchema)
@@ -37,17 +35,10 @@ func (c *Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
 	if err != nil {
 		return fmt.Errorf("failed to cast to string: %w", err)
 	}
-	defer castRec.Release()
 	if err := fw.Write(castRec); err != nil {
 		return err
 	}
 	return nil
-}
-
-func releaseRecords(records []arrow.Record) {
-	for _, rec := range records {
-		rec.Release()
-	}
 }
 
 func convertSchema(sch *arrow.Schema) *arrow.Schema {
@@ -75,8 +66,6 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 	newSchema := convertSchema(rec.Schema())
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, newSchema)
-
-	defer rb.Release()
 	for c := 0; c < int(rec.NumCols()); c++ {
 		col := rec.Column(c)
 		switch {

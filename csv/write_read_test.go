@@ -40,14 +40,6 @@ func TestWriteRead(t *testing.T) {
 				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
 			records := testdata.GenTestData(arrowSchema, opts)
-			for _, r := range records {
-				r.Retain()
-			}
-			defer func() {
-				for _, r := range records {
-					r.Release()
-				}
-			}()
 			cl, err := NewClient(tc.options...)
 			if err != nil {
 				t.Fatal(err)
