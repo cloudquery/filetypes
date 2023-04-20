@@ -9,12 +9,16 @@ import (
 	"github.com/apache/arrow/go/v12/arrow/array"
 	"github.com/apache/arrow/go/v12/arrow/memory"
 	"github.com/apache/arrow/go/v12/parquet"
+	"github.com/apache/arrow/go/v12/parquet/compress"
 	"github.com/apache/arrow/go/v12/parquet/pqarrow"
 	"github.com/cloudquery/plugin-sdk/v2/types"
 )
 
 func (c *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	props := parquet.NewWriterProperties()
+	props := parquet.NewWriterProperties(
+		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
+		parquet.WithCompression(compress.Codecs.Snappy),
+	)
 	arrprops := pqarrow.DefaultWriterProps()
 	newSchema := convertSchema(arrowSchema)
 	fw, err := pqarrow.NewFileWriter(newSchema, w, props, arrprops)
@@ -62,7 +66,7 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 // castExtensionColsToString casts extension columns to string. It does not release the original record.
 func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 	newSchema := convertSchema(rec.Schema())
-	rb := array.NewRecordBuilder(memory.DefaultAllocator, newSchema)
+	cols := make([]arrow.Array, rec.NumCols())
 	for c := 0; c < int(rec.NumCols()); c++ {
 		col := rec.Column(c)
 		switch {
@@ -72,20 +76,24 @@ func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 			}
-			err = rb.Field(c).UnmarshalJSON(b)
+			sb := array.NewStringBuilder(memory.DefaultAllocator)
+			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
+			cols[c] = sb.NewArray()
 		case arrow.TypeEqual(col.DataType(), types.NewInetType()):
 			arr := col.(*types.InetArray)
 			b, err := arr.MarshalJSON()
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 			}
-			err = rb.Field(c).UnmarshalJSON(b)
+			sb := array.NewStringBuilder(memory.DefaultAllocator)
+			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
+			cols[c] = sb.NewArray()
 		case arrow.TypeEqual(col.DataType(), types.NewJSONType()):
 			arr := col.(*types.JSONArray)
 			b, err := arr.MarshalJSON()
@@ -97,27 +105,31 @@ func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
+			sb := array.NewStringBuilder(memory.DefaultAllocator)
 			for _, v := range a {
 				if v == nil {
-					rb.Field(c).(*array.StringBuilder).AppendNull()
+					sb.AppendNull()
 					continue
 				}
 				b, err := json.Marshal(v)
 				if err != nil {
 					return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 				}
-				rb.Field(c).(*array.StringBuilder).Append(string(b))
+				sb.Append(string(b))
 			}
+			cols[c] = sb.NewArray()
 		case arrow.TypeEqual(col.DataType(), types.NewMacType()):
 			arr := col.(*types.MacArray)
 			b, err := arr.MarshalJSON()
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 			}
-			err = rb.Field(c).UnmarshalJSON(b)
+			sb := array.NewStringBuilder(memory.DefaultAllocator)
+			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
+			cols[c] = sb.NewArray()
 		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewUUIDType())),
 			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewInetType())),
 			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMacType())):
@@ -126,20 +138,15 @@ func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 			}
-			err = rb.Field(c).UnmarshalJSON(b)
+			sb := array.NewListBuilder(memory.DefaultAllocator, arrow.BinaryTypes.String)
+			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
+			cols[c] = sb.NewArray()
 		default:
-			b, err := rec.Column(c).MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			err = rb.Field(c).UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
+			cols[c] = rec.Column(c)
 		}
 	}
-	return rb.NewRecord(), nil
+	return array.NewRecord(newSchema, cols, rec.NumRows()), nil
 }

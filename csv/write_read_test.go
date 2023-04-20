@@ -88,3 +88,34 @@ func TestWriteRead(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkWrite(b *testing.B) {
+	table := testdata.TestTable("test")
+	arrowSchema := table.ToArrowSchema()
+	sourceName := "test-source"
+	syncTime := time.Now().UTC().Round(1 * time.Second)
+	opts := testdata.GenTestDataOptions{
+		SourceName: sourceName,
+		SyncTime:   syncTime,
+		MaxRows:    1000,
+	}
+	records := testdata.GenTestData(arrowSchema, opts)
+
+	cl, err := NewClient()
+	if err != nil {
+		b.Fatal(err)
+	}
+	var buf bytes.Buffer
+	writer := bufio.NewWriter(&buf)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if err := cl.WriteTableBatch(writer, arrowSchema, records); err != nil {
+			b.Fatal(err)
+		}
+		err = writer.Flush()
+		if err != nil {
+			b.Fatal(err)
+		}
+		buf.Reset()
+	}
+}
