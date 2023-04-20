@@ -30,15 +30,12 @@ func (c *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records
 	return fw.Close()
 }
 
-func (c *Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
+func (*Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
 	castRec, err := castExtensionColsToString(rec)
 	if err != nil {
 		return fmt.Errorf("failed to cast to string: %w", err)
 	}
-	if err := fw.Write(castRec); err != nil {
-		return err
-	}
-	return nil
+	return fw.Write(castRec)
 }
 
 func convertSchema(sch *arrow.Schema) *arrow.Schema {

@@ -11,7 +11,7 @@ import (
 
 const maxJSONSize = 1024 * 1024 * 20
 
-func (c *Client) Read(r io.Reader, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
+func (*Client) Read(r io.Reader, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, maxJSONSize), maxJSONSize)
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, arrowSchema)
