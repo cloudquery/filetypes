@@ -30,7 +30,7 @@ require (
 
 replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230419074556-00ceafa3b033
 
-require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
+require golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53 // indirect
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
