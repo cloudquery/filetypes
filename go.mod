@@ -56,7 +56,7 @@ require (
 )
 
 require (
-	github.com/klauspost/compress v1.16.3 // indirect
+	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect; indirect // indirect
 	golang.org/x/text v0.9.0 // indirect; indirect // indirect
 )
