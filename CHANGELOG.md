@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.1.0](https://github.com/cloudquery/filetypes/compare/v2.0.4...v2.1.0) (2023-05-09)
+
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#153](https://github.com/cloudquery/filetypes/issues/153)) ([51c3701](https://github.com/cloudquery/filetypes/commit/51c37012d98181a52b9aa531f76aebb4950d03b3))
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v12 digest to 0ea1a10 ([#142](https://github.com/cloudquery/filetypes/issues/142)) ([c92b04f](https://github.com/cloudquery/filetypes/commit/c92b04fdf93bdfec4dbbacbb687bce45f4c84981))
+* **deps:** Update golang.org/x/exp digest to 47ecfdc ([#143](https://github.com/cloudquery/filetypes/issues/143)) ([e35b758](https://github.com/cloudquery/filetypes/commit/e35b7587373a89fedef50c6ed179066769cd3059))
+* **deps:** Update google.golang.org/genproto digest to daa745c ([#145](https://github.com/cloudquery/filetypes/issues/145)) ([1d82acb](https://github.com/cloudquery/filetypes/commit/1d82acbe65e68c61d86cdf3bed8684373917f3d4))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.5.2 ([#149](https://github.com/cloudquery/filetypes/issues/149)) ([23a0d7f](https://github.com/cloudquery/filetypes/commit/23a0d7f70587e241f684c5ec0bb6c10289b321e2))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.5.3 ([#150](https://github.com/cloudquery/filetypes/issues/150)) ([7b3e452](https://github.com/cloudquery/filetypes/commit/7b3e4525aa80e3e38911adfc5100deb125494e19))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.5.4 ([#151](https://github.com/cloudquery/filetypes/issues/151)) ([bb1d6ba](https://github.com/cloudquery/filetypes/commit/bb1d6ba9bcb63ab6f970751cf1ab8f034606904f))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v2 to v2.6.0 ([#152](https://github.com/cloudquery/filetypes/issues/152)) ([4909248](https://github.com/cloudquery/filetypes/commit/49092485ec3ea5489128ed1a918a4441c428ed2b))
+* **deps:** Update module github.com/klauspost/compress to v1.16.5 ([#146](https://github.com/cloudquery/filetypes/issues/146)) ([0d26180](https://github.com/cloudquery/filetypes/commit/0d261807e6667e54e1cb81363dc4cc86a01bd81c))
+* **deps:** Update module github.com/rs/zerolog to v1.29.1 ([#147](https://github.com/cloudquery/filetypes/issues/147)) ([f1cafcc](https://github.com/cloudquery/filetypes/commit/f1cafcce3ad44837acc427fd3c27e878ccb93b7c))
+* **deps:** Update module golang.org/x/mod to v0.10.0 ([#148](https://github.com/cloudquery/filetypes/issues/148)) ([1626c57](https://github.com/cloudquery/filetypes/commit/1626c5781aa6f470d54db27ebd071b5d41512749))
+
 ## [2.0.4](https://github.com/cloudquery/filetypes/compare/v2.0.3...v2.0.4) (2023-04-28)
 
 
