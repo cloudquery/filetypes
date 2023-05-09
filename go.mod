@@ -3,18 +3,19 @@ module github.com/cloudquery/filetypes/v2
 go 1.19
 
 require (
-	github.com/apache/arrow/go/v12 v12.0.0-20230430004532-0ea1a103dfc2
+	github.com/apache/arrow/go/v13 v13.0.0-20230509040948-de6c3cd2b604
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/plugin-sdk/v2 v2.6.0
 	github.com/stretchr/testify v1.8.2
 )
 
 // TODO: remove once al updates are merged
-replace github.com/apache/arrow/go/v12 => github.com/cloudquery/arrow/go/v12 v12.0.0-20230419074556-00ceafa3b033
+replace github.com/apache/arrow/go/v13 => github.com/cloudquery/arrow/go/v13 v13.0.0-20230509053643-898a79b1d3c8
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/apache/arrow/go/v12 v12.0.0-20230430004532-0ea1a103dfc2 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
 	github.com/cloudquery/plugin-pb-go v1.0.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
