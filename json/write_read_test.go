@@ -9,6 +9,7 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/bradleyjkemp/cupaloy/v2"
+	"github.com/cloudquery/filetypes/v3/types"
 	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/google/uuid"
@@ -29,7 +30,7 @@ func TestWrite(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := cl.WriteTableBatch(&b, table, records); err != nil {
+	if err := types.WriteAll(cl, &b, table.ToArrowSchema(), records); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(b.String())
@@ -56,7 +57,7 @@ func TestWriteRead(t *testing.T) {
 	writer := bufio.NewWriter(&b)
 	reader := bufio.NewReader(&b)
 
-	if err := cl.WriteTableBatch(writer, table, records); err != nil {
+	if err := types.WriteAll(cl, writer, table.ToArrowSchema(), records); err != nil {
 		t.Fatal(err)
 	}
 	writer.Flush()
@@ -104,6 +105,7 @@ func BenchmarkWrite(b *testing.B) {
 		MaxRows:    1000,
 	}
 	records := schema.GenTestData(table, opts)
+	arrowSchema := table.ToArrowSchema()
 
 	cl, err := NewClient()
 	if err != nil {
@@ -113,7 +115,7 @@ func BenchmarkWrite(b *testing.B) {
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		if err := cl.WriteTableBatch(writer, table, records); err != nil {
+		if err := types.WriteAll(cl, writer, arrowSchema, records); err != nil {
 			b.Fatal(err)
 		}
 		err = writer.Flush()

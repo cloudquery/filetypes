@@ -9,27 +9,48 @@ import (
 	"github.com/apache/arrow/go/v13/parquet"
 	"github.com/apache/arrow/go/v13/parquet/compress"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
+	ftypes "github.com/cloudquery/filetypes/v3/types"
 	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
-func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
+type Handle struct {
+	w *pqarrow.FileWriter
+	s *arrow.Schema
+}
+
+var _ ftypes.Handle = (*Handle)(nil)
+
+func (*Client) WriteHeader(w io.Writer, s *arrow.Schema) (ftypes.Handle, error) {
 	props := parquet.NewWriterProperties(
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),
 	)
 	arrprops := pqarrow.DefaultWriterProps()
-	newSchema := convertSchema(table.ToArrowSchema())
+	newSchema := convertSchema(s)
 	fw, err := pqarrow.NewFileWriter(newSchema, w, props, arrprops)
 	if err != nil {
-		return err
+		return nil, err
 	}
+
+	return &Handle{
+		w: fw,
+		s: newSchema,
+	}, nil
+}
+
+func (h *Handle) WriteFooter() error {
+	err := h.w.Close()
+	h.w = nil
+	return err
+}
+
+func (h *Handle) WriteContent(records []arrow.Record) error {
 	for _, rec := range records {
-		if err := fw.Write(transformRecord(newSchema, rec)); err != nil {
+		if err := h.w.Write(transformRecord(h.s, rec)); err != nil {
 			return err
 		}
 	}
-	return fw.Close()
+	return nil
 }
 
 func convertSchema(sc *arrow.Schema) *arrow.Schema {
