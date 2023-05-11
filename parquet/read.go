@@ -11,7 +11,8 @@ import (
 	"github.com/apache/arrow/go/v13/arrow/memory"
 	"github.com/apache/arrow/go/v13/parquet/file"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
-	"github.com/cloudquery/plugin-sdk/v2/types"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
 type ReaderAtSeeker interface {
@@ -20,7 +21,7 @@ type ReaderAtSeeker interface {
 	io.Seeker
 }
 
-func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
+func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- arrow.Record) error {
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {
@@ -41,7 +42,7 @@ func (*Client) Read(f ReaderAtSeeker, arrowSchema *arrow.Schema, _ string, res c
 
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castStringsToExtensions(rec, arrowSchema)
+		castRec, err := castStringsToExtensions(rec, table.ToArrowSchema())
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}

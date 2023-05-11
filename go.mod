@@ -1,4 +1,4 @@
-module github.com/cloudquery/filetypes/v2
+module github.com/cloudquery/filetypes/v3
 
 go 1.19
 
@@ -6,6 +6,7 @@ require (
 	github.com/apache/arrow/go/v13 v13.0.0-20230509040948-de6c3cd2b604
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/plugin-sdk/v2 v2.7.0
+	github.com/cloudquery/plugin-sdk/v3 v3.0.0
 	github.com/stretchr/testify v1.8.2
 )
 

@@ -11,16 +11,17 @@ import (
 	"github.com/apache/arrow/go/v13/parquet"
 	"github.com/apache/arrow/go/v13/parquet/compress"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
-	"github.com/cloudquery/plugin-sdk/v2/types"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
-func (c *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
+func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
 	props := parquet.NewWriterProperties(
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),
 	)
 	arrprops := pqarrow.DefaultWriterProps()
-	newSchema := convertSchema(arrowSchema)
+	newSchema := convertSchema(table.ToArrowSchema())
 	fw, err := pqarrow.NewFileWriter(newSchema, w, props, arrprops)
 	if err != nil {
 		return err
