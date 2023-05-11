@@ -7,10 +7,11 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/csv"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
-func (cl *Client) WriteTableBatch(w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	writer := csv.NewWriter(w, arrowSchema,
+func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
+	writer := csv.NewWriter(w, table.ToArrowSchema(),
 		csv.WithComma(cl.Delimiter),
 		csv.WithHeader(cl.IncludeHeaders),
 		csv.WithNullWriter(""),

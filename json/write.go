@@ -6,9 +6,10 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
-func (c *Client) WriteTableBatch(w io.Writer, _ *arrow.Schema, records []arrow.Record) error {
+func (c *Client) WriteTableBatch(w io.Writer, _ *schema.Table, records []arrow.Record) error {
 	for _, r := range records {
 		err := c.writeRecord(w, r)
 		if err != nil {
