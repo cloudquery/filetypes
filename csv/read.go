@@ -5,10 +5,11 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/csv"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
-func (cl *Client) Read(r io.Reader, arrowSchema *arrow.Schema, _ string, res chan<- arrow.Record) error {
-	reader := csv.NewReader(r, arrowSchema,
+func (cl *Client) Read(r io.Reader, table *schema.Table, _ string, res chan<- arrow.Record) error {
+	reader := csv.NewReader(r, table.ToArrowSchema(),
 		csv.WithComma(cl.Delimiter),
 		csv.WithHeader(cl.IncludeHeaders),
 		csv.WithNullReader(true, ""),
