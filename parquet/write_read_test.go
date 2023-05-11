@@ -16,7 +16,7 @@ func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
 	table := schema.TestTable("test")
 	sourceName := "test-source"
-	syncTime := time.Now().UTC().Round(1 * time.Second)
+	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
@@ -67,7 +67,7 @@ func TestWriteRead(t *testing.T) {
 func BenchmarkWrite(b *testing.B) {
 	table := schema.TestTable("test")
 	sourceName := "test-source"
-	syncTime := time.Now().UTC().Round(1 * time.Second)
+	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
