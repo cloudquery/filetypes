@@ -40,9 +40,10 @@ func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- 
 		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
 
+	arrowSchema := table.ToArrowSchema()
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castStringsToExtensions(rec, table.ToArrowSchema())
+		castRec, err := castStringsToExtensions(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
