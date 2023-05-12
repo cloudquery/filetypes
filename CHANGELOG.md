@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/cloudquery/filetypes/compare/v2.1.0...v3.0.0) (2023-05-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade to SDK v3 ([#155](https://github.com/cloudquery/filetypes/issues/155))
+
+### Features
+
+* Upgrade to SDK v3 ([#155](https://github.com/cloudquery/filetypes/issues/155)) ([0509231](https://github.com/cloudquery/filetypes/commit/05092318f050fd3c11e75409cda8d90374def154))
+
 ## [2.1.0](https://github.com/cloudquery/filetypes/compare/v2.0.4...v2.1.0) (2023-05-09)
 
 
