@@ -172,8 +172,8 @@ func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, 
 			cols[c] = sb.NewArray()
 
 		// Handle unsupported types
-		case isUnsupportedType(col.DataType()):
-			sb := array.NewBuilder(memory.DefaultAllocator, col.DataType())
+		case isUnsupportedType(arrowSchema.Field(c).Type):
+			sb := array.NewBuilder(memory.DefaultAllocator, arrowSchema.Field(c).Type)
 			for i := 0; i < col.Len(); i++ {
 				if col.IsNull(i) {
 					sb.AppendNull()

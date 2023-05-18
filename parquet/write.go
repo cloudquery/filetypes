@@ -58,7 +58,11 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 			fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
 		default:
 			if isUnsupportedType(f.Type) {
-				fields[i].Type = arrow.BinaryTypes.String
+				if arrow.IsListLike(f.Type.ID()) {
+					fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
+				} else {
+					fields[i].Type = arrow.BinaryTypes.String
+				}
 			}
 		}
 	}
@@ -72,20 +76,17 @@ func isUnsupportedType(t arrow.DataType) bool {
 	switch t.ID() {
 	case arrow.INTERVAL_DAY_TIME, arrow.DURATION, arrow.INTERVAL_MONTH_DAY_NANO, arrow.INTERVAL_MONTHS:
 		return true
-	case arrow.LIST:
-		return isUnsupportedType(t.(*arrow.ListType).Elem())
-	case arrow.LARGE_LIST:
-		return isUnsupportedType(t.(*arrow.LargeListType).Elem())
 	case arrow.STRUCT:
 		for _, f := range t.(*arrow.StructType).Fields() {
 			if isUnsupportedType(f.Type) {
 				return true
 			}
 		}
-		return false
-	default:
-		return false
 	}
+	if arrow.IsListLike(t.ID()) {
+		return isUnsupportedType(t.(*arrow.ListType).Elem())
+	}
+	return false
 }
 
 // castToString casts extension columns or unsupported columns to string. It does not release the original record.
@@ -172,6 +173,12 @@ func castToString(rec arrow.Record) (arrow.Record, error) {
 
 		// Handle unsupported types
 		case isUnsupportedType(col.DataType()):
+			fmt.Println("here for", newSchema.Field(c).Name, newSchema.Field(c).Type.ID().String(), col.DataType().ID().String())
+
+			//if arrow.TypeEqual(newSchema.Field(c).Type, arrow.ListOf(arrow.BinaryTypes.String)) { // list mode?
+			// todo handle list
+			//}
+
 			sb := array.NewStringBuilder(memory.DefaultAllocator)
 			for i := 0; i < col.Len(); i++ {
 				if col.IsNull(i) {
@@ -181,6 +188,7 @@ func castToString(rec arrow.Record) (arrow.Record, error) {
 				sb.Append(col.ValueStr(i))
 			}
 			cols[c] = sb.NewArray()
+
 		default:
 			cols[c] = col
 		}
