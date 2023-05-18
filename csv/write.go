@@ -20,10 +20,7 @@ func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []ar
 		csv.WithNullWriter(""),
 	)
 	for _, record := range records {
-		castRec, err := castToString(record)
-		if err != nil {
-			return fmt.Errorf("failed to cast to string: %w", err)
-		}
+		castRec := castToString(record)
 
 		if err := writer.Write(castRec); err != nil {
 			return fmt.Errorf("failed to write record to csv: %w", err)
@@ -67,26 +64,11 @@ func isTypeSupported(t arrow.DataType) bool {
 		return true
 	}
 
-	/*
-		switch t.ID() {
-		case arrow.BOOL,
-			arrow.INT8, arrow.INT16, arrow.INT32, arrow.INT64,
-			arrow.UINT8, arrow.UINT16, arrow.UINT32, arrow.UINT64,
-			arrow.FLOAT32, arrow.FLOAT64,
-			arrow.STRING,
-			arrow.TIMESTAMP,
-			arrow.DATE32, arrow.DATE64,
-			arrow.BINARY, arrow.EXTENSION:
-			return true
-		case arrow.LIST:
-			return isTypeSupported(t.(*arrow.ListType).Elem())
-		}
-	*/
 	return false
 }
 
 // castToString casts extension columns or unsupported columns to string. It does not release the original record.
-func castToString(rec arrow.Record) (arrow.Record, error) {
+func castToString(rec arrow.Record) arrow.Record {
 	newSchema := convertSchema(rec.Schema())
 	cols := make([]arrow.Array, rec.NumCols())
 	for c := 0; c < int(rec.NumCols()); c++ {
@@ -106,5 +88,5 @@ func castToString(rec arrow.Record) (arrow.Record, error) {
 		}
 		cols[c] = sb.NewArray()
 	}
-	return array.NewRecord(newSchema, cols, rec.NumRows()), nil
+	return array.NewRecord(newSchema, cols, rec.NumRows())
 }

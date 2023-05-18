@@ -37,14 +37,14 @@ func (cl *Client) Read(r io.Reader, table *schema.Table, _ string, res chan<- ar
 // castFromString casts extension columns to string.
 func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
 	cols := make([]arrow.Array, rec.NumCols())
-	for c := 0; c < int(rec.NumCols()); c++ {
+	for c, f := range arrowSchema.Fields() {
 		col := rec.Column(c)
-		if isTypeSupported(col.DataType()) {
+		if isTypeSupported(f.Type) {
 			cols[c] = col
 			continue
 		}
 
-		sb := array.NewBuilder(memory.DefaultAllocator, col.DataType())
+		sb := array.NewBuilder(memory.DefaultAllocator, f.Type)
 		for i := 0; i < col.Len(); i++ {
 			if col.IsNull(i) {
 				sb.AppendNull()
