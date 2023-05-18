@@ -122,13 +122,13 @@ func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow
 				sb.Append(v2)
 			}
 			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewMacType()):
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewMACType()):
 			arr := col.(*array.String)
 			b, err := arr.MarshalJSON()
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 			}
-			sb := types.NewMacBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.NewMacType()))
+			sb := types.NewMACBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.NewMACType()))
 			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
@@ -158,13 +158,13 @@ func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
 			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewMacType())):
+		case arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewMACType())):
 			arr := col.(*array.List)
 			b, err := arr.MarshalJSON()
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
 			}
-			sb := array.NewListBuilder(memory.DefaultAllocator, types.NewMacType())
+			sb := array.NewListBuilder(memory.DefaultAllocator, types.NewMACType())
 			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)

@@ -54,7 +54,7 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 		case arrow.TypeEqual(f.Type, arrow.ListOf(types.NewUUIDType())),
 			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewInetType())),
 			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewJSONType())),
-			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewMacType())):
+			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewMACType())):
 			fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
 		}
 	}
@@ -119,8 +119,8 @@ func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 				sb.Append(string(b))
 			}
 			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(col.DataType(), types.NewMacType()):
-			arr := col.(*types.MacArray)
+		case arrow.TypeEqual(col.DataType(), types.NewMACType()):
+			arr := col.(*types.MACArray)
 			b, err := arr.MarshalJSON()
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
@@ -133,7 +133,7 @@ func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 			cols[c] = sb.NewArray()
 		case arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewUUIDType())),
 			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewInetType())),
-			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMacType())):
+			arrow.TypeEqual(col.DataType(), arrow.ListOf(types.NewMACType())):
 			arr := col.(*array.List)
 			b, err := arr.MarshalJSON()
 			if err != nil {
