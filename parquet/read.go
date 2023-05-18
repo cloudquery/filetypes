@@ -43,7 +43,7 @@ func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- 
 	arrowSchema := table.ToArrowSchema()
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castStringsToExtensions(rec, arrowSchema)
+		castRec, err := castFromString(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
@@ -67,8 +67,8 @@ func convertToSingleRowRecords(rec arrow.Record) []arrow.Record {
 	return records
 }
 
-// castExtensionColsToString casts extension columns to string.
-func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+// castFromString casts extension columns to string.
+func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
 	cols := make([]arrow.Array, rec.NumCols())
 	for c := 0; c < int(rec.NumCols()); c++ {
 		col := rec.Column(c)
@@ -168,6 +168,20 @@ func castStringsToExtensions(rec arrow.Record, arrowSchema *arrow.Schema) (arrow
 			err = sb.UnmarshalJSON(b)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
+			}
+			cols[c] = sb.NewArray()
+
+		// Handle unsupported types
+		case isUnsupportedType(col.DataType()):
+			sb := array.NewBuilder(memory.DefaultAllocator, col.DataType())
+			for i := 0; i < col.Len(); i++ {
+				if col.IsNull(i) {
+					sb.AppendNull()
+					continue
+				}
+				if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
+					return nil, fmt.Errorf("failed to AppendValueFromString col %v: %w", rec.ColumnName(c), err)
+				}
 			}
 			cols[c] = sb.NewArray()
 		default:

@@ -36,7 +36,7 @@ func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arr
 }
 
 func (*Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
-	castRec, err := castExtensionColsToString(rec)
+	castRec, err := castToString(rec)
 	if err != nil {
 		return fmt.Errorf("failed to cast to string: %w", err)
 	}
@@ -56,6 +56,10 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewJSONType())),
 			arrow.TypeEqual(f.Type, arrow.ListOf(types.NewMACType())):
 			fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
+		default:
+			if isUnsupportedType(f.Type) {
+				fields[i].Type = arrow.BinaryTypes.String
+			}
 		}
 	}
 
@@ -64,8 +68,28 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 	return newSchema
 }
 
-// castExtensionColsToString casts extension columns to string. It does not release the original record.
-func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
+func isUnsupportedType(t arrow.DataType) bool {
+	switch t.ID() {
+	case arrow.INTERVAL_DAY_TIME, arrow.DURATION, arrow.INTERVAL_MONTH_DAY_NANO, arrow.INTERVAL_MONTHS:
+		return true
+	case arrow.LIST:
+		return isUnsupportedType(t.(*arrow.ListType).Elem())
+	case arrow.LARGE_LIST:
+		return isUnsupportedType(t.(*arrow.LargeListType).Elem())
+	case arrow.STRUCT:
+		for _, f := range t.(*arrow.StructType).Fields() {
+			if isUnsupportedType(f.Type) {
+				return true
+			}
+		}
+		return false
+	default:
+		return false
+	}
+}
+
+// castToString casts extension columns or unsupported columns to string. It does not release the original record.
+func castToString(rec arrow.Record) (arrow.Record, error) {
 	newSchema := convertSchema(rec.Schema())
 	cols := make([]arrow.Array, rec.NumCols())
 	for c := 0; c < int(rec.NumCols()); c++ {
@@ -145,8 +169,20 @@ func castExtensionColsToString(rec arrow.Record) (arrow.Record, error) {
 				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
 			}
 			cols[c] = sb.NewArray()
+
+		// Handle unsupported types
+		case isUnsupportedType(col.DataType()):
+			sb := array.NewStringBuilder(memory.DefaultAllocator)
+			for i := 0; i < col.Len(); i++ {
+				if col.IsNull(i) {
+					sb.AppendNull()
+					continue
+				}
+				sb.Append(col.ValueStr(i))
+			}
+			cols[c] = sb.NewArray()
 		default:
-			cols[c] = rec.Column(c)
+			cols[c] = col
 		}
 	}
 	return array.NewRecord(newSchema, cols, rec.NumRows()), nil
