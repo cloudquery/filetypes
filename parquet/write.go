@@ -69,15 +69,15 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 }
 
 func isUnsupportedType(t arrow.DataType) bool {
-	switch t.(type) {
+	switch dt := t.(type) {
 	case *arrow.DayTimeIntervalType, *arrow.DurationType, *arrow.MonthDayNanoIntervalType, *arrow.MonthIntervalType: // unsupported in pqarrow
 		return true
 	case *arrow.LargeBinaryType, *arrow.LargeListType, *arrow.LargeStringType: // not yet implemented in arrow
 		return true
-	case *arrow.Date32Type, *arrow.Date64Type, *arrow.Time32Type, *arrow.Time64Type, *arrow.TimestampType, *arrow.Uint32Type, *arrow.Uint64Type: // panic
+	case *arrow.Date32Type, *arrow.Date64Type, *arrow.Time32Type, *arrow.Time64Type, *arrow.TimestampType, *arrow.Uint32Type, *arrow.Uint64Type: // panic (FIXME)
 		return true
 	case *arrow.StructType:
-		for _, f := range t.(*arrow.StructType).Fields() {
+		for _, f := range dt.Fields() {
 			if isUnsupportedType(f.Type) {
 				return true
 			}
