@@ -172,13 +172,20 @@ func castToString(rec arrow.Record) (arrow.Record, error) {
 			cols[c] = sb.NewArray()
 
 		// Handle unsupported types
+		case isUnsupportedType(col.DataType()) && arrow.TypeEqual(newSchema.Field(c).Type, arrow.ListOf(arrow.BinaryTypes.String)):
+			lb := array.NewListBuilder(memory.DefaultAllocator, arrow.BinaryTypes.String)
+			for i := 0; i < col.Len(); i++ {
+				if col.IsNull(i) {
+					lb.AppendNull()
+					continue
+				}
+				if err := lb.AppendValueFromString(col.ValueStr(i)); err != nil {
+					return nil, fmt.Errorf("failed to append value from string for vcol %v: %w", rec.ColumnName(c), err)
+				}
+			}
+			cols[c] = lb.NewArray()
+
 		case isUnsupportedType(col.DataType()):
-			fmt.Println("here for", newSchema.Field(c).Name, newSchema.Field(c).Type.ID().String(), col.DataType().ID().String())
-
-			//if arrow.TypeEqual(newSchema.Field(c).Type, arrow.ListOf(arrow.BinaryTypes.String)) { // list mode?
-			// todo handle list
-			//}
-
 			sb := array.NewStringBuilder(memory.DefaultAllocator)
 			for i := 0; i < col.Len(); i++ {
 				if col.IsNull(i) {
