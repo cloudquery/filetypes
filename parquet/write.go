@@ -58,11 +58,7 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 			fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
 		default:
 			if isUnsupportedType(f.Type) {
-				if arrow.IsListLike(f.Type.ID()) {
-					fields[i].Type = arrow.ListOf(arrow.BinaryTypes.String)
-				} else {
-					fields[i].Type = arrow.BinaryTypes.String
-				}
+				fields[i].Type = arrow.BinaryTypes.String
 			}
 		}
 	}
@@ -73,10 +69,14 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 }
 
 func isUnsupportedType(t arrow.DataType) bool {
-	switch t.ID() {
-	case arrow.INTERVAL_DAY_TIME, arrow.DURATION, arrow.INTERVAL_MONTH_DAY_NANO, arrow.INTERVAL_MONTHS:
+	switch t.(type) {
+	case *arrow.DayTimeIntervalType, *arrow.DurationType, *arrow.MonthDayNanoIntervalType, *arrow.MonthIntervalType: // unsupported in pqarrow
 		return true
-	case arrow.STRUCT:
+	case *arrow.LargeBinaryType, *arrow.LargeListType, *arrow.LargeStringType: // not yet implemented in arrow
+		return true
+	case *arrow.Date32Type, *arrow.Date64Type, *arrow.Time32Type, *arrow.Time64Type, *arrow.TimestampType, *arrow.Uint32Type, *arrow.Uint64Type: // panic
+		return true
+	case *arrow.StructType:
 		for _, f := range t.(*arrow.StructType).Fields() {
 			if isUnsupportedType(f.Type) {
 				return true
@@ -172,19 +172,6 @@ func castToString(rec arrow.Record) (arrow.Record, error) {
 			cols[c] = sb.NewArray()
 
 		// Handle unsupported types
-		case isUnsupportedType(col.DataType()) && arrow.TypeEqual(newSchema.Field(c).Type, arrow.ListOf(arrow.BinaryTypes.String)):
-			lb := array.NewListBuilder(memory.DefaultAllocator, arrow.BinaryTypes.String)
-			for i := 0; i < col.Len(); i++ {
-				if col.IsNull(i) {
-					lb.AppendNull()
-					continue
-				}
-				if err := lb.AppendValueFromString(col.ValueStr(i)); err != nil {
-					return nil, fmt.Errorf("failed to append value from string for vcol %v: %w", rec.ColumnName(c), err)
-				}
-			}
-			cols[c] = lb.NewArray()
-
 		case isUnsupportedType(col.DataType()):
 			sb := array.NewStringBuilder(memory.DefaultAllocator)
 			for i := 0; i < col.Len(); i++ {
@@ -192,7 +179,9 @@ func castToString(rec arrow.Record) (arrow.Record, error) {
 					sb.AppendNull()
 					continue
 				}
-				sb.Append(col.ValueStr(i))
+				if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
+					return nil, fmt.Errorf("failed to append value col %v: %w", rec.ColumnName(c), err)
+				}
 			}
 			cols[c] = sb.NewArray()
 
