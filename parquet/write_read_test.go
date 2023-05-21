@@ -13,10 +13,6 @@ import (
 )
 
 var pqTestOpts = schema.TestSourceOptions{
-	// unsupported in pqarrow:
-	SkipIntervals: true,
-	SkipDurations: true,
-
 	// persisted as timestamp[ms]:
 	SkipTimestamps: true,
 	SkipTimes:      true,
