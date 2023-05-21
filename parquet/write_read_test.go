@@ -12,9 +12,20 @@ import (
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
+var pqTestOpts = schema.TestSourceOptions{
+	// unsupported in pqarrow:
+	SkipIntervals: true,
+	SkipDurations: true,
+
+	// persisted as timestamp[ms]:
+	SkipTimestamps: true,
+	SkipTimes:      true,
+	SkipDates:      true,
+}
+
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
-	table := schema.TestTable("test")
+	table := schema.TestTable("test", pqTestOpts)
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
@@ -65,7 +76,7 @@ func TestWriteRead(t *testing.T) {
 }
 
 func BenchmarkWrite(b *testing.B) {
-	table := schema.TestTable("test")
+	table := schema.TestTable("test", pqTestOpts)
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{

@@ -74,8 +74,6 @@ func isUnsupportedType(t arrow.DataType) bool {
 		return true
 	case *arrow.LargeBinaryType, *arrow.LargeListType, *arrow.LargeStringType: // not yet implemented in arrow
 		return true
-	case *arrow.Date32Type, *arrow.Date64Type, *arrow.Time32Type, *arrow.Time64Type, *arrow.TimestampType, *arrow.Uint32Type, *arrow.Uint64Type: // panic (FIXME)
-		return true
 	case *arrow.StructType:
 		for _, f := range dt.Fields() {
 			if isUnsupportedType(f.Type) {
