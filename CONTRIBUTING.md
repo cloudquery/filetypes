@@ -17,11 +17,7 @@ This is the repository for CloudQuery FileTypes utility module. If you are looki
 
 Run `make test` to run all unit-tests
 
-To update snapshot testing run:
-
-```
-UPDATE_SNAPSHOTS=true make test
-```
+To update snapshot testing run: `UPDATE_SNAPSHOTS=true make test`
 
 ### Lint
 
