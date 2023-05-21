@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/apache/arrow/go/v13 v13.0.0-20230509040948-de6c3cd2b604
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/plugin-sdk/v3 v3.0.1
+	github.com/cloudquery/plugin-sdk/v3 v3.6.1
 	github.com/stretchr/testify v1.8.2
 )
 
