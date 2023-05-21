@@ -10,7 +10,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
-func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
+func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
 	props := parquet.NewWriterProperties(
 		parquet.WithVersion(parquet.V2_4),
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M

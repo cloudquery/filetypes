@@ -15,7 +15,9 @@ import (
 
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
-	types.RegisterAllExtensions()
+	if err := types.RegisterAllExtensions(); err != nil {
+		t.Fatal(err)
+	}
 	table := schema.TestTable("test",
 		schema.TestSourceOptions{
 			SkipIntervals:  true,
