@@ -10,17 +10,28 @@ import (
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
-	table := schema.TestTable("test")
+	types.RegisterAllExtensions()
+	table := schema.TestTable("test",
+		schema.TestSourceOptions{
+			SkipIntervals:  true,
+			SkipDurations:  true,
+			SkipDates:      true,
+			SkipTimes:      true,
+			SkipTimestamps: true,
+		},
+	)
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
 		MaxRows:    2,
+		// Precision: time.Second,
 	}
 	records := schema.GenTestData(table, opts)
 	writer := bufio.NewWriter(&b)
@@ -65,7 +76,13 @@ func TestWriteRead(t *testing.T) {
 }
 
 func BenchmarkWrite(b *testing.B) {
-	table := schema.TestTable("test")
+	table := schema.TestTable("test", schema.TestSourceOptions{
+		SkipIntervals:  true,
+		SkipDurations:  true,
+		SkipDates:      true,
+		SkipTimes:      true,
+		SkipTimestamps: true,
+	})
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
