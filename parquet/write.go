@@ -1,7 +1,6 @@
 package parquet
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/apache/arrow/go/v13/arrow"
@@ -14,7 +13,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
-func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
+func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
 	props := parquet.NewWriterProperties(
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),
@@ -26,20 +25,11 @@ func (c *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arr
 		return err
 	}
 	for _, rec := range records {
-		err := c.writeRecord(rec, fw)
-		if err != nil {
+		if err := fw.Write(transformRecord(rec)); err != nil {
 			return err
 		}
 	}
 	return fw.Close()
-}
-
-func (*Client) writeRecord(rec arrow.Record, fw *pqarrow.FileWriter) error {
-	castRec, err := transformRecord(rec)
-	if err != nil {
-		return fmt.Errorf("failed to transform record: %w", err)
-	}
-	return fw.Write(castRec)
 }
 
 func convertSchema(sch *arrow.Schema) *arrow.Schema {
@@ -89,13 +79,13 @@ func isUnsupportedType(t arrow.DataType) bool {
 }
 
 // transformRecord casts extension columns or unsupported columns to string. It does not release the original record.
-func transformRecord(rec arrow.Record) (arrow.Record, error) {
+func transformRecord(rec arrow.Record) arrow.Record {
 	newSchema := convertSchema(rec.Schema())
 	cols := make([]arrow.Array, rec.NumCols())
 	for c := 0; c < int(rec.NumCols()); c++ {
 		cols[c] = transformArray(rec.Column(c))
 	}
-	return array.NewRecord(newSchema, cols, rec.NumRows()), nil
+	return array.NewRecord(newSchema, cols, rec.NumRows())
 }
 
 func transformArray(arr arrow.Array) arrow.Array {
@@ -121,9 +111,12 @@ func transformArray(arr arrow.Array) arrow.Array {
 func transformToStringArray(arr arrow.Array) arrow.Array {
 	bldr := array.NewStringBuilder(memory.DefaultAllocator)
 	for i := 0; i < arr.Len(); i++ {
-		if err := bldr.AppendValueFromString(arr.ValueStr(i)); err != nil {
-			panic(err)
+		if arr.IsNull(i) {
+			bldr.AppendNull()
+			continue
 		}
+
+		bldr.Append(arr.ValueStr(i))
 	}
 	return bldr.NewArray()
 }

@@ -175,7 +175,12 @@ func reverseTransformInet(col *array.String) arrow.Array {
 func reverseTransformUUID(col *array.String) arrow.Array {
 	bldr := types.NewUUIDBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.UUID))
 	for i := 0; i < col.Len(); i++ {
-		if err := bldr.AppendValueFromString(col.ValueStr(i)); err != nil {
+		if col.IsNull(i) {
+			bldr.AppendNull()
+			continue
+		}
+
+		if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
 			panic(err)
 		}
 	}
