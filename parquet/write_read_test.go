@@ -13,10 +13,8 @@ import (
 )
 
 var pqTestOpts = schema.TestSourceOptions{
-	// persisted as timestamp[ms]:
-	SkipTimestamps: true,
-	SkipTimes:      true,
-	SkipDates:      true,
+	SkipTimes: true,
+	SkipDates: true,
 }
 
 func TestWriteRead(t *testing.T) {
