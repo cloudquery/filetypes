@@ -15,17 +15,21 @@ import (
 
 func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
 	props := parquet.NewWriterProperties(
+		parquet.WithVersion(parquet.V2_4),
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),
 	)
-	arrprops := pqarrow.DefaultWriterProps()
+	arrprops := pqarrow.NewArrowWriterProperties(
+		pqarrow.WithStoreSchema(),
+	)
 	newSchema := convertSchema(table.ToArrowSchema())
 	fw, err := pqarrow.NewFileWriter(newSchema, w, props, arrprops)
 	if err != nil {
 		return err
 	}
+	defer fw.Close()
 	for _, rec := range records {
-		if err := fw.Write(transformRecord(rec)); err != nil {
+		if err := fw.Write(transformRecord(newSchema, rec)); err != nil {
 			return err
 		}
 	}
@@ -79,13 +83,12 @@ func isUnsupportedType(t arrow.DataType) bool {
 }
 
 // transformRecord casts extension columns or unsupported columns to string. It does not release the original record.
-func transformRecord(rec arrow.Record) arrow.Record {
-	newSchema := convertSchema(rec.Schema())
+func transformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 	cols := make([]arrow.Array, rec.NumCols())
 	for c := 0; c < int(rec.NumCols()); c++ {
 		cols[c] = transformArray(rec.Column(c))
 	}
-	return array.NewRecord(newSchema, cols, rec.NumRows())
+	return array.NewRecord(sc, cols, rec.NumRows())
 }
 
 func transformArray(arr arrow.Array) arrow.Array {
@@ -111,12 +114,11 @@ func transformArray(arr arrow.Array) arrow.Array {
 func transformToStringArray(arr arrow.Array) arrow.Array {
 	bldr := array.NewStringBuilder(memory.DefaultAllocator)
 	for i := 0; i < arr.Len(); i++ {
-		if arr.IsNull(i) {
+		if !arr.IsValid(i) {
 			bldr.AppendNull()
-			continue
+		} else {
+			bldr.Append(arr.ValueStr(i))
 		}
-
-		bldr.Append(arr.ValueStr(i))
 	}
 	return bldr.NewArray()
 }

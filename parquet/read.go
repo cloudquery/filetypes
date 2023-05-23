@@ -65,13 +65,13 @@ func convertToSingleRowRecords(sc *arrow.Schema, rec arrow.Record) []arrow.Recor
 func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 	cols := make([]arrow.Array, rec.NumCols())
 	for i := 0; i < int(rec.NumCols()); i++ {
-		cols[i] = reverseTransformArray(sc.Field(i), rec.Column(i))
+		cols[i] = reverseTransformArray(sc.Field(i).Type, rec.Column(i))
 	}
 	return array.NewRecord(sc, cols, -1)
 }
 
-func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
-	dt := f.Type
+func reverseTransformArray(dt arrow.DataType, col arrow.Array) arrow.Array {
+	// dt := f.Type
 	switch {
 	case arrow.TypeEqual(dt, types.ExtensionTypes.UUID):
 		return reverseTransformUUID(col.(*array.String))
@@ -81,41 +81,42 @@ func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
 		return reverseTransformMAC(col.(*array.String))
 	case arrow.TypeEqual(dt, types.ExtensionTypes.JSON):
 		return reverseTransformJSON(col.(*array.String))
-	case arrow.TypeEqual(col.DataType(), arrow.FixedWidthTypes.Timestamp_ms):
+	case arrow.TypeEqual(dt, arrow.FixedWidthTypes.Timestamp_ns) || arrow.TypeEqual(dt, arrow.FixedWidthTypes.Timestamp_s):
 		return reverseTransformTimestamp(dt.(*arrow.TimestampType), col.(*array.Timestamp))
 	case dt.ID() == arrow.STRUCT:
 		return reverseTransformStruct(dt.(*arrow.StructType), col.(*array.String))
-	case arrow.IsListLike(dt.ID()) && dt.(*arrow.ListType).Elem().ID() == arrow.EXTENSION:
-		child := reverseTransformArray(
-			arrow.Field{
-				Type: dt.(*arrow.ListType).Elem(),
-				Name: "list<ext:" + dt.(*arrow.ListType).Elem().Name() + ">",
-			},
-			col.(*array.List).ListValues(),
-		)
-		fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN()) //  1 3 0 1
+	// case arrow.IsListLike(dt.ID()) && dt.(*arrow.ListType).Elem().ID() == arrow.EXTENSION:
+	// 	child := reverseTransformArray(
+	// 		arrow.Field{
+	// 			Type: dt.(*arrow.ListType).Elem(),
+	// 			Name: "list<ext:" + dt.(*arrow.ListType).Elem().Name() + ">",
+	// 		},
+	// 		col.(*array.List).ListValues(),
+	// 	)
+	// 	fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN()) //  1 3 0 1
 
-		return array.NewExtensionData(array.NewData(dt.(*arrow.ListType).Elem(), child.Len(), child.Data().Buffers(), []arrow.ArrayData{child.Data()}, child.NullN(), child.Data().Offset()))
+	// 	return array.NewExtensionData(array.NewData(dt.(*arrow.ListType).Elem(), child.Len(), child.Data().Buffers(), []arrow.ArrayData{child.Data()}, child.NullN(), child.Data().Offset()))
 
 	case arrow.IsListLike(dt.ID()):
-		child := reverseTransformArray(
-			arrow.Field{
-				Type: dt.(*arrow.ListType).Elem(),
-				Name: "list<" + dt.(*arrow.ListType).Elem().Name() + ">",
-			},
-			col.(*array.List).ListValues(),
-		)
-
-		return array.NewListData(array.NewData(dt, col.Len(), col.Data().Buffers(), []arrow.ArrayData{child.Data()}, col.NullN(), col.Data().Offset()))
+		// child := reverseTransformArray(
+		// 	arrow.Field{
+		// 		Type: dt.(*arrow.ListType).Elem(),
+		// 		Name: "list<" + dt.(*arrow.ListType).Elem().Name() + ">",
+		// 	},
+		// 	col.(*array.List).ListValues(),
+		// )
+		child := reverseTransformArray(dt.(*arrow.ListType).Elem(), col.(*array.List).ListValues()).Data()
+		return array.NewListData(array.NewData(dt, col.Len(), col.Data().Buffers(), []arrow.ArrayData{child}, col.NullN(), col.Data().Offset()))
+		// return array.NewListData(array.NewData(dt, col.Len(), col.Data().Buffers(), []arrow.ArrayData{child.Data()}, col.NullN(), col.Data().Offset()))
 	case isUnsupportedType(dt):
 		sb := array.NewBuilder(memory.DefaultAllocator, dt)
 		for i := 0; i < col.Len(); i++ {
-			if col.IsNull(i) {
+			if !col.IsValid(i) {
 				sb.AppendNull()
 				continue
 			}
 			if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
-				panic(fmt.Errorf("failed to AppendValueFromString col %v: %w", f.Name, err))
+				panic(fmt.Errorf("failed to AppendValueFromString col %v: %w", dt.Name(), err))
 			}
 		}
 		return sb.NewArray()
@@ -128,7 +129,7 @@ func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
 func reverseTransformStruct(dt *arrow.StructType, col *array.String) arrow.Array {
 	bldr := array.NewStructBuilder(memory.DefaultAllocator, dt)
 	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+		if !col.IsValid(i) || col.Value(i) == "" {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -143,7 +144,7 @@ func reverseTransformStruct(dt *arrow.StructType, col *array.String) arrow.Array
 func reverseTransformJSON(col *array.String) arrow.Array {
 	bldr := types.NewJSONBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.JSON))
 	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+		if !col.IsValid(i) || col.Value(i) == "" {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -158,7 +159,7 @@ func reverseTransformJSON(col *array.String) arrow.Array {
 func reverseTransformMAC(col *array.String) arrow.Array {
 	bldr := types.NewMACBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.MAC))
 	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+		if !col.IsValid(i) || col.Value(i) == ""{
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -173,7 +174,7 @@ func reverseTransformMAC(col *array.String) arrow.Array {
 func reverseTransformInet(col *array.String) arrow.Array {
 	bldr := types.NewInetBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.Inet))
 	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+		if !col.IsValid(i) || col.Value(i) == "" {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -188,12 +189,10 @@ func reverseTransformInet(col *array.String) arrow.Array {
 func reverseTransformUUID(col *array.String) arrow.Array {
 	bldr := types.NewUUIDBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.UUID))
 	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+		if !col.IsValid(i) || col.Value(i) == "" {
 			bldr.AppendNull()
 			continue
 		}
-		fmt.Println("uuid value", col.Value(i), col.ValueStr(i), col.IsValid(i), col.IsNull(i))
-
 		if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
 			panic(err)
 		}
@@ -205,7 +204,7 @@ func reverseTransformUUID(col *array.String) arrow.Array {
 func reverseTransformTimestamp(dtype *arrow.TimestampType, col *array.Timestamp) arrow.Array {
 	bldr := array.NewTimestampBuilder(memory.DefaultAllocator, dtype)
 	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+		if !col.IsValid(i) {
 			bldr.AppendNull()
 		} else {
 			t := col.Value(i).ToTime(col.DataType().(*arrow.TimestampType).Unit)

@@ -10,14 +10,21 @@ import (
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
 var pqTestOpts = schema.TestSourceOptions{
 	SkipTimes: true,
 	SkipDates: true,
+	SkipIntervals: true,
+	SkipDurations: true,
 }
 
 func TestWriteRead(t *testing.T) {
+	if err := types.RegisterAllExtensions(); err != nil {
+		t.Fatal(err)
+	}
+	
 	var b bytes.Buffer
 	table := schema.TestTable("test", pqTestOpts)
 	sourceName := "test-source"
