@@ -12,7 +12,6 @@ import (
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/cloudquery/plugin-sdk/v3/types"
-	"github.com/google/uuid"
 )
 
 type ReaderAtSeeker interface {
@@ -98,7 +97,7 @@ func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
 	case isUnsupportedType(dt):
 		sb := array.NewBuilder(memory.DefaultAllocator, dt)
 		for i := 0; i < col.Len(); i++ {
-			if col.IsNull(i) || col.ValueStr(i) == "" {
+			if col.IsNull(i) {
 				sb.AppendNull()
 				continue
 			}
@@ -116,7 +115,7 @@ func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
 func reverseTransformStruct(dt *arrow.StructType, col *array.String) arrow.Array {
 	bldr := array.NewStructBuilder(memory.DefaultAllocator, dt)
 	for i := 0; i < col.Len(); i++ {
-		if !col.IsValid(i) || col.ValueStr(i) == "" {
+		if !col.IsValid(i) {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -131,7 +130,7 @@ func reverseTransformStruct(dt *arrow.StructType, col *array.String) arrow.Array
 func reverseTransformJSON(col *array.String) arrow.Array {
 	bldr := types.NewJSONBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.JSON))
 	for i := 0; i < col.Len(); i++ {
-		if !col.IsValid(i) || col.ValueStr(i) == "" {
+		if !col.IsValid(i) {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -146,7 +145,7 @@ func reverseTransformJSON(col *array.String) arrow.Array {
 func reverseTransformMAC(col *array.String) arrow.Array {
 	bldr := types.NewMACBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.MAC))
 	for i := 0; i < col.Len(); i++ {
-		if !col.IsValid(i) || col.ValueStr(i) == "" {
+		if !col.IsValid(i) {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -161,7 +160,7 @@ func reverseTransformMAC(col *array.String) arrow.Array {
 func reverseTransformInet(col *array.String) arrow.Array {
 	bldr := types.NewInetBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.Inet))
 	for i := 0; i < col.Len(); i++ {
-		if !col.IsValid(i) || col.ValueStr(i) == "" {
+		if !col.IsValid(i) {
 			bldr.AppendNull()
 		} else {
 			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
@@ -176,15 +175,8 @@ func reverseTransformInet(col *array.String) arrow.Array {
 func reverseTransformUUID(col *array.String) arrow.Array {
 	bldr := types.NewUUIDBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.UUID))
 	for i := 0; i < col.Len(); i++ {
-		if !col.IsValid(i) || col.ValueStr(i) == "" {
-			bldr.AppendNull()
-		} else {
-			u := uuid.MustParse(col.ValueStr(i))
-			//u, err := uuid.FromBytes(col.Value(i))
-			//if err != nil {
-			//	panic(err)
-			//}
-			bldr.Append(u)
+		if err := bldr.AppendValueFromString(col.ValueStr(i)); err != nil {
+			panic(err)
 		}
 	}
 

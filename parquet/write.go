@@ -121,10 +121,8 @@ func transformArray(arr arrow.Array) arrow.Array {
 func transformToStringArray(arr arrow.Array) arrow.Array {
 	bldr := array.NewStringBuilder(memory.DefaultAllocator)
 	for i := 0; i < arr.Len(); i++ {
-		if arr.IsValid(i) {
-			bldr.Append(arr.ValueStr(i))
-		} else {
-			bldr.AppendNull()
+		if err := bldr.AppendValueFromString(arr.ValueStr(i)); err != nil {
+			panic(err)
 		}
 	}
 	return bldr.NewArray()
