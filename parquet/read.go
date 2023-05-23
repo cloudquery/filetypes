@@ -2,7 +2,6 @@ package parquet
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/cloudquery/plugin-sdk/v3/types"
+	"github.com/google/uuid"
 )
 
 type ReaderAtSeeker interface {
@@ -43,12 +43,8 @@ func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- 
 	arrowSchema := table.ToArrowSchema()
 	for rr.Next() {
 		rec := rr.Record()
-		castRec, err := castFromString(rec, arrowSchema)
-		if err != nil {
-			return fmt.Errorf("failed to cast extension types: %w", err)
-		}
-		castRecs := convertToSingleRowRecords(castRec)
-		for _, r := range castRecs {
+		newRecs := convertToSingleRowRecords(arrowSchema, rec)
+		for _, r := range newRecs {
 			res <- r
 		}
 	}
@@ -59,134 +55,162 @@ func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- 
 	return nil
 }
 
-func convertToSingleRowRecords(rec arrow.Record) []arrow.Record {
+func convertToSingleRowRecords(sc *arrow.Schema, rec arrow.Record) []arrow.Record {
 	records := make([]arrow.Record, rec.NumRows())
 	for i := int64(0); i < rec.NumRows(); i++ {
-		records[i] = rec.NewSlice(i, i+1)
+		records[i] = reverseTransformRecord(sc, rec.NewSlice(i, i+1))
 	}
 	return records
 }
 
-// castFromString casts extension columns to string.
-func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 	cols := make([]arrow.Array, rec.NumCols())
-	for c := 0; c < int(rec.NumCols()); c++ {
-		col := rec.Column(c)
-		switch {
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewUUIDType()):
-			arr := col.(*array.String)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := types.NewUUIDBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.NewUUIDType()))
-			err = sb.UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewInetType()):
-			arr := col.(*array.String)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := types.NewInetBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.NewInetType()))
-			err = sb.UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewJSONType()):
-			arr := col.(*array.String)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			a := make([]any, arr.Len())
-			err = json.Unmarshal(b, &a)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := types.NewJSONBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.NewJSONType()))
-			for _, v := range a {
-				if v == nil {
-					sb.AppendNull()
-					continue
-				}
-				var v2 any
-				err = json.Unmarshal([]byte(v.(string)), &v2)
-				if err != nil {
-					return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-				}
-				sb.Append(v2)
-			}
-			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, types.NewMACType()):
-			arr := col.(*array.String)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := types.NewMACBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.NewMACType()))
-			err = sb.UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewUUIDType())):
-			arr := col.(*array.List)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := array.NewListBuilder(memory.DefaultAllocator, types.NewUUIDType())
-			err = sb.UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewInetType())):
-			arr := col.(*array.List)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := array.NewListBuilder(memory.DefaultAllocator, types.NewInetType())
-			err = sb.UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			cols[c] = sb.NewArray()
-		case arrow.TypeEqual(arrowSchema.Field(c).Type, arrow.ListOf(types.NewMACType())):
-			arr := col.(*array.List)
-			b, err := arr.MarshalJSON()
-			if err != nil {
-				return nil, fmt.Errorf("failed to marshal col %v: %w", rec.ColumnName(c), err)
-			}
-			sb := array.NewListBuilder(memory.DefaultAllocator, types.NewMACType())
-			err = sb.UnmarshalJSON(b)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal col %v: %w", rec.ColumnName(c), err)
-			}
-			cols[c] = sb.NewArray()
+	for i := 0; i < int(rec.NumCols()); i++ {
+		cols[i] = reverseTransformArray(sc.Field(i), rec.Column(i))
+	}
+	return array.NewRecord(sc, cols, -1)
+}
 
-		// Handle unsupported types
-		case isUnsupportedType(arrowSchema.Field(c).Type):
-			sb := array.NewBuilder(memory.DefaultAllocator, arrowSchema.Field(c).Type)
-			for i := 0; i < col.Len(); i++ {
-				if col.IsNull(i) {
-					sb.AppendNull()
-					continue
-				}
-				if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
-					return nil, fmt.Errorf("failed to AppendValueFromString col %v: %w", rec.ColumnName(c), err)
-				}
+func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
+	dt := f.Type
+	switch {
+	case arrow.TypeEqual(dt, types.ExtensionTypes.UUID):
+		return reverseTransformUUID(col.(*array.String))
+	case arrow.TypeEqual(dt, types.ExtensionTypes.Inet):
+		return reverseTransformInet(col.(*array.String))
+	case arrow.TypeEqual(dt, types.ExtensionTypes.MAC):
+		return reverseTransformMAC(col.(*array.String))
+	case arrow.TypeEqual(dt, types.ExtensionTypes.JSON):
+		return reverseTransformJSON(col.(*array.String))
+	case arrow.TypeEqual(col.DataType(), arrow.FixedWidthTypes.Timestamp_us):
+		return reverseTransformTimestamp(dt.(*arrow.TimestampType), col.(*array.Timestamp))
+	case dt.ID() == arrow.STRUCT:
+		return reverseTransformStruct(dt.(*arrow.StructType), col.(*array.String))
+	case arrow.IsListLike(dt.ID()):
+		child := reverseTransformArray(
+			arrow.Field{
+				Type: dt.(*arrow.ListType).Elem(),
+				Name: "list<" + dt.(*arrow.ListType).Elem().Name() + ">",
+			},
+			col.(*array.List).ListValues(),
+		).Data()
+		return array.NewListData(array.NewData(dt, col.Len(), col.Data().Buffers(), []arrow.ArrayData{child}, col.NullN(), col.Data().Offset()))
+	case isUnsupportedType(dt):
+		sb := array.NewBuilder(memory.DefaultAllocator, dt)
+		for i := 0; i < col.Len(); i++ {
+			if col.IsNull(i) || col.ValueStr(i) == "" {
+				sb.AppendNull()
+				continue
 			}
-			cols[c] = sb.NewArray()
-		default:
-			cols[c] = col
+			if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
+				panic(fmt.Errorf("failed to AppendValueFromString col %v: %w", f.Name, err))
+			}
+		}
+		return sb.NewArray()
+
+	default:
+		return col
+	}
+}
+
+func reverseTransformStruct(dt *arrow.StructType, col *array.String) arrow.Array {
+	bldr := array.NewStructBuilder(memory.DefaultAllocator, dt)
+	for i := 0; i < col.Len(); i++ {
+		if !col.IsValid(i) || col.ValueStr(i) == "" {
+			bldr.AppendNull()
+		} else {
+			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
+				panic(fmt.Errorf("failed to append json %s value: %w", col.Value(i), err))
+			}
 		}
 	}
-	return array.NewRecord(arrowSchema, cols, rec.NumRows()), nil
+
+	return bldr.NewArray()
+}
+
+func reverseTransformJSON(col *array.String) arrow.Array {
+	bldr := types.NewJSONBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.JSON))
+	for i := 0; i < col.Len(); i++ {
+		if !col.IsValid(i) || col.ValueStr(i) == "" {
+			bldr.AppendNull()
+		} else {
+			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
+				panic(fmt.Errorf("failed to append json %s value: %w", col.Value(i), err))
+			}
+		}
+	}
+
+	return bldr.NewArray()
+}
+
+func reverseTransformMAC(col *array.String) arrow.Array {
+	bldr := types.NewMACBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.MAC))
+	for i := 0; i < col.Len(); i++ {
+		if !col.IsValid(i) || col.ValueStr(i) == "" {
+			bldr.AppendNull()
+		} else {
+			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	return bldr.NewMACArray()
+}
+
+func reverseTransformInet(col *array.String) arrow.Array {
+	bldr := types.NewInetBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.Inet))
+	for i := 0; i < col.Len(); i++ {
+		if !col.IsValid(i) || col.ValueStr(i) == "" {
+			bldr.AppendNull()
+		} else {
+			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	return bldr.NewInetArray()
+}
+
+func reverseTransformUUID(col *array.String) arrow.Array {
+	bldr := types.NewUUIDBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.UUID))
+	for i := 0; i < col.Len(); i++ {
+		if !col.IsValid(i) || col.ValueStr(i) == "" {
+			bldr.AppendNull()
+		} else {
+			u := uuid.MustParse(col.ValueStr(i))
+			//u, err := uuid.FromBytes(col.Value(i))
+			//if err != nil {
+			//	panic(err)
+			//}
+			bldr.Append(u)
+		}
+	}
+
+	return bldr.NewUUIDArray()
+}
+
+func reverseTransformTimestamp(dtype *arrow.TimestampType, col *array.Timestamp) arrow.Array {
+	bldr := array.NewTimestampBuilder(memory.DefaultAllocator, dtype)
+	for i := 0; i < col.Len(); i++ {
+		if !col.IsValid(i) {
+			bldr.AppendNull()
+		} else {
+			t := col.Value(i).ToTime(col.DataType().(*arrow.TimestampType).Unit)
+			switch dtype.Unit {
+			case arrow.Second:
+				bldr.Append(arrow.Timestamp(t.Unix()))
+			case arrow.Millisecond:
+				bldr.Append(arrow.Timestamp(t.UnixMilli()))
+			case arrow.Microsecond:
+				bldr.Append(arrow.Timestamp(t.UnixMicro()))
+			case arrow.Nanosecond:
+				bldr.Append(arrow.Timestamp(t.UnixNano()))
+			default:
+				panic(fmt.Errorf("unsupported timestamp unit: %s", dtype.Unit))
+			}
+		}
+	}
+	return bldr.NewTimestampArray()
 }
