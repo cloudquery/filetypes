@@ -25,7 +25,7 @@ func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow
 		return err
 	}
 	for _, rec := range records {
-		if err := fw.Write(transformRecord(rec)); err != nil {
+		if err := fw.Write(transformRecord(newSchema, rec)); err != nil {
 			return err
 		}
 	}
@@ -36,7 +36,8 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 	oldFields := sch.Fields()
 	fields := make([]arrow.Field, len(oldFields))
 	for i := range fields {
-		fields[i].Type = transformDataType(oldFields[i].Type)
+		fields[i] = oldFields[i]
+		fields[i].Type = transformDataType(fields[i].Type)
 	}
 
 	md := sch.Metadata()
@@ -86,13 +87,12 @@ func isUnsupportedType(t arrow.DataType) bool {
 }
 
 // transformRecord casts extension columns or unsupported columns to string. It does not release the original record.
-func transformRecord(rec arrow.Record) arrow.Record {
-	newSchema := convertSchema(rec.Schema())
+func transformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 	cols := make([]arrow.Array, rec.NumCols())
 	for i := 0; i < int(rec.NumCols()); i++ {
 		cols[i] = transformArray(rec.Column(i))
 	}
-	return array.NewRecord(newSchema, cols, rec.NumRows())
+	return array.NewRecord(sc, cols, rec.NumRows())
 }
 
 func transformArray(arr arrow.Array) arrow.Array {
