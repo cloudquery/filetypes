@@ -10,8 +10,8 @@ github.com/cloudquery/arrow/go/v13 v13.0.0-20230521112802-adef07d4bbaa h1:6y3l+Y
 github.com/cloudquery/arrow/go/v13 v13.0.0-20230521112802-adef07d4bbaa/go.mod h1:/XatdE3kDIBqZKhZ7OBUHwP2jaASDFZHqF4puOWM8po=
 github.com/cloudquery/plugin-pb-go v1.0.8 h1:wn3GXhcNItcP+6wUUZuzUFbvdL59liKBO37/izMi+FQ=
 github.com/cloudquery/plugin-pb-go v1.0.8/go.mod h1:vAGA27psem7ZZNAY4a3S9TKuA/JDQWstjKcHPJX91Mc=
-github.com/cloudquery/plugin-sdk/v3 v3.6.2 h1:2+6qbACyTExNkYo75AuQnaWZUedbkSSmT403lwmJlHc=
-github.com/cloudquery/plugin-sdk/v3 v3.6.2/go.mod h1:3JrZXEULmGXpkOukVaRIzaA63d7TJr9Ukp6hemTjbtc=
+github.com/cloudquery/plugin-sdk/v3 v3.6.3 h1:TyljGXffaPICARPBg8geOfKI4biP5sjW9OjSkjMXwig=
+github.com/cloudquery/plugin-sdk/v3 v3.6.3/go.mod h1:3JrZXEULmGXpkOukVaRIzaA63d7TJr9Ukp6hemTjbtc=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

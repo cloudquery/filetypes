@@ -5,7 +5,9 @@ go 1.19
 require (
 	github.com/apache/arrow/go/v13 v13.0.0-20230509040948-de6c3cd2b604
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/plugin-sdk/v3 v3.6.2
+	github.com/cloudquery/plugin-sdk/v3 v3.6.3
+	github.com/goccy/go-json v0.10.2
+	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.2
 )
 
@@ -18,11 +20,9 @@ require (
 	github.com/cloudquery/plugin-pb-go v1.0.8 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
-	github.com/google/uuid v1.3.0
 	github.com/klauspost/asmfmt v1.3.2 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
