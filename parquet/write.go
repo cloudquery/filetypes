@@ -109,7 +109,7 @@ func transformArray(arr arrow.Array) arrow.Array {
 			transformDataType(arr.DataType()), arr.Len(),
 			arr.Data().Buffers(),
 			[]arrow.ArrayData{values.Data()},
-			arr.NullN(), values.Data().Offset(),
+			arr.NullN(), arr.Data().Offset(),
 		))
 	}
 
