@@ -1,7 +1,6 @@
 package parquet
 
-type Spec struct {
-}
+type Spec struct{}
 
 func (*Spec) SetDefaults() {
 }

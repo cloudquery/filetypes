@@ -11,7 +11,6 @@ import (
 	"github.com/apache/arrow/go/v13/parquet/file"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
-	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
 type ReaderAtSeeker interface {
@@ -65,142 +64,48 @@ func convertToSingleRowRecords(sc *arrow.Schema, rec arrow.Record) []arrow.Recor
 func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 	cols := make([]arrow.Array, rec.NumCols())
 	for i := 0; i < int(rec.NumCols()); i++ {
-		cols[i] = reverseTransformArray(sc.Field(i), rec.Column(i))
+		cols[i] = reverseTransformArray(sc.Field(i).Type, rec.Column(i))
 	}
 	return array.NewRecord(sc, cols, -1)
 }
 
-func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
-	dt := f.Type
-	switch {
-	case arrow.TypeEqual(dt, types.ExtensionTypes.UUID):
-		return reverseTransformUUID(col.(*array.String))
-	case arrow.TypeEqual(dt, types.ExtensionTypes.Inet):
-		return reverseTransformInet(col.(*array.String))
-	case arrow.TypeEqual(dt, types.ExtensionTypes.MAC):
-		return reverseTransformMAC(col.(*array.String))
-	case arrow.TypeEqual(dt, types.ExtensionTypes.JSON):
-		return reverseTransformJSON(col.(*array.String))
-	case arrow.TypeEqual(col.DataType(), arrow.FixedWidthTypes.Timestamp_ms):
-		return reverseTransformTimestamp(dt.(*arrow.TimestampType), col.(*array.Timestamp))
-	case dt.ID() == arrow.STRUCT:
-		return reverseTransformStruct(dt.(*arrow.StructType), col.(*array.String))
-	//case arrow.IsListLike(dt.ID()) && dt.(*arrow.ListType).Elem().ID() == arrow.EXTENSION:
-	//	child := reverseTransformArray(
-	//		arrow.Field{
-	//			Type: dt.(*arrow.ListType).Elem(),
-	//			Name: "list<ext:" + dt.(*arrow.ListType).Elem().Name() + ">",
-	//		},
-	//		col.(*array.List).ListValues(),
-	//	)
-	//	fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN(), dt.String(), dt.ID()) //  1 3 0 1
-	//
-	//	return array.NewExtensionData(array.NewData(dt, child.Len(), child.Data().Buffers(), []arrow.ArrayData{child.Data()}, child.NullN(), child.Data().Offset()))
-
-	case arrow.IsListLike(dt.ID()):
-		child := reverseTransformArray(
-			arrow.Field{
-				Type: dt.(*arrow.ListType).Elem(),
-				Name: "list<" + dt.(*arrow.ListType).Elem().Name() + ">",
-			},
-			col.(*array.List).ListValues(),
-		)
-		fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN(), dt.String(), dt.ID()) //  1 3 0 1
-
-		return array.NewListData(array.NewData(dt, col.Len(), col.Data().Buffers(), []arrow.ArrayData{child.Data()}, col.NullN(), col.Data().Offset()))
-	case isUnsupportedType(dt):
-		sb := array.NewBuilder(memory.DefaultAllocator, dt)
-		for i := 0; i < col.Len(); i++ {
-			if col.IsNull(i) {
-				sb.AppendNull()
-				continue
-			}
-			if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
-				panic(fmt.Errorf("failed to AppendValueFromString col %v: %w", f.Name, err))
-			}
-		}
-		return sb.NewArray()
-
-	default:
-		return col
-	}
-}
-
-func reverseTransformStruct(dt *arrow.StructType, col *array.String) arrow.Array {
-	bldr := array.NewStructBuilder(memory.DefaultAllocator, dt)
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
-			bldr.AppendNull()
-		} else {
-			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
-				panic(fmt.Errorf("failed to append json %s value: %w", col.Value(i), err))
-			}
-		}
+func reverseTransformArray(dt arrow.DataType, col arrow.Array) arrow.Array {
+	switch arr := col.(type) {
+	case *array.String:
+		return reverseTransformFromString(dt, arr)
+	case *array.Timestamp:
+		return reverseTransformTimestamp(dt.(*arrow.TimestampType), arr)
+	case array.ListLike:
+		elemType := dt.(listLikeType).Elem()
+		values := reverseTransformArray(elemType, arr.ListValues())
+		res := array.NewListData(array.NewData(
+			dt, arr.Len(),
+			arr.Data().Buffers(),
+			[]arrow.ArrayData{values.Data()},
+			arr.NullN(), values.Data().Offset(),
+		))
+		return res
 	}
 
-	return bldr.NewArray()
-}
-
-func reverseTransformJSON(col *array.String) arrow.Array {
-	bldr := types.NewJSONBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.JSON))
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
-			bldr.AppendNull()
-		} else {
-			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
-				panic(fmt.Errorf("failed to append json %s value: %w", col.Value(i), err))
-			}
-		}
+	if isUnsupportedType(dt) {
+		return reverseTransformFromString(dt, col)
 	}
 
-	return bldr.NewArray()
+	return col
 }
 
-func reverseTransformMAC(col *array.String) arrow.Array {
-	bldr := types.NewMACBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.MAC))
+func reverseTransformFromString(dt arrow.DataType, col arrow.Array) arrow.Array {
+	builder := array.NewBuilder(memory.DefaultAllocator, dt)
 	for i := 0; i < col.Len(); i++ {
 		if col.IsNull(i) {
-			bldr.AppendNull()
-		} else {
-			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	return bldr.NewMACArray()
-}
-
-func reverseTransformInet(col *array.String) arrow.Array {
-	bldr := types.NewInetBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.Inet))
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
-			bldr.AppendNull()
-		} else {
-			if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	return bldr.NewInetArray()
-}
-
-func reverseTransformUUID(col *array.String) arrow.Array {
-	bldr := types.NewUUIDBuilder(array.NewExtensionBuilder(memory.DefaultAllocator, types.ExtensionTypes.UUID))
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
-			bldr.AppendNull()
+			builder.AppendNull()
 			continue
 		}
-		fmt.Println("uuid value", col.Value(i), col.ValueStr(i), col.IsValid(i), col.IsNull(i))
-
-		if err := bldr.AppendValueFromString(col.Value(i)); err != nil {
-			panic(err)
+		if err := builder.AppendValueFromString(col.ValueStr(i)); err != nil {
+			panic(fmt.Errorf("failed to append string %q value: %w", col.ValueStr(i), err))
 		}
 	}
-
-	return bldr.NewUUIDArray()
+	return builder.NewArray()
 }
 
 func reverseTransformTimestamp(dtype *arrow.TimestampType, col *array.Timestamp) arrow.Array {
