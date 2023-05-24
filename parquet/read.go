@@ -83,6 +83,9 @@ func reverseTransformArray(dt arrow.DataType, col arrow.Array) arrow.Array {
 			[]arrow.ArrayData{values.Data()},
 			arr.NullN(), values.Data().Offset(),
 		))
+		fmt.Println(" was", col.DataType().String(), col.String(), "\n",
+			"got", res.DataType().String(), res.String(), "\n",
+			"val", values.DataType().String(), values.String())
 		return res
 	}
 
