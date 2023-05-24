@@ -85,17 +85,17 @@ func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
 		return reverseTransformTimestamp(dt.(*arrow.TimestampType), col.(*array.Timestamp))
 	case dt.ID() == arrow.STRUCT:
 		return reverseTransformStruct(dt.(*arrow.StructType), col.(*array.String))
-	case arrow.IsListLike(dt.ID()) && dt.(*arrow.ListType).Elem().ID() == arrow.EXTENSION:
-		child := reverseTransformArray(
-			arrow.Field{
-				Type: dt.(*arrow.ListType).Elem(),
-				Name: "list<ext:" + dt.(*arrow.ListType).Elem().Name() + ">",
-			},
-			col.(*array.List).ListValues(),
-		)
-		fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN()) //  1 3 0 1
-
-		return array.NewExtensionData(array.NewData(dt.(*arrow.ListType).Elem(), child.Len(), child.Data().Buffers(), []arrow.ArrayData{child.Data()}, child.NullN(), child.Data().Offset()))
+	//case arrow.IsListLike(dt.ID()) && dt.(*arrow.ListType).Elem().ID() == arrow.EXTENSION:
+	//	child := reverseTransformArray(
+	//		arrow.Field{
+	//			Type: dt.(*arrow.ListType).Elem(),
+	//			Name: "list<ext:" + dt.(*arrow.ListType).Elem().Name() + ">",
+	//		},
+	//		col.(*array.List).ListValues(),
+	//	)
+	//	fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN(), dt.String(), dt.ID()) //  1 3 0 1
+	//
+	//	return array.NewExtensionData(array.NewData(dt, child.Len(), child.Data().Buffers(), []arrow.ArrayData{child.Data()}, child.NullN(), child.Data().Offset()))
 
 	case arrow.IsListLike(dt.ID()):
 		child := reverseTransformArray(
@@ -105,6 +105,7 @@ func reverseTransformArray(f arrow.Field, col arrow.Array) arrow.Array {
 			},
 			col.(*array.List).ListValues(),
 		)
+		fmt.Println("counts", col.Len(), child.Len(), col.NullN(), child.NullN(), dt.String(), dt.ID()) //  1 3 0 1
 
 		return array.NewListData(array.NewData(dt, col.Len(), col.Data().Buffers(), []arrow.ArrayData{child.Data()}, col.NullN(), col.Data().Offset()))
 	case isUnsupportedType(dt):

@@ -1,6 +1,8 @@
 package parquet
 
 import (
+	"bytes"
+	"fmt"
 	"io"
 
 	"github.com/apache/arrow/go/v13/arrow"
@@ -11,6 +13,7 @@ import (
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/cloudquery/plugin-sdk/v3/types"
+	"github.com/goccy/go-json"
 )
 
 func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
@@ -98,13 +101,66 @@ func transformArray(arr arrow.Array) arrow.Array {
 		dt.ID() == arrow.STRUCT:
 		return transformToStringArray(arr)
 	case arrow.IsListLike(dt.ID()):
-		child := transformArray(arr.(*array.List).ListValues()).Data()
-		newType := arrow.ListOf(child.DataType())
-		return array.NewListData(array.NewData(newType, arr.Len(), arr.Data().Buffers(), []arrow.ArrayData{child}, arr.NullN(), arr.Data().Offset()))
+		//child := transformArray(arr.(*array.List).ListValues()).Data()
+		//newType := arrow.ListOf(child.DataType())
+		//return array.NewListData(array.NewData(newType, arr.Len(), arr.Data().Buffers(), []arrow.ArrayData{child}, arr.NullN(), arr.Data().Offset()))
+
+		list := arr.(array.ListLike)
+		bldr := array.NewBuilder(memory.DefaultAllocator, dt).(array.ListLikeBuilder)
+		//vb := bldr.ValueBuilder()
+		for i := 0; i < list.Len(); i++ {
+			if list.IsNull(i) {
+				bldr.AppendNull()
+				continue
+			}
+			bldr.Append(true)
+			start, end := list.ValueOffsets(i)
+
+			slc := array.NewSlice(list.ListValues(), start, end)
+			//fillInArr(vb, slc)
+			fillInArr(bldr, slc)
+		}
+
+		return bldr.NewArray()
+
 	case isUnsupportedType(arr.DataType()):
 		return transformToStringArray(arr)
 	default:
 		return arr
+	}
+}
+
+//func fillInArr(vb array.Builder, arr arrow.Array) {
+//	if arrow.IsListLike(arr.DataType().ID()) {
+//		fillInArr(vb, arr.(array.ListLike).ListValues())
+//		return
+//	}
+
+func fillInArr(bldr array.ListLikeBuilder, arr arrow.Array) {
+	bldr.Append(true)
+
+	if arrow.IsListLike(arr.DataType().ID()) {
+		fillInArr(bldr, arr.(array.ListLike).ListValues())
+		return
+	}
+
+	vb := bldr.ValueBuilder()
+	for i := 0; i < arr.Len(); i++ {
+		if arr.IsNull(i) {
+			vb.AppendNull()
+			continue
+		}
+
+		b, err := json.MarshalWithOption(arr.GetOneForMarshal(i), json.DisableHTMLEscape())
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("marshalled", string(b))
+
+		dec := json.NewDecoder(bytes.NewReader(b))
+		if err := vb.UnmarshalOne(dec); err != nil {
+			panic(err)
+		}
 	}
 }
 
