@@ -76,8 +76,7 @@ func reverseTransformArray(dt arrow.DataType, col arrow.Array) arrow.Array {
 	case *array.Timestamp:
 		return reverseTransformTimestamp(dt.(*arrow.TimestampType), arr)
 	case array.ListLike:
-		elemType := dt.(listLikeType).Elem()
-		values := reverseTransformArray(elemType, arr.ListValues())
+		values := reverseTransformArray(dt.(listLikeType).Elem(), arr.ListValues())
 		res := array.NewListData(array.NewData(
 			dt, arr.Len(),
 			arr.Data().Buffers(),
