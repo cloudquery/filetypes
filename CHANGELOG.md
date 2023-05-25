@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.1](https://github.com/cloudquery/filetypes/compare/v3.0.0...v3.0.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-pb-go to v1.0.6 ([#157](https://github.com/cloudquery/filetypes/issues/157)) ([1dccb3a](https://github.com/cloudquery/filetypes/commit/1dccb3a95ffa94b907ceaf1f8c89ec68aa56f301))
+* **deps:** Update module github.com/cloudquery/plugin-pb-go to v1.0.8 ([#160](https://github.com/cloudquery/filetypes/issues/160)) ([ba7c364](https://github.com/cloudquery/filetypes/commit/ba7c364a0f075353c7ffad9459bfc2b31b1ae0b3))
+* **deps:** Upgrade SDK to 3.6.3, encode unsupported types as strings ([#161](https://github.com/cloudquery/filetypes/issues/161)) ([6b6e305](https://github.com/cloudquery/filetypes/commit/6b6e3053aa62df5662b65d19323479d3f263c346))
+
 ## [3.0.0](https://github.com/cloudquery/filetypes/compare/v2.1.0...v3.0.0) (2023-05-12)
 
 
