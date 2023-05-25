@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/cloudquery/filetypes/compare/v3.0.1...v3.1.0) (2023-05-25)
+
+
+### Features
+
+* **parquet:** Support `time32`, `time64`, `date32` & `date64` ([#164](https://github.com/cloudquery/filetypes/issues/164)) ([6fff6fe](https://github.com/cloudquery/filetypes/commit/6fff6fe41aa58f1cbef2ec2022ace260c83f8100))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.6.4 ([#165](https://github.com/cloudquery/filetypes/issues/165)) ([93dba5d](https://github.com/cloudquery/filetypes/commit/93dba5d4e0ffa4d28b2bdfaff13a0a0b228885ab))
+
 ## [3.0.1](https://github.com/cloudquery/filetypes/compare/v3.0.0...v3.0.1) (2023-05-25)
 
 
