@@ -38,10 +38,10 @@ func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- 
 		return fmt.Errorf("failed to get parquet record reader: %w", err)
 	}
 
-	arrowSchema := table.ToArrowSchema()
+	sc := table.ToArrowSchema()
 	for rr.Next() {
 		rec := rr.Record()
-		newRecs := convertToSingleRowRecords(arrowSchema, rec)
+		newRecs := convertToSingleRowRecords(sc, rec)
 		for _, r := range newRecs {
 			res <- r
 		}
@@ -69,12 +69,16 @@ func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 	return array.NewRecord(sc, cols, -1)
 }
 
-func reverseTransformArray(dt arrow.DataType, col arrow.Array) arrow.Array {
-	switch arr := col.(type) {
+func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
+	switch arr := arr.(type) {
 	case *array.String:
 		return reverseTransformFromString(dt, arr)
 	case *array.Timestamp:
-		return reverseTransformTimestamp(dt.(*arrow.TimestampType), arr)
+		return reverseTransformFromTimestamp(dt, arr)
+	case *array.Time32:
+		return reverseTransformTime32(dt.(*arrow.Time32Type), arr)
+	case *array.Time64:
+		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
 	case array.ListLike:
 		values := reverseTransformArray(dt.(listLikeType).Elem(), arr.ListValues())
 		res := array.NewListData(array.NewData(
@@ -87,10 +91,10 @@ func reverseTransformArray(dt arrow.DataType, col arrow.Array) arrow.Array {
 	}
 
 	if isUnsupportedType(dt) {
-		return reverseTransformFromString(dt, col)
+		return reverseTransformFromString(dt, arr)
 	}
 
-	return col
+	return arr
 }
 
 func reverseTransformFromString(dt arrow.DataType, col arrow.Array) arrow.Array {
@@ -105,28 +109,4 @@ func reverseTransformFromString(dt arrow.DataType, col arrow.Array) arrow.Array 
 		}
 	}
 	return builder.NewArray()
-}
-
-func reverseTransformTimestamp(dtype *arrow.TimestampType, col *array.Timestamp) arrow.Array {
-	bldr := array.NewTimestampBuilder(memory.DefaultAllocator, dtype)
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
-			bldr.AppendNull()
-		} else {
-			t := col.Value(i).ToTime(col.DataType().(*arrow.TimestampType).Unit)
-			switch dtype.Unit {
-			case arrow.Second:
-				bldr.Append(arrow.Timestamp(t.Unix()))
-			case arrow.Millisecond:
-				bldr.Append(arrow.Timestamp(t.UnixMilli()))
-			case arrow.Microsecond:
-				bldr.Append(arrow.Timestamp(t.UnixMicro()))
-			case arrow.Nanosecond:
-				bldr.Append(arrow.Timestamp(t.UnixNano()))
-			default:
-				panic(fmt.Errorf("unsupported timestamp unit: %s", dtype.Unit))
-			}
-		}
-	}
-	return bldr.NewTimestampArray()
 }
