@@ -10,6 +10,7 @@ import (
 	"github.com/apache/arrow/go/v13/parquet/compress"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
 	ftypes "github.com/cloudquery/filetypes/v3/types"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/cloudquery/plugin-sdk/v3/types"
 )
 
@@ -20,13 +21,13 @@ type Handle struct {
 
 var _ ftypes.Handle = (*Handle)(nil)
 
-func (*Client) WriteHeader(w io.Writer, s *arrow.Schema) (ftypes.Handle, error) {
+func (*Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error) {
 	props := parquet.NewWriterProperties(
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),
 	)
 	arrprops := pqarrow.DefaultWriterProps()
-	newSchema := convertSchema(s)
+	newSchema := convertSchema(t.ToArrowSchema())
 	fw, err := pqarrow.NewFileWriter(newSchema, w, props, arrprops)
 	if err != nil {
 		return nil, err

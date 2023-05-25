@@ -49,7 +49,7 @@ func TestWriteRead(t *testing.T) {
 			writer := bufio.NewWriter(&b)
 			reader := bufio.NewReader(&b)
 
-			if err := types.WriteAll(cl, writer, table.ToArrowSchema(), records); err != nil {
+			if err := types.WriteAll(cl, writer, table, records); err != nil {
 				t.Fatal(err)
 			}
 			writer.Flush()
@@ -99,7 +99,6 @@ func BenchmarkWrite(b *testing.B) {
 		MaxRows:    1000,
 	}
 	records := schema.GenTestData(table, opts)
-	arrowSchema := table.ToArrowSchema()
 
 	cl, err := NewClient()
 	if err != nil {
@@ -109,7 +108,7 @@ func BenchmarkWrite(b *testing.B) {
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		if err := types.WriteAll(cl, writer, arrowSchema, records); err != nil {
+		if err := types.WriteAll(cl, writer, table, records); err != nil {
 			b.Fatal(err)
 		}
 

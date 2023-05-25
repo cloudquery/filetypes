@@ -10,16 +10,17 @@ import (
 	"github.com/apache/arrow/go/v13/arrow/csv"
 	"github.com/apache/arrow/go/v13/arrow/memory"
 	"github.com/cloudquery/filetypes/v3/types"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
 type Handle struct {
 	w *csv.Writer
-	s *arrow.Schema
 }
 
 var _ types.Handle = (*Handle)(nil)
 
-func (cl *Client) WriteHeader(w io.Writer, s *arrow.Schema) (types.Handle, error) {
+func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error) {
+	s := t.ToArrowSchema()
 	newSchema := convertSchema(s)
 	writer := csv.NewWriter(w, newSchema,
 		csv.WithComma(cl.Delimiter),
@@ -29,7 +30,6 @@ func (cl *Client) WriteHeader(w io.Writer, s *arrow.Schema) (types.Handle, error
 
 	return &Handle{
 		w: writer,
-		s: s,
 	}, nil
 }
 

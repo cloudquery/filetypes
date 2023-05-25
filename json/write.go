@@ -6,6 +6,7 @@ import (
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/cloudquery/filetypes/v3/types"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/goccy/go-json"
 )
 
@@ -15,7 +16,7 @@ type Handle struct {
 
 var _ types.Handle = (*Handle)(nil)
 
-func (*Client) WriteHeader(w io.Writer, _ *arrow.Schema) (types.Handle, error) {
+func (*Client) WriteHeader(w io.Writer, _ *schema.Table) (types.Handle, error) {
 	return &Handle{
 		w: w,
 	}, nil

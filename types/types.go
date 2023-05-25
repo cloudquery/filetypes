@@ -4,10 +4,11 @@ import (
 	"io"
 
 	"github.com/apache/arrow/go/v13/arrow"
+	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
 type FileType interface {
-	WriteHeader(io.Writer, *arrow.Schema) (Handle, error)
+	WriteHeader(io.Writer, *schema.Table) (Handle, error)
 }
 
 type Handle interface {
@@ -15,8 +16,8 @@ type Handle interface {
 	WriteFooter() error
 }
 
-func WriteAll(f FileType, w io.Writer, arrowSchema *arrow.Schema, records []arrow.Record) error {
-	h, err := f.WriteHeader(w, arrowSchema)
+func WriteAll(f FileType, w io.Writer, t *schema.Table, records []arrow.Record) error {
+	h, err := f.WriteHeader(w, t)
 	if err != nil {
 		return err
 	}

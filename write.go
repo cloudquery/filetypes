@@ -9,5 +9,5 @@ import (
 )
 
 func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, records []arrow.Record) error {
-	return types.WriteAll(cl.FileType, w, table.ToArrowSchema(), records)
+	return types.WriteAll(cl.FileType, w, table, records)
 }
