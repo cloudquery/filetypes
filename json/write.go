@@ -1,12 +1,12 @@
 package json
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/goccy/go-json"
 )
 
 func (c *Client) WriteTableBatch(w io.Writer, _ *schema.Table, records []arrow.Record) error {
