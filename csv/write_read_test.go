@@ -28,7 +28,7 @@ func TestWriteRead(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			table := schema.TestTable("test")
+			table := schema.TestTable("test", schema.TestSourceOptions{})
 			sourceName := "test-source"
 			syncTime := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 			opts := schema.GenTestDataOptions{
@@ -89,7 +89,7 @@ func TestWriteRead(t *testing.T) {
 }
 
 func BenchmarkWrite(b *testing.B) {
-	table := schema.TestTable("test")
+	table := schema.TestTable("test", schema.TestSourceOptions{})
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
