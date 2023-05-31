@@ -52,6 +52,17 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 		*types.InetType,
 		*types.UUIDType:
 		return arrow.BinaryTypes.String
+
+	case *arrow.StructType:
+		fields := dt.Fields()
+		for i := range fields {
+			fields[i].Type = transformDataType(fields[i].Type)
+		}
+		return arrow.StructOf(fields...)
+
+	case *arrow.MapType:
+		return arrow.MapOf(transformDataType(dt.KeyType()), transformDataType(dt.ItemType()))
+
 	case listLikeType:
 		return arrow.ListOf(transformDataType(dt.Elem()))
 	}
@@ -64,7 +75,7 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 }
 
 func isUnsupportedType(t arrow.DataType) bool {
-	switch dt := t.(type) {
+	switch t.(type) {
 	case *arrow.DurationType,
 		*arrow.DayTimeIntervalType,
 		*arrow.MonthDayNanoIntervalType,
@@ -74,16 +85,9 @@ func isUnsupportedType(t arrow.DataType) bool {
 		*arrow.LargeListType,
 		*arrow.LargeStringType: // not yet implemented in arrow
 		return true
-	case *arrow.StructType:
-		for _, f := range dt.Fields() {
-			if isUnsupportedType(f.Type) {
-				return true
-			}
-		}
-	case listLikeType:
-		return isUnsupportedType(dt.Elem())
+	default:
+		return false
 	}
-	return false
 }
 
 // transformRecord casts extension columns or unsupported columns to string. It does not release the original record.
@@ -96,13 +100,37 @@ func transformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 }
 
 func transformArray(arr arrow.Array) arrow.Array {
-	switch arr := arr.(type) {
-	case *types.UUIDArray,
-		*types.InetArray,
-		*types.MACArray,
-		*types.JSONArray,
-		*array.Struct:
+	if arrow.TypeEqual(arrow.BinaryTypes.String, transformDataType(arr.DataType())) {
 		return transformToString(arr)
+	}
+
+	switch arr := arr.(type) {
+	case *array.Struct:
+		dt := arr.DataType().(*arrow.StructType)
+		children := make([]arrow.ArrayData, arr.NumField())
+		names := make([]string, arr.NumField())
+		for i := range children {
+			children[i] = transformArray(arr.Field(i)).Data()
+			names[i] = dt.Field(i).Name
+		}
+
+		return array.NewStructData(array.NewData(
+			transformDataType(dt), arr.Len(),
+			[]*memory.Buffer{arr.Data().Buffers()[0]},
+			children,
+			arr.NullN(), arr.Data().Offset(),
+		))
+
+	case *array.Map:
+		structArr := transformArray(arr.ListValues()).(*array.Struct)
+		res := array.NewMapData(array.NewData(
+			transformDataType(arr.DataType()), arr.Len(),
+			arr.Data().Buffers(),
+			[]arrow.ArrayData{structArr.Data()},
+			arr.NullN(), arr.Data().Offset(),
+		))
+		return res
+
 	case array.ListLike:
 		values := transformArray(arr.ListValues())
 		return array.NewListData(array.NewData(
@@ -111,13 +139,10 @@ func transformArray(arr arrow.Array) arrow.Array {
 			[]arrow.ArrayData{values.Data()},
 			arr.NullN(), arr.Data().Offset(),
 		))
-	}
 
-	if isUnsupportedType(arr.DataType()) {
-		return transformToString(arr)
+	default:
+		return arr
 	}
-
-	return arr
 }
 
 func transformToString(arr arrow.Array) arrow.Array {
@@ -132,3 +157,6 @@ func transformToString(arr arrow.Array) arrow.Array {
 
 	return builder.NewArray()
 }
+
+// got=struct<binary: binary, boolean: bool, date32: date32, date64: timestamp[ms, tz=UTC], daytimeinterval: utf8, duration_ms: utf8, duration_ns: utf8, duration_s: utf8, duration_us: utf8, float32: float32, float64: float64, inet: utf8, int16: int16, int32: int32, int64: int64, int8: int8, largebinary: utf8, largestring: utf8, mac: utf8, monthdaynanointerval: utf8, monthinterval: utf8, string: utf8, time32ms: time32[ms], time32s: time32[ms], time64ns: time64[ns], time64us: time64[us], timestamp_ms: timestamp[ms, tz=UTC], timestamp_ns: timestamp[ns, tz=UTC], timestamp_s: timestamp[ms, tz=UTC], timestamp_us: timestamp[us, tz=UTC], uint16: uint16, uint32: uint32, uint64: uint64, uint8: uint8, uuid: utf8, decimal: decimal(19, 10), json: utf8, json_array: utf8>,
+//want=struct<binary: binary, boolean: bool, date32: date32, date64: date64, daytimeinterval: utf8, duration_ms: utf8, duration_ns: utf8, duration_s: utf8, duration_us: utf8, float32: float32, float64: float64, inet: utf8, int16: int16, int32: int32, int64: int64, int8: int8, largebinary: utf8, largestring: utf8, mac: utf8, monthdaynanointerval: utf8, monthinterval: utf8, string: utf8, time32ms: time32[ms], time32s: time32[s], time64ns: time64[ns], time64us: time64[us], timestamp_ms: timestamp[ms, tz=UTC], timestamp_ns: timestamp[ns, tz=UTC], timestamp_s: timestamp[s, tz=UTC], timestamp_us: timestamp[us, tz=UTC], uint16: uint16, uint32: uint32, uint64: uint64, uint8: uint8, uuid: utf8, decimal: decimal(19, 10), json: utf8, json_array: utf8>

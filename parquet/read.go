@@ -79,6 +79,20 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 		return reverseTransformTime32(dt.(*arrow.Time32Type), arr)
 	case *array.Time64:
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
+	case *array.Map:
+		dt := dt.(*arrow.MapType)
+		keys := reverseTransformArray(dt.KeyType(), arr.Keys())
+		items := reverseTransformArray(dt.ItemType(), arr.Items())
+		structArr, err := array.NewStructArray([]arrow.Array{keys, items}, []string{"key", "value"})
+		if err != nil {
+			panic(err)
+		}
+		return array.NewMapData(array.NewData(
+			dt, arr.Len(),
+			arr.Data().Buffers(),
+			[]arrow.ArrayData{structArr.Data()},
+			arr.NullN(), arr.Data().Offset(),
+		))
 	case array.ListLike:
 		values := reverseTransformArray(dt.(listLikeType).Elem(), arr.ListValues())
 		res := array.NewListData(array.NewData(
