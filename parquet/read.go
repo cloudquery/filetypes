@@ -92,35 +92,29 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 			dt, arr.Len(),
 			arr.Data().Buffers(),
 			children,
-			arr.NullN(), 0,
-		))
-
-	case *array.Map:
-		dt := dt.(*arrow.MapType)
-		structArr := reverseTransformArray(dt.ValueType(), arr.ListValues()).(*array.Struct)
-		return array.NewMapData(array.NewData(
-			dt, arr.Len(),
-			arr.Data().Buffers(),
-			[]arrow.ArrayData{structArr.Data()},
 			arr.NullN(), arr.Data().Offset(),
 		))
 
 	case array.ListLike:
-		values := reverseTransformArray(dt.(listLikeType).Elem(), arr.ListValues())
-		res := array.NewListData(array.NewData(
+		var child arrow.ArrayData
+		switch dt := dt.(type) {
+		case *arrow.MapType:
+			child = reverseTransformArray(dt.ValueType(), arr.ListValues()).Data()
+		case listLikeType:
+			child = reverseTransformArray(dt.Elem(), arr.ListValues()).Data()
+		default:
+			panic("unsupported list like conv to " + dt.String())
+		}
+		return array.MakeFromData(array.NewData(
 			dt, arr.Len(),
 			arr.Data().Buffers(),
-			[]arrow.ArrayData{values.Data()},
+			[]arrow.ArrayData{child},
 			arr.NullN(), arr.Data().Offset(),
 		))
-		return res
-	}
 
-	if isUnsupportedType(dt) {
-		return reverseTransformFromString(dt, arr)
+	default:
+		return arr
 	}
-
-	return arr
 }
 
 func reverseTransformFromString(dt arrow.DataType, col arrow.Array) arrow.Array {

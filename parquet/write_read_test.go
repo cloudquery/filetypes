@@ -8,13 +8,18 @@ import (
 	"time"
 
 	"github.com/apache/arrow/go/v13/arrow"
+	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWriteRead(t *testing.T) {
 	var b bytes.Buffer
 	table := schema.TestTable("test", schema.TestSourceOptions{})
+	indices := table.ToArrowSchema().FieldIndices("daytimeinterval")
+	require.Equal(t, 1, len(indices))
+	require.True(t, arrow.TypeEqual(arrow.FixedWidthTypes.DayTimeInterval, table.ToArrowSchema().Field(indices[0]).Type))
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
@@ -51,8 +56,9 @@ func TestWriteRead(t *testing.T) {
 	}()
 	totalCount := 0
 	for got := range ch {
-		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
-			t.Fatalf("got diff: %s", diff)
+		curr := records[totalCount]
+		if !array.RecordApproxEqual(curr, got) {
+			t.Fatalf("got diff (record %d): %s\n", totalCount, destination.RecordDiff(records[totalCount], got))
 		}
 		totalCount++
 	}

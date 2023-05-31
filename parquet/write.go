@@ -32,21 +32,35 @@ func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow
 	return fw.Close()
 }
 
-func convertSchema(sch *arrow.Schema) *arrow.Schema {
-	oldFields := sch.Fields()
-	fields := make([]arrow.Field, len(oldFields))
-	for i := range fields {
-		fields[i] = oldFields[i]
-		fields[i].Type = transformDataType(fields[i].Type)
-	}
-
-	md := sch.Metadata()
+func convertSchema(sc *arrow.Schema) *arrow.Schema {
+	fields := convertFieldTypes(sc.Fields()...)
+	md := arrow.MetadataFrom(sc.Metadata().ToMap())
 	newSchema := arrow.NewSchema(fields, &md)
 	return newSchema
 }
 
+func convertFieldTypes(fields ...arrow.Field) []arrow.Field {
+	res := make([]arrow.Field, len(fields))
+	for i, field := range fields {
+		res[i] = field
+		res[i].Type = transformDataType(field.Type)
+	}
+	return res
+}
+
 func transformDataType(t arrow.DataType) arrow.DataType {
 	switch dt := t.(type) {
+	case *arrow.DurationType,
+		*arrow.DayTimeIntervalType,
+		*arrow.MonthDayNanoIntervalType,
+		*arrow.MonthIntervalType: // unsupported in pqarrow
+		return arrow.BinaryTypes.String
+
+	case *arrow.LargeBinaryType,
+		*arrow.LargeListType,
+		*arrow.LargeStringType: // not yet implemented in arrow
+		return arrow.BinaryTypes.String
+
 	case *types.JSONType,
 		*types.MACType,
 		*types.InetType,
@@ -54,39 +68,15 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 		return arrow.BinaryTypes.String
 
 	case *arrow.StructType:
-		fields := dt.Fields()
-		for i := range fields {
-			fields[i].Type = transformDataType(fields[i].Type)
-		}
-		return arrow.StructOf(fields...)
+		return arrow.StructOf(convertFieldTypes(dt.Fields()...)...)
 
 	case *arrow.MapType:
 		return arrow.MapOf(transformDataType(dt.KeyType()), transformDataType(dt.ItemType()))
 
 	case listLikeType:
 		return arrow.ListOf(transformDataType(dt.Elem()))
-	}
-
-	if isUnsupportedType(t) {
-		return arrow.BinaryTypes.String
-	}
-
-	return t
-}
-
-func isUnsupportedType(t arrow.DataType) bool {
-	switch t.(type) {
-	case *arrow.DurationType,
-		*arrow.DayTimeIntervalType,
-		*arrow.MonthDayNanoIntervalType,
-		*arrow.MonthIntervalType: // unsupported in pqarrow
-		return true
-	case *arrow.LargeBinaryType,
-		*arrow.LargeListType,
-		*arrow.LargeStringType: // not yet implemented in arrow
-		return true
 	default:
-		return false
+		return t
 	}
 }
 
@@ -118,25 +108,14 @@ func transformArray(arr arrow.Array) arrow.Array {
 			transformDataType(dt), arr.Len(),
 			arr.Data().Buffers(),
 			children,
-			arr.NullN(), 0,
-		))
-
-	case *array.Map:
-		structArr := transformArray(arr.ListValues()).(*array.Struct)
-		res := array.NewMapData(array.NewData(
-			transformDataType(arr.DataType()), arr.Len(),
-			arr.Data().Buffers(),
-			[]arrow.ArrayData{structArr.Data()},
 			arr.NullN(), arr.Data().Offset(),
 		))
-		return res
 
 	case array.ListLike:
-		values := transformArray(arr.ListValues())
-		return array.NewListData(array.NewData(
+		return array.MakeFromData(array.NewData(
 			transformDataType(arr.DataType()), arr.Len(),
 			arr.Data().Buffers(),
-			[]arrow.ArrayData{values.Data()},
+			[]arrow.ArrayData{transformArray(arr.ListValues()).Data()},
 			arr.NullN(), arr.Data().Offset(),
 		))
 
