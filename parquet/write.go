@@ -116,9 +116,9 @@ func transformArray(arr arrow.Array) arrow.Array {
 
 		return array.NewStructData(array.NewData(
 			transformDataType(dt), arr.Len(),
-			[]*memory.Buffer{arr.Data().Buffers()[0]},
+			arr.Data().Buffers(),
 			children,
-			arr.NullN(), arr.Data().Offset(),
+			arr.NullN(), 0,
 		))
 
 	case *array.Map:

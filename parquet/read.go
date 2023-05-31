@@ -79,20 +79,32 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 		return reverseTransformTime32(dt.(*arrow.Time32Type), arr)
 	case *array.Time64:
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
+	case *array.Struct:
+		dt := dt.(*arrow.StructType)
+		children := make([]arrow.ArrayData, arr.NumField())
+		names := make([]string, arr.NumField())
+		for i := range children {
+			children[i] = reverseTransformArray(dt.Field(i).Type, arr.Field(i)).Data()
+			names[i] = dt.Field(i).Name
+		}
+
+		return array.NewStructData(array.NewData(
+			dt, arr.Len(),
+			arr.Data().Buffers(),
+			children,
+			arr.NullN(), 0,
+		))
+
 	case *array.Map:
 		dt := dt.(*arrow.MapType)
-		keys := reverseTransformArray(dt.KeyType(), arr.Keys())
-		items := reverseTransformArray(dt.ItemType(), arr.Items())
-		structArr, err := array.NewStructArray([]arrow.Array{keys, items}, []string{"key", "value"})
-		if err != nil {
-			panic(err)
-		}
+		structArr := reverseTransformArray(dt.ValueType(), arr.ListValues()).(*array.Struct)
 		return array.NewMapData(array.NewData(
 			dt, arr.Len(),
 			arr.Data().Buffers(),
 			[]arrow.ArrayData{structArr.Data()},
 			arr.NullN(), arr.Data().Offset(),
 		))
+
 	case array.ListLike:
 		values := reverseTransformArray(dt.(listLikeType).Elem(), arr.ListValues())
 		res := array.NewListData(array.NewData(
