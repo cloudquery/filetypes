@@ -33,19 +33,15 @@ func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow
 }
 
 func convertSchema(sc *arrow.Schema) *arrow.Schema {
-	fields := convertFieldTypes(sc.Fields()...)
 	md := arrow.MetadataFrom(sc.Metadata().ToMap())
-	newSchema := arrow.NewSchema(fields, &md)
-	return newSchema
+	return arrow.NewSchema(convertFieldTypes(sc.Fields()), &md)
 }
 
-func convertFieldTypes(fields ...arrow.Field) []arrow.Field {
-	res := make([]arrow.Field, len(fields))
-	for i, field := range fields {
-		res[i] = field
-		res[i].Type = transformDataType(field.Type)
+func convertFieldTypes(fields []arrow.Field) []arrow.Field {
+	for i := range fields {
+		fields[i].Type = transformDataType(fields[i].Type)
 	}
-	return res
+	return fields
 }
 
 func transformDataType(t arrow.DataType) arrow.DataType {
@@ -68,7 +64,7 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 		return arrow.BinaryTypes.String
 
 	case *arrow.StructType:
-		return arrow.StructOf(convertFieldTypes(dt.Fields()...)...)
+		return arrow.StructOf(convertFieldTypes(dt.Fields())...)
 
 	case *arrow.MapType:
 		return arrow.MapOf(transformDataType(dt.KeyType()), transformDataType(dt.ItemType()))
