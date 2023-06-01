@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.1.1](https://github.com/cloudquery/filetypes/compare/v3.1.0...v3.1.1) (2023-06-01)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v13 digest to cbc17a9 ([#174](https://github.com/cloudquery/filetypes/issues/174)) ([554647d](https://github.com/cloudquery/filetypes/commit/554647d3fbfecdddb5af823c9acee5e516052fc6))
+* **deps:** Update golang.org/x/exp digest to 2e198f4 ([#175](https://github.com/cloudquery/filetypes/issues/175)) ([b107af6](https://github.com/cloudquery/filetypes/commit/b107af6c55affa2858c62908911726d5d25e5180))
+* **deps:** Update google.golang.org/genproto digest to e85fd2c ([#176](https://github.com/cloudquery/filetypes/issues/176)) ([704f63b](https://github.com/cloudquery/filetypes/commit/704f63b11ff8e36cdb32d4687303479c14417e45))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to e85fd2c ([#178](https://github.com/cloudquery/filetypes/issues/178)) ([fdffb53](https://github.com/cloudquery/filetypes/commit/fdffb5384bef331697d5a58f5de82f7030514842))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.6.5 ([#167](https://github.com/cloudquery/filetypes/issues/167)) ([53886bc](https://github.com/cloudquery/filetypes/commit/53886bc6c5172fb825ac3a70a6ae30b5d7543f67))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.6.6 ([#169](https://github.com/cloudquery/filetypes/issues/169)) ([4345834](https://github.com/cloudquery/filetypes/commit/43458342880a083b0fedd54e48da1ed6f1ba517c))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.6.7 ([#170](https://github.com/cloudquery/filetypes/issues/170)) ([92cf875](https://github.com/cloudquery/filetypes/commit/92cf87586a0ba25fc6210859c97c481cb0124701))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.8.1 ([#172](https://github.com/cloudquery/filetypes/issues/172)) ([01c789b](https://github.com/cloudquery/filetypes/commit/01c789b56012ad3e65686676a8fc5a9fa65014d3))
+* **deps:** Update module github.com/mattn/go-isatty to v0.0.19 ([#177](https://github.com/cloudquery/filetypes/issues/177)) ([8437644](https://github.com/cloudquery/filetypes/commit/8437644a99216829207974c1a6f4a61c778ab209))
+* **deps:** Update module github.com/stretchr/testify to v1.8.4 ([#179](https://github.com/cloudquery/filetypes/issues/179)) ([bc5d374](https://github.com/cloudquery/filetypes/commit/bc5d374427d0dcb5829a351371c4442a364280ec))
+
 ## [3.1.0](https://github.com/cloudquery/filetypes/compare/v3.0.1...v3.1.0) (2023-05-25)
 
 
