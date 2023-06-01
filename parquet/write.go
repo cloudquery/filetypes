@@ -38,12 +38,10 @@ func convertSchema(sc *arrow.Schema) *arrow.Schema {
 }
 
 func convertFieldTypes(fields []arrow.Field) []arrow.Field {
-	newFields := make([]arrow.Field, len(fields))
-	copy(newFields, fields)
-	for i := range newFields {
-		newFields[i].Type = transformDataType(newFields[i].Type)
+	for i := range fields {
+		fields[i].Type = transformDataType(fields[i].Type)
 	}
-	return newFields
+	return fields
 }
 
 func transformDataType(t arrow.DataType) arrow.DataType {
