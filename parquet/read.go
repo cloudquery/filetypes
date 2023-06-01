@@ -80,20 +80,7 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 	case *array.Time64:
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
 	case *array.Struct:
-		dt := dt.(*arrow.StructType)
-		children := make([]arrow.ArrayData, arr.NumField())
-		names := make([]string, arr.NumField())
-		for i := range children {
-			children[i] = reverseTransformArray(dt.Field(i).Type, arr.Field(i)).Data()
-			names[i] = dt.Field(i).Name
-		}
-
-		return array.NewStructData(array.NewData(
-			dt, arr.Len(),
-			arr.Data().Buffers(),
-			children,
-			arr.NullN(), arr.Data().Offset(),
-		))
+		return reverseTransformStruct(dt.(*arrow.StructType), arr)
 
 	case array.ListLike:
 		var child arrow.ArrayData
@@ -117,16 +104,44 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 	}
 }
 
-func reverseTransformFromString(dt arrow.DataType, col arrow.Array) arrow.Array {
+func reverseTransformFromString(dt arrow.DataType, arr arrow.Array) arrow.Array {
 	builder := array.NewBuilder(memory.DefaultAllocator, dt)
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+	for i := 0; i < arr.Len(); i++ {
+		if arr.IsNull(i) {
 			builder.AppendNull()
 			continue
 		}
-		if err := builder.AppendValueFromString(col.ValueStr(i)); err != nil {
-			panic(fmt.Errorf("failed to append string %q value: %w", col.ValueStr(i), err))
+		if err := builder.AppendValueFromString(arr.ValueStr(i)); err != nil {
+			panic(fmt.Errorf("failed to append string %q value: %w", arr.ValueStr(i), err))
 		}
 	}
 	return builder.NewArray()
+}
+
+func reverseTransformStruct(dt *arrow.StructType, arr *array.Struct) *array.Struct {
+	children := make([]arrow.Array, arr.NumField())
+	names := make([]string, arr.NumField())
+	for i := range children {
+		children[i] = reverseTransformArray(dt.Field(i).Type, arr.Field(i))
+		names[i] = dt.Field(i).Name
+	}
+
+	// structs are sometimes read oddly when the outer struct is nullable but the inner one isn't
+	builder := array.NewStructBuilder(memory.DefaultAllocator, dt)
+
+	for i := 0; i < arr.Len(); i++ {
+		if arr.IsNull(i) {
+			builder.AppendNull()
+			continue
+		}
+
+		builder.Append(true)
+		for j, c := range children {
+			if err := builder.FieldBuilder(j).AppendValueFromString(c.ValueStr(i)); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	return builder.NewStructArray()
 }
