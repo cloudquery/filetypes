@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/apache/arrow/go/v13/arrow"
+	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
@@ -51,8 +52,9 @@ func TestWriteRead(t *testing.T) {
 	}()
 	totalCount := 0
 	for got := range ch {
-		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
-			t.Fatalf("got diff: %s", diff)
+		curr := records[totalCount]
+		if !array.RecordApproxEqual(curr, got) {
+			t.Fatalf("got diff (record %d): %s\n", totalCount, destination.RecordDiff(records[totalCount], got))
 		}
 		totalCount++
 	}

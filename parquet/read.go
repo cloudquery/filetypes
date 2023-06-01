@@ -79,34 +79,69 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 		return reverseTransformTime32(dt.(*arrow.Time32Type), arr)
 	case *array.Time64:
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
+	case *array.Struct:
+		return reverseTransformStruct(dt.(*arrow.StructType), arr)
+
 	case array.ListLike:
-		values := reverseTransformArray(dt.(listLikeType).Elem(), arr.ListValues())
-		res := array.NewListData(array.NewData(
+		var child arrow.ArrayData
+		switch dt := dt.(type) {
+		case *arrow.MapType:
+			child = reverseTransformArray(dt.ValueType(), arr.ListValues()).Data()
+		case listLikeType:
+			child = reverseTransformArray(dt.Elem(), arr.ListValues()).Data()
+		default:
+			panic("unsupported list like conv to " + dt.String())
+		}
+		return array.MakeFromData(array.NewData(
 			dt, arr.Len(),
 			arr.Data().Buffers(),
-			[]arrow.ArrayData{values.Data()},
+			[]arrow.ArrayData{child},
 			arr.NullN(), arr.Data().Offset(),
 		))
-		return res
-	}
 
-	if isUnsupportedType(dt) {
-		return reverseTransformFromString(dt, arr)
+	default:
+		return arr
 	}
-
-	return arr
 }
 
-func reverseTransformFromString(dt arrow.DataType, col arrow.Array) arrow.Array {
+func reverseTransformFromString(dt arrow.DataType, arr arrow.Array) arrow.Array {
 	builder := array.NewBuilder(memory.DefaultAllocator, dt)
-	for i := 0; i < col.Len(); i++ {
-		if col.IsNull(i) {
+	for i := 0; i < arr.Len(); i++ {
+		if arr.IsNull(i) {
 			builder.AppendNull()
 			continue
 		}
-		if err := builder.AppendValueFromString(col.ValueStr(i)); err != nil {
-			panic(fmt.Errorf("failed to append string %q value: %w", col.ValueStr(i), err))
+		if err := builder.AppendValueFromString(arr.ValueStr(i)); err != nil {
+			panic(fmt.Errorf("failed to append string %q value: %w", arr.ValueStr(i), err))
 		}
 	}
 	return builder.NewArray()
+}
+
+func reverseTransformStruct(dt *arrow.StructType, arr *array.Struct) *array.Struct {
+	children := make([]arrow.Array, arr.NumField())
+	names := make([]string, arr.NumField())
+	for i := range children {
+		children[i] = reverseTransformArray(dt.Field(i).Type, arr.Field(i))
+		names[i] = dt.Field(i).Name
+	}
+
+	// structs are sometimes read oddly when the outer struct is nullable but the inner one isn't
+	builder := array.NewStructBuilder(memory.DefaultAllocator, dt)
+
+	for i := 0; i < arr.Len(); i++ {
+		if arr.IsNull(i) {
+			builder.AppendNull()
+			continue
+		}
+
+		builder.Append(true)
+		for j, c := range children {
+			if err := builder.FieldBuilder(j).AppendValueFromString(c.ValueStr(i)); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	return builder.NewStructArray()
 }

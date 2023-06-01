@@ -32,58 +32,50 @@ func (*Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow
 	return fw.Close()
 }
 
-func convertSchema(sch *arrow.Schema) *arrow.Schema {
-	oldFields := sch.Fields()
-	fields := make([]arrow.Field, len(oldFields))
-	for i := range fields {
-		fields[i] = oldFields[i]
-		fields[i].Type = transformDataType(fields[i].Type)
-	}
+func convertSchema(sc *arrow.Schema) *arrow.Schema {
+	md := arrow.MetadataFrom(sc.Metadata().ToMap())
+	return arrow.NewSchema(convertFieldTypes(sc.Fields()), &md)
+}
 
-	md := sch.Metadata()
-	newSchema := arrow.NewSchema(fields, &md)
-	return newSchema
+func convertFieldTypes(fields []arrow.Field) []arrow.Field {
+	newFields := make([]arrow.Field, len(fields))
+	copy(newFields, fields)
+	for i := range newFields {
+		newFields[i].Type = transformDataType(newFields[i].Type)
+	}
+	return newFields
 }
 
 func transformDataType(t arrow.DataType) arrow.DataType {
-	switch dt := t.(type) {
-	case *types.JSONType,
-		*types.MACType,
-		*types.InetType,
-		*types.UUIDType:
-		return arrow.BinaryTypes.String
-	case listLikeType:
-		return arrow.ListOf(transformDataType(dt.Elem()))
-	}
-
-	if isUnsupportedType(t) {
-		return arrow.BinaryTypes.String
-	}
-
-	return t
-}
-
-func isUnsupportedType(t arrow.DataType) bool {
 	switch dt := t.(type) {
 	case *arrow.DurationType,
 		*arrow.DayTimeIntervalType,
 		*arrow.MonthDayNanoIntervalType,
 		*arrow.MonthIntervalType: // unsupported in pqarrow
-		return true
+		return arrow.BinaryTypes.String
+
 	case *arrow.LargeBinaryType,
 		*arrow.LargeListType,
 		*arrow.LargeStringType: // not yet implemented in arrow
-		return true
+		return arrow.BinaryTypes.String
+
+	case *types.JSONType,
+		*types.MACType,
+		*types.InetType,
+		*types.UUIDType:
+		return arrow.BinaryTypes.String
+
 	case *arrow.StructType:
-		for _, f := range dt.Fields() {
-			if isUnsupportedType(f.Type) {
-				return true
-			}
-		}
+		return arrow.StructOf(convertFieldTypes(dt.Fields())...)
+
+	case *arrow.MapType:
+		return arrow.MapOf(transformDataType(dt.KeyType()), transformDataType(dt.ItemType()))
+
 	case listLikeType:
-		return isUnsupportedType(dt.Elem())
+		return arrow.ListOf(transformDataType(dt.Elem()))
+	default:
+		return t
 	}
-	return false
 }
 
 // transformRecord casts extension columns or unsupported columns to string. It does not release the original record.
@@ -96,28 +88,38 @@ func transformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 }
 
 func transformArray(arr arrow.Array) arrow.Array {
-	switch arr := arr.(type) {
-	case *types.UUIDArray,
-		*types.InetArray,
-		*types.MACArray,
-		*types.JSONArray,
-		*array.Struct:
+	if arrow.TypeEqual(arrow.BinaryTypes.String, transformDataType(arr.DataType())) {
 		return transformToString(arr)
-	case array.ListLike:
-		values := transformArray(arr.ListValues())
-		return array.NewListData(array.NewData(
-			transformDataType(arr.DataType()), arr.Len(),
+	}
+
+	switch arr := arr.(type) {
+	case *array.Struct:
+		dt := arr.DataType().(*arrow.StructType)
+		children := make([]arrow.ArrayData, arr.NumField())
+		names := make([]string, arr.NumField())
+		for i := range children {
+			children[i] = transformArray(arr.Field(i)).Data()
+			names[i] = dt.Field(i).Name
+		}
+
+		return array.NewStructData(array.NewData(
+			transformDataType(dt), arr.Len(),
 			arr.Data().Buffers(),
-			[]arrow.ArrayData{values.Data()},
+			children,
 			arr.NullN(), arr.Data().Offset(),
 		))
-	}
 
-	if isUnsupportedType(arr.DataType()) {
-		return transformToString(arr)
-	}
+	case array.ListLike:
+		return array.MakeFromData(array.NewData(
+			transformDataType(arr.DataType()), arr.Len(),
+			arr.Data().Buffers(),
+			[]arrow.ArrayData{transformArray(arr.ListValues()).Data()},
+			arr.NullN(), arr.Data().Offset(),
+		))
 
-	return arr
+	default:
+		return arr
+	}
 }
 
 func transformToString(arr arrow.Array) arrow.Array {
