@@ -54,9 +54,12 @@ func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- 
 }
 
 func convertToSingleRowRecords(sc *arrow.Schema, rec arrow.Record) []arrow.Record {
-	records := make([]arrow.Record, rec.NumRows())
-	for i := int64(0); i < rec.NumRows(); i++ {
-		records[i] = reverseTransformRecord(sc, rec.NewSlice(i, i+1))
+	// transform first
+	transformed := reverseTransformRecord(sc, rec)
+	// slice after
+	records := make([]arrow.Record, transformed.NumRows())
+	for i := int64(0); i < transformed.NumRows(); i++ {
+		records[i] = reverseTransformRecord(sc, transformed.NewSlice(i, i+1))
 	}
 	return records
 }
@@ -80,7 +83,22 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 	case *array.Time64:
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
 	case *array.Struct:
-		return reverseTransformStruct(dt.(*arrow.StructType), arr)
+		dt := dt.(*arrow.StructType)
+		children := make([]arrow.ArrayData, arr.NumField())
+		names := make([]string, arr.NumField())
+		for i := range children {
+			// struct fields can be odd when read from parquet, but the data is intact
+			child := array.MakeFromData(arr.Data().Children()[i])
+			children[i] = reverseTransformArray(dt.Field(i).Type, child).Data()
+			names[i] = dt.Field(i).Name
+		}
+
+		return array.NewStructData(array.NewData(
+			dt, arr.Len(),
+			arr.Data().Buffers(),
+			children,
+			arr.NullN(), arr.Data().Offset(),
+		))
 
 	case array.ListLike: // this also handles maps
 		return array.MakeFromData(array.NewData(
@@ -107,32 +125,4 @@ func reverseTransformFromString(dt arrow.DataType, arr arrow.Array) arrow.Array 
 		}
 	}
 	return builder.NewArray()
-}
-
-func reverseTransformStruct(dt *arrow.StructType, arr *array.Struct) *array.Struct {
-	children := make([]arrow.Array, arr.NumField())
-	names := make([]string, arr.NumField())
-	for i := range children {
-		children[i] = reverseTransformArray(dt.Field(i).Type, arr.Field(i))
-		names[i] = dt.Field(i).Name
-	}
-
-	// structs are sometimes read oddly when the outer struct is nullable but the inner one isn't
-	builder := array.NewStructBuilder(memory.DefaultAllocator, dt)
-
-	for i := 0; i < arr.Len(); i++ {
-		if arr.IsNull(i) {
-			builder.AppendNull()
-			continue
-		}
-
-		builder.Append(true)
-		for j, c := range children {
-			if err := builder.FieldBuilder(j).AppendValueFromString(c.ValueStr(i)); err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	return builder.NewStructArray()
 }
