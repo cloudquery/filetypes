@@ -54,7 +54,7 @@ func convertToSingleRowRecords(sc *arrow.Schema, rec arrow.Record) []arrow.Recor
 	// slice after
 	records := make([]arrow.Record, transformed.NumRows())
 	for i := int64(0); i < transformed.NumRows(); i++ {
-		records[i] = reverseTransformRecord(sc, transformed.NewSlice(i, i+1))
+		records[i] = transformed.NewSlice(i, i+1)
 	}
 	return records
 }
