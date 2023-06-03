@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.4](https://github.com/cloudquery/filetypes/compare/v3.1.3...v3.1.4) (2023-06-03)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to c655015 ([#189](https://github.com/cloudquery/filetypes/issues/189)) ([a895c3a](https://github.com/cloudquery/filetypes/commit/a895c3af931bdd311d565c038fabb50e22f2b7b5))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.10.2 ([#187](https://github.com/cloudquery/filetypes/issues/187)) ([33633eb](https://github.com/cloudquery/filetypes/commit/33633ebd7058ae608f8507f11ba184d0e11be334))
+* **parquet:** Simplify struct reading ([#190](https://github.com/cloudquery/filetypes/issues/190)) ([7d157d1](https://github.com/cloudquery/filetypes/commit/7d157d181916c6e53e312b720e09d95d9ec483d1))
+
 ## [3.1.3](https://github.com/cloudquery/filetypes/compare/v3.1.2...v3.1.3) (2023-06-02)
 
 
