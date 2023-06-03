@@ -8,18 +8,13 @@ import (
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/apache/arrow/go/v13/arrow/memory"
+	"github.com/apache/arrow/go/v13/parquet"
 	"github.com/apache/arrow/go/v13/parquet/file"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
-type ReaderAtSeeker interface {
-	io.Reader
-	io.ReaderAt
-	io.Seeker
-}
-
-func (*Client) Read(f ReaderAtSeeker, table *schema.Table, _ string, res chan<- arrow.Record) error {
+func (*Client) Read(f parquet.ReaderAtSeeker, table *schema.Table, _ string, res chan<- arrow.Record) error {
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {
