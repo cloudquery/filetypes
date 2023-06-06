@@ -24,7 +24,6 @@ func (cl *Client) Read(r io.Reader, table *schema.Table, _ string, res chan<- ar
 			return reader.Err()
 		}
 		rec := reader.Record()
-		rec.Retain()
 		castRec, err := castFromString(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)

@@ -5,11 +5,14 @@ go 1.19
 require (
 	github.com/apache/arrow/go/v13 v13.0.0-20230601070034-e07e22c5580a
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/plugin-sdk/v3 v3.8.1
+	github.com/cloudquery/plugin-sdk/v3 v3.10.3
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.4
 )
+
+// TODO: remove once all updates are merged
+replace github.com/apache/arrow/go/v13 => github.com/cloudquery/arrow/go/v13 v13.0.0-20230606001313-88d5dc2ed455
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect

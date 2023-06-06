@@ -60,12 +60,10 @@ func convertSchema(sc *arrow.Schema) *arrow.Schema {
 }
 
 func convertFieldTypes(fields []arrow.Field) []arrow.Field {
-	newFields := make([]arrow.Field, len(fields))
-	copy(newFields, fields)
-	for i := range newFields {
-		newFields[i].Type = transformDataType(newFields[i].Type)
+	for i := range fields {
+		fields[i].Type = transformDataType(fields[i].Type)
 	}
-	return newFields
+	return fields
 }
 
 func transformDataType(t arrow.DataType) arrow.DataType {
@@ -77,7 +75,6 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 		return arrow.BinaryTypes.String
 
 	case *arrow.LargeBinaryType,
-		*arrow.LargeListType,
 		*arrow.LargeStringType: // not yet implemented in arrow
 		return arrow.BinaryTypes.String
 
@@ -93,8 +90,9 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 	case *arrow.MapType:
 		return arrow.MapOf(transformDataType(dt.KeyType()), transformDataType(dt.ItemType()))
 
-	case listLikeType:
+	case arrow.ListLikeType:
 		return arrow.ListOf(transformDataType(dt.Elem()))
+
 	default:
 		return t
 	}
@@ -131,7 +129,7 @@ func transformArray(arr arrow.Array) arrow.Array {
 			arr.NullN(), arr.Data().Offset(),
 		))
 
-	case array.ListLike:
+	case array.ListLike: // this also handles maps
 		return array.MakeFromData(array.NewData(
 			transformDataType(arr.DataType()), arr.Len(),
 			arr.Data().Buffers(),
