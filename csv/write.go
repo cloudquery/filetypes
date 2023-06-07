@@ -9,27 +9,45 @@ import (
 	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/apache/arrow/go/v13/arrow/csv"
 	"github.com/apache/arrow/go/v13/arrow/memory"
+	"github.com/cloudquery/filetypes/v3/types"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 )
 
-func (cl *Client) WriteTableBatch(w io.Writer, table *schema.Table, records []arrow.Record) error {
-	newSchema := convertSchema(table.ToArrowSchema())
+type Handle struct {
+	w *csv.Writer
+}
+
+var _ types.Handle = (*Handle)(nil)
+
+func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error) {
+	s := t.ToArrowSchema()
+	newSchema := convertSchema(s)
 	writer := csv.NewWriter(w, newSchema,
 		csv.WithComma(cl.Delimiter),
 		csv.WithHeader(cl.IncludeHeaders),
 		csv.WithNullWriter(""),
 	)
+
+	return &Handle{
+		w: writer,
+	}, nil
+}
+
+func (h *Handle) WriteContent(records []arrow.Record) error {
 	for _, record := range records {
 		castRec := castToString(record)
-
-		if err := writer.Write(castRec); err != nil {
+		if err := h.w.Write(castRec); err != nil {
 			return fmt.Errorf("failed to write record to csv: %w", err)
 		}
-		if err := writer.Flush(); err != nil {
+		if err := h.w.Flush(); err != nil {
 			return fmt.Errorf("failed to flush csv writer: %w", err)
 		}
 	}
 	return nil
+}
+
+func (h *Handle) WriteFooter() error {
+	return h.w.Flush()
 }
 
 func convertSchema(sch *arrow.Schema) *arrow.Schema {

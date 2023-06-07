@@ -4,15 +4,25 @@ import (
 	csvFile "github.com/cloudquery/filetypes/v3/csv"
 	jsonFile "github.com/cloudquery/filetypes/v3/json"
 	"github.com/cloudquery/filetypes/v3/parquet"
+	"github.com/cloudquery/filetypes/v3/types"
 )
 
 type Client struct {
 	spec *FileSpec
 
+	types.FileType
+
 	csv     *csvFile.Client
 	json    *jsonFile.Client
 	parquet *parquet.Client
 }
+
+var (
+	_ types.FileType = (*Client)(nil)
+	_ types.FileType = (*csvFile.Client)(nil)
+	_ types.FileType = (*jsonFile.Client)(nil)
+	_ types.FileType = (*parquet.Client)(nil)
+)
 
 // NewClient creates a new client for the given spec
 func NewClient(spec *FileSpec) (*Client, error) {
@@ -40,8 +50,9 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			return &Client{}, err
 		}
 		return &Client{
-			spec: spec,
-			csv:  client,
+			spec:     spec,
+			csv:      client,
+			FileType: client,
 		}, nil
 
 	case FormatTypeJSON:
@@ -50,8 +61,9 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			return &Client{}, err
 		}
 		return &Client{
-			spec: spec,
-			json: client,
+			spec:     spec,
+			json:     client,
+			FileType: client,
 		}, nil
 
 	case FormatTypeParquet:
@@ -60,8 +72,9 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			return &Client{}, err
 		}
 		return &Client{
-			spec:    spec,
-			parquet: client,
+			spec:     spec,
+			parquet:  client,
+			FileType: client,
 		}, nil
 
 	default:

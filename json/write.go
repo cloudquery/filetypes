@@ -5,13 +5,30 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
+	"github.com/cloudquery/filetypes/v3/types"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/goccy/go-json"
 )
 
-func (c *Client) WriteTableBatch(w io.Writer, _ *schema.Table, records []arrow.Record) error {
+type Handle struct {
+	w io.Writer
+}
+
+var _ types.Handle = (*Handle)(nil)
+
+func (*Client) WriteHeader(w io.Writer, _ *schema.Table) (types.Handle, error) {
+	return &Handle{
+		w: w,
+	}, nil
+}
+
+func (*Handle) WriteFooter() error {
+	return nil
+}
+
+func (h *Handle) WriteContent(records []arrow.Record) error {
 	for _, r := range records {
-		err := c.writeRecord(w, r)
+		err := writeRecord(h.w, r)
 		if err != nil {
 			return err
 		}
@@ -19,7 +36,7 @@ func (c *Client) WriteTableBatch(w io.Writer, _ *schema.Table, records []arrow.R
 	return nil
 }
 
-func (*Client) writeRecord(w io.Writer, record arrow.Record) error {
+func writeRecord(w io.Writer, record arrow.Record) error {
 	arr := array.RecordToStructArray(record)
 	enc := json.NewEncoder(w)
 	enc.SetEscapeHTML(false)
