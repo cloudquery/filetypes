@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.1.6](https://github.com/cloudquery/filetypes/compare/v3.1.5...v3.1.6) (2023-06-06)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.10.4 ([#196](https://github.com/cloudquery/filetypes/issues/196)) ([b78cd10](https://github.com/cloudquery/filetypes/commit/b78cd107abbbb42777ba44e2bec121bc552dcd97))
+
+## [3.1.5](https://github.com/cloudquery/filetypes/compare/v3.1.4...v3.1.5) (2023-06-06)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to 20b0de9 ([#191](https://github.com/cloudquery/filetypes/issues/191)) ([32ee41c](https://github.com/cloudquery/filetypes/commit/32ee41c3f92347a1b220ca74ee68195bb533585d))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to 88d5dc2 ([#194](https://github.com/cloudquery/filetypes/issues/194)) ([1357226](https://github.com/cloudquery/filetypes/commit/135722672c52fd54eda0064bdb68420ecbe11c50))
+* **deps:** Update module github.com/cloudquery/plugin-pb-go to v1.0.9 ([#195](https://github.com/cloudquery/filetypes/issues/195)) ([d9c9ab7](https://github.com/cloudquery/filetypes/commit/d9c9ab7b05c063d9e3bfd6e47782c05bb2926e2f))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.10.3 ([#193](https://github.com/cloudquery/filetypes/issues/193)) ([4ba4b5d](https://github.com/cloudquery/filetypes/commit/4ba4b5d28dca31223bd4a6df12b0fef795597867))
+
 ## [3.1.4](https://github.com/cloudquery/filetypes/compare/v3.1.3...v3.1.4) (2023-06-03)
 
 
