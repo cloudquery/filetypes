@@ -47,7 +47,7 @@ func (h *Handle) WriteFooter() error {
 
 func (h *Handle) WriteContent(records []arrow.Record) error {
 	for _, rec := range records {
-		if err := h.w.Write(transformRecord(h.s, rec)); err != nil {
+		if err := h.w.WriteBuffered(transformRecord(h.s, rec)); err != nil {
 			return err
 		}
 	}
