@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.2.0](https://github.com/cloudquery/filetypes/compare/v3.1.6...v3.2.0) (2023-06-14)
+
+
+### Features
+
+* Separate file parts ([#154](https://github.com/cloudquery/filetypes/issues/154)) ([3798fab](https://github.com/cloudquery/filetypes/commit/3798fab4cbb44c8a37dee5fd438504c4f04b57e7))
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to 4d76231 ([#198](https://github.com/cloudquery/filetypes/issues/198)) ([aafa961](https://github.com/cloudquery/filetypes/commit/aafa961a756e7c15f3702811f89152825b992a4b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.10.5 ([#201](https://github.com/cloudquery/filetypes/issues/201)) ([0c8519c](https://github.com/cloudquery/filetypes/commit/0c8519c0085efc6d8e301c4d1d794368c875a27a))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v3 to v3.10.6 ([#202](https://github.com/cloudquery/filetypes/issues/202)) ([a94a865](https://github.com/cloudquery/filetypes/commit/a94a8650ee392472db84ccf2f23a0775cdc0eb2f))
+* Use buffered writing mode in parquet ([#203](https://github.com/cloudquery/filetypes/issues/203)) ([5ad67f3](https://github.com/cloudquery/filetypes/commit/5ad67f347fe131146aa4910bc3eaae1b85e2d818))
+
 ## [3.1.6](https://github.com/cloudquery/filetypes/compare/v3.1.5...v3.1.6) (2023-06-06)
 
 
