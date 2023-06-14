@@ -74,7 +74,7 @@ func BenchmarkWrite(b *testing.B) {
 	opts := schema.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
-		MaxRows:    1000,
+		MaxRows:    b.N,
 	}
 	records := schema.GenTestData(table, opts)
 
@@ -85,14 +85,12 @@ func BenchmarkWrite(b *testing.B) {
 	var buf bytes.Buffer
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		if err := types.WriteAll(cl, writer, table, records); err != nil {
-			b.Fatal(err)
-		}
-		err = writer.Flush()
-		if err != nil {
-			b.Fatal(err)
-		}
-		buf.Reset()
+
+	if err := types.WriteAll(cl, writer, table, records); err != nil {
+		b.Fatal(err)
+	}
+	err = writer.Flush()
+	if err != nil {
+		b.Fatal(err)
 	}
 }
