@@ -11,7 +11,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (cl *Client) Read(r io.Reader, table *schema.Table, _ string, res chan<- arrow.Record) error {
+func (cl *Client) Read(r io.Reader, table *schema.Table, res chan<- arrow.Record) error {
 	arrowSchema := table.ToArrowSchema()
 	newSchema := convertSchema(arrowSchema)
 	reader := csv.NewReader(r, newSchema,

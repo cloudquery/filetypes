@@ -48,7 +48,7 @@ func TestWriteRead(t *testing.T) {
 	ch := make(chan arrow.Record)
 	var readErr error
 	go func() {
-		readErr = cl.Read(byteReader, table, "test-source", ch)
+		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
 	totalCount := 0

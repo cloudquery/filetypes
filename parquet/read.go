@@ -14,7 +14,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (*Client) Read(f parquet.ReaderAtSeeker, table *schema.Table, _ string, res chan<- arrow.Record) error {
+func (*Client) Read(f parquet.ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error {
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {

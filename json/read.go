@@ -12,7 +12,7 @@ import (
 
 const maxJSONSize = 1024 * 1024 * 20
 
-func (*Client) Read(r io.Reader, table *schema.Table, _ string, res chan<- arrow.Record) error {
+func (*Client) Read(r io.Reader, table *schema.Table, res chan<- arrow.Record) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, maxJSONSize), maxJSONSize)
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
