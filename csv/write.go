@@ -9,8 +9,8 @@ import (
 	"github.com/apache/arrow/go/v13/arrow/array"
 	"github.com/apache/arrow/go/v13/arrow/csv"
 	"github.com/apache/arrow/go/v13/arrow/memory"
-	"github.com/cloudquery/filetypes/v3/types"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
 type Handle struct {

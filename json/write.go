@@ -5,8 +5,8 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
-	"github.com/cloudquery/filetypes/v3/types"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/plugin-sdk/v4/schema"
 	"github.com/goccy/go-json"
 )
 

@@ -1,10 +1,10 @@
 package filetypes
 
 import (
-	csvFile "github.com/cloudquery/filetypes/v3/csv"
-	jsonFile "github.com/cloudquery/filetypes/v3/json"
-	"github.com/cloudquery/filetypes/v3/parquet"
-	"github.com/cloudquery/filetypes/v3/types"
+	csvFile "github.com/cloudquery/filetypes/v4/csv"
+	jsonFile "github.com/cloudquery/filetypes/v4/json"
+	"github.com/cloudquery/filetypes/v4/parquet"
+	"github.com/cloudquery/filetypes/v4/types"
 )
 
 type Client struct {

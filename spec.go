@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cloudquery/filetypes/v3/csv"
-	jsonFile "github.com/cloudquery/filetypes/v3/json"
-	"github.com/cloudquery/filetypes/v3/parquet"
+	"github.com/cloudquery/filetypes/v4/csv"
+	jsonFile "github.com/cloudquery/filetypes/v4/json"
+	"github.com/cloudquery/filetypes/v4/parquet"
 )
 
 type FormatType string

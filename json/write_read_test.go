@@ -9,9 +9,9 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/bradleyjkemp/cupaloy/v2"
-	"github.com/cloudquery/filetypes/v3/types"
-	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/plugin-sdk/v4/plugin"
+	"github.com/cloudquery/plugin-sdk/v4/schema"
 	"github.com/google/uuid"
 )
 
@@ -82,7 +82,7 @@ func TestWriteRead(t *testing.T) {
 	}()
 	totalCount := 0
 	for got := range ch {
-		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
+		if diff := plugin.RecordDiff(records[totalCount], got); diff != "" {
 			t.Fatalf("got diff: %s", diff)
 		}
 		totalCount++

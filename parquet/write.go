@@ -9,9 +9,9 @@ import (
 	"github.com/apache/arrow/go/v13/parquet"
 	"github.com/apache/arrow/go/v13/parquet/compress"
 	"github.com/apache/arrow/go/v13/parquet/pqarrow"
-	ftypes "github.com/cloudquery/filetypes/v3/types"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
-	"github.com/cloudquery/plugin-sdk/v3/types"
+	ftypes "github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/plugin-sdk/v4/schema"
+	"github.com/cloudquery/plugin-sdk/v4/types"
 )
 
 type Handle struct {
