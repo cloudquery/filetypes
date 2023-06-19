@@ -15,27 +15,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func TestWrite(t *testing.T) {
-	var b bytes.Buffer
-	table := schema.TestTable("test", schema.TestSourceOptions{})
-	sourceName := "test-source"
-	syncTime := time.Now().UTC().Round(time.Second)
-	opts := schema.GenTestDataOptions{
-		SourceName: sourceName,
-		SyncTime:   syncTime,
-		MaxRows:    1,
-	}
-	records := schema.GenTestData(table, opts)
-	cl, err := NewClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := types.WriteAll(cl, &b, table, records); err != nil {
-		t.Fatal(err)
-	}
-	t.Log(b.String())
-}
-
 func TestWriteRead(t *testing.T) {
 	table := schema.TestTable("test", schema.TestSourceOptions{})
 	sourceName := "test-source"
