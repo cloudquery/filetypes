@@ -115,7 +115,7 @@ func castToString(rec arrow.Record) arrow.Record {
 func stripCQExtensionMetadata(md arrow.Metadata) arrow.Metadata {
 	m := md.ToMap()
 	for k := range m {
-		if !strings.HasPrefix(k, "cq:extension:") {
+		if strings.HasPrefix(k, "cq:extension:") {
 			delete(m, k)
 		}
 	}
