@@ -4,6 +4,7 @@ import (
 	// "encoding/csv"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
@@ -39,9 +40,10 @@ func (h *Handle) WriteContent(records []arrow.Record) error {
 		if err := h.w.Write(castRec); err != nil {
 			return fmt.Errorf("failed to write record to csv: %w", err)
 		}
-		if err := h.w.Flush(); err != nil {
-			return fmt.Errorf("failed to flush csv writer: %w", err)
-		}
+	}
+
+	if err := h.w.Flush(); err != nil {
+		return fmt.Errorf("failed to flush csv writer: %w", err)
 	}
 	return nil
 }
@@ -58,6 +60,7 @@ func convertSchema(sch *arrow.Schema) *arrow.Schema {
 		if !isTypeSupported(f.Type) {
 			fields[i].Type = arrow.BinaryTypes.String
 		}
+		fields[i].Metadata = stripCQExtensionMetadata(fields[i].Metadata)
 	}
 
 	md := sch.Metadata()
@@ -107,4 +110,14 @@ func castToString(rec arrow.Record) arrow.Record {
 		cols[c] = sb.NewArray()
 	}
 	return array.NewRecord(newSchema, cols, rec.NumRows())
+}
+
+func stripCQExtensionMetadata(md arrow.Metadata) arrow.Metadata {
+	m := md.ToMap()
+	for k := range m {
+		if !strings.HasPrefix(k, "cq:extension:") {
+			delete(m, k)
+		}
+	}
+	return arrow.MetadataFrom(m)
 }
