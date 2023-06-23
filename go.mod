@@ -3,7 +3,7 @@ module github.com/cloudquery/filetypes/v4
 go 1.19
 
 require (
-	github.com/apache/arrow/go/v13 v13.0.0-20230601214540-018e7d3f9c4b
+	github.com/apache/arrow/go/v13 v13.0.0-20230622042343-ec413b7763fe
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/plugin-sdk/v4 v4.0.0
 	github.com/goccy/go-json v0.10.2
@@ -14,7 +14,7 @@ require (
 // TODO: remove once all updates are merged
 replace github.com/apache/arrow/go/v13 => github.com/cloudquery/arrow/go/v13 v13.0.0-20230622001328-95d31999d687
 
-replace github.com/cloudquery/plugin-sdk/v4 => github.com/cloudquery/plugin-sdk/v4 v4.0.0-20230622195407-5823d970ad6d
+replace github.com/cloudquery/plugin-sdk/v4 => github.com/cloudquery/plugin-sdk/v4 v4.0.0-20230623101720-d4b06c321647
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
