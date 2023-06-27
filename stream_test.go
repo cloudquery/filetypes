@@ -12,6 +12,7 @@ import (
 	"github.com/cloudquery/filetypes/v4"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type uploadHelper struct {
@@ -44,9 +45,7 @@ func TestHappyPath(t *testing.T) {
 	cl, err := filetypes.NewClient(&filetypes.FileSpec{
 		Format: filetypes.FormatTypeJSON,
 	})
-	if !assert.NoError(t, err) {
-		return
-	}
+	require.NoError(t, err)
 
 	table := &schema.Table{
 		Name: "test",
@@ -61,29 +60,22 @@ func TestHappyPath(t *testing.T) {
 		expectAt: 1,
 	}
 	s, err := cl.StartStream(table, u.Upload)
-	if !assert.NoError(t, err) {
-		return
-	}
+	require.NoError(t, err)
 
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
 	record := bldr.NewRecord()
 
-	if !assert.NoError(t, s.Write([]arrow.Record{record})) {
-		return
-	}
-
-	assert.NoError(t, s.Finish())
+	require.NoError(t, s.Write([]arrow.Record{record}))
+	require.NoError(t, s.Finish())
 }
 
 func TestWriteError(t *testing.T) {
 	cl, err := filetypes.NewClient(&filetypes.FileSpec{
 		Format: filetypes.FormatTypeJSON,
 	})
-	if !assert.NoError(t, err) {
-		return
-	}
+	require.NoError(t, err)
 
 	table := &schema.Table{
 		Name: "test",
@@ -97,29 +89,22 @@ func TestWriteError(t *testing.T) {
 		failAfter: 1,
 	}
 	s, err := cl.StartStream(table, u.Upload)
-	if !assert.NoError(t, err) {
-		return
-	}
+	require.NoError(t, err)
 
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
 	record := bldr.NewRecord()
 
-	if !assert.NoError(t, s.Write([]arrow.Record{record})) {
-		return
-	}
-
-	assert.ErrorIs(t, s.Finish(), errTest)
+	require.NoError(t, s.Write([]arrow.Record{record}))
+	require.ErrorIs(t, s.Finish(), errTest)
 }
 
 func TestCloseError(t *testing.T) {
 	cl, err := filetypes.NewClient(&filetypes.FileSpec{
 		Format: filetypes.FormatTypeJSON,
 	})
-	if !assert.NoError(t, err) {
-		return
-	}
+	require.NoError(t, err)
 
 	table := &schema.Table{
 		Name: "test",
@@ -132,18 +117,13 @@ func TestCloseError(t *testing.T) {
 		t: t,
 	}
 	s, err := cl.StartStream(table, u.Upload)
-	if !assert.NoError(t, err) {
-		return
-	}
+	require.NoError(t, err)
 
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
 	record := bldr.NewRecord()
 
-	if !assert.NoError(t, s.Write([]arrow.Record{record})) {
-		return
-	}
-
-	assert.ErrorIs(t, s.FinishWithError(errTest), errTest)
+	require.NoError(t, s.Write([]arrow.Record{record}))
+	require.ErrorIs(t, s.FinishWithError(errTest), errTest)
 }
