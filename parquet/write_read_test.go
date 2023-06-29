@@ -9,9 +9,9 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/apache/arrow/go/v13/arrow/array"
-	"github.com/cloudquery/filetypes/v3/types"
-	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/plugin-sdk/v4/plugin"
+	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
 func TestWriteRead(t *testing.T) {
@@ -48,14 +48,14 @@ func TestWriteRead(t *testing.T) {
 	ch := make(chan arrow.Record)
 	var readErr error
 	go func() {
-		readErr = cl.Read(byteReader, table, "test-source", ch)
+		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
 	totalCount := 0
 	for got := range ch {
 		curr := records[totalCount]
 		if !array.RecordApproxEqual(curr, got) {
-			t.Fatalf("got diff (record %d): %s\n", totalCount, destination.RecordDiff(records[totalCount], got))
+			t.Fatalf("got diff (record %d): %s\n", totalCount, plugin.RecordDiff(records[totalCount], got))
 		}
 		totalCount++
 	}

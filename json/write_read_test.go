@@ -9,32 +9,11 @@ import (
 
 	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/bradleyjkemp/cupaloy/v2"
-	"github.com/cloudquery/filetypes/v3/types"
-	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
-	"github.com/cloudquery/plugin-sdk/v3/schema"
+	"github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/plugin-sdk/v4/plugin"
+	"github.com/cloudquery/plugin-sdk/v4/schema"
 	"github.com/google/uuid"
 )
-
-func TestWrite(t *testing.T) {
-	var b bytes.Buffer
-	table := schema.TestTable("test", schema.TestSourceOptions{})
-	sourceName := "test-source"
-	syncTime := time.Now().UTC().Round(time.Second)
-	opts := schema.GenTestDataOptions{
-		SourceName: sourceName,
-		SyncTime:   syncTime,
-		MaxRows:    1,
-	}
-	records := schema.GenTestData(table, opts)
-	cl, err := NewClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := types.WriteAll(cl, &b, table, records); err != nil {
-		t.Fatal(err)
-	}
-	t.Log(b.String())
-}
 
 func TestWriteRead(t *testing.T) {
 	table := schema.TestTable("test", schema.TestSourceOptions{})
@@ -77,12 +56,12 @@ func TestWriteRead(t *testing.T) {
 	ch := make(chan arrow.Record)
 	var readErr error
 	go func() {
-		readErr = cl.Read(byteReader, table, "test-source", ch)
+		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
 	totalCount := 0
 	for got := range ch {
-		if diff := destination.RecordDiff(records[totalCount], got); diff != "" {
+		if diff := plugin.RecordDiff(records[totalCount], got); diff != "" {
 			t.Fatalf("got diff: %s", diff)
 		}
 		totalCount++

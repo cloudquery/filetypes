@@ -3,8 +3,8 @@ package filetypes
 import (
 	"testing"
 
-	"github.com/cloudquery/filetypes/v3/csv"
-	"github.com/cloudquery/filetypes/v3/json"
+	"github.com/cloudquery/filetypes/v4/csv"
+	"github.com/cloudquery/filetypes/v4/json"
 	"github.com/stretchr/testify/assert"
 )
 
