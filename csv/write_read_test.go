@@ -39,7 +39,9 @@ func TestWriteRead(t *testing.T) {
 				StableUUID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
-			records := schema.GenTestData(table, opts)
+			tg := schema.NewTestDataGenerator()
+			records := tg.Generate(table, opts)
+
 			cl, err := NewClient(tc.options...)
 			if err != nil {
 				t.Fatal(err)
@@ -98,7 +100,8 @@ func BenchmarkWrite(b *testing.B) {
 		SyncTime:   syncTime,
 		MaxRows:    1000,
 	}
-	records := schema.GenTestData(table, opts)
+	tg := schema.NewTestDataGenerator()
+	records := tg.Generate(table, opts)
 
 	cl, err := NewClient()
 	if err != nil {
