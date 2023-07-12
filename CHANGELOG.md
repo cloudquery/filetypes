@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.1](https://github.com/cloudquery/filetypes/compare/v4.0.0...v4.0.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v13 digest to 5a06b2e ([#226](https://github.com/cloudquery/filetypes/issues/226)) ([67f9ee7](https://github.com/cloudquery/filetypes/commit/67f9ee725f2ac4bc1b5b0ff0ff977dba0692fdf2))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to 0a52533 ([#234](https://github.com/cloudquery/filetypes/issues/234)) ([4b0bd07](https://github.com/cloudquery/filetypes/commit/4b0bd073e9e3454932a071cfcc56e45226ff6644))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to a2a76eb ([#235](https://github.com/cloudquery/filetypes/issues/235)) ([432098a](https://github.com/cloudquery/filetypes/commit/432098afb38951a0ddca02ff394567fb1e5be20e))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to df3b664 ([#233](https://github.com/cloudquery/filetypes/issues/233)) ([2ebb895](https://github.com/cloudquery/filetypes/commit/2ebb895685b39f16598ec05b35a1843aed1e3844))
+* **deps:** Update golang.org/x/exp digest to 97b1e66 ([#227](https://github.com/cloudquery/filetypes/issues/227)) ([29dd44d](https://github.com/cloudquery/filetypes/commit/29dd44d912bda609547452eb447c57a737cad87d))
+* **deps:** Update google.golang.org/genproto digest to 9506855 ([#229](https://github.com/cloudquery/filetypes/issues/229)) ([481dd3f](https://github.com/cloudquery/filetypes/commit/481dd3f1f6a279599cfc8824cafcb71efd16ff55))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to 9506855 ([#231](https://github.com/cloudquery/filetypes/issues/231)) ([4d8ca7b](https://github.com/cloudquery/filetypes/commit/4d8ca7ba0884c69f436d368c2175ed6c75079352))
+* **deps:** Update module github.com/klauspost/compress to v1.16.6 ([#230](https://github.com/cloudquery/filetypes/issues/230)) ([3e52766](https://github.com/cloudquery/filetypes/commit/3e5276630531d922e3ab62238bc696982ab6bf40))
+* **deps:** Update module github.com/klauspost/cpuid/v2 to v2.2.5 ([#232](https://github.com/cloudquery/filetypes/issues/232)) ([3398195](https://github.com/cloudquery/filetypes/commit/339819561e0f952c40fe1dec01a20ff563248929))
+* **deps:** Use SDK 4.0.0 ([#236](https://github.com/cloudquery/filetypes/issues/236)) ([29ceed7](https://github.com/cloudquery/filetypes/commit/29ceed788a008ce8d0122c531cb60acfd2ad92fb))
+
 ## [4.0.0](https://github.com/cloudquery/filetypes/compare/v3.2.0...v4.0.0) (2023-06-29)
 
 
