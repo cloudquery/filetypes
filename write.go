@@ -17,15 +17,34 @@ func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, records 
 func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error) {
 	switch cl.spec.Compression {
 	case CompressionTypeNone:
-		return cl.FileType.WriteHeaderRaw(w, t, types.NoopAfterFooterFunc)
+		return cl.filetype.WriteHeader(w, t)
 
 	case CompressionTypeGZip:
 		gw := gzip.NewWriter(w)
-		return cl.FileType.WriteHeaderRaw(gw, t, func(_ types.Handle) error {
-			return gw.Close()
-		})
+		h, err := cl.filetype.WriteHeader(gw, t)
+		if err != nil {
+			return nil, err
+		}
+		return newClosableHandle(h, gw.Close), nil
 
 	default:
 		return nil, fmt.Errorf("unhandled compression type %s", cl.spec.Compression)
 	}
+}
+
+type closableHandle struct {
+	types.Handle
+	afterCloseFunc func() error
+}
+
+var _ types.Handle = (*closableHandle)(nil)
+
+func newClosableHandle(h types.Handle, afterCloseFunc func() error) types.Handle {
+	return &closableHandle{Handle: h, afterCloseFunc: afterCloseFunc}
+}
+func (c *closableHandle) WriteFooter() error {
+	if err := c.Handle.WriteFooter(); err != nil {
+		return err
+	}
+	return c.afterCloseFunc()
 }

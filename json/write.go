@@ -11,21 +11,19 @@ import (
 )
 
 type Handle struct {
-	w           io.Writer
-	afterFooter types.AfterFooterFunc
+	w io.Writer
 }
 
 var _ types.Handle = (*Handle)(nil)
 
-func (*Client) WriteHeaderRaw(w io.Writer, _ *schema.Table, afterFooter types.AfterFooterFunc) (types.Handle, error) {
+func (*Client) WriteHeader(w io.Writer, _ *schema.Table) (types.Handle, error) {
 	return &Handle{
-		w:           w,
-		afterFooter: afterFooter,
+		w: w,
 	}, nil
 }
 
-func (h *Handle) WriteFooter() error {
-	return h.afterFooter(h)
+func (*Handle) WriteFooter() error {
+	return nil
 }
 
 func (h *Handle) WriteContent(records []arrow.Record) error {

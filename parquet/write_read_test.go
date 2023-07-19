@@ -34,7 +34,7 @@ func TestWriteRead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := types.RawWriteAll(cl, writer, table, records); err != nil {
+	if err := types.WriteAll(cl, writer, table, records); err != nil {
 		t.Fatal(err)
 	}
 	err = writer.Flush()
@@ -89,7 +89,7 @@ func BenchmarkWrite(b *testing.B) {
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
 
-	if err := types.RawWriteAll(cl, writer, table, records); err != nil {
+	if err := types.WriteAll(cl, writer, table, records); err != nil {
 		b.Fatal(err)
 	}
 	err = writer.Flush()
