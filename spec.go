@@ -18,9 +18,17 @@ const (
 	FormatTypeParquet = "parquet"
 )
 
+type CompressionType string
+
+const (
+	CompressionTypeNone CompressionType = ""
+	CompressionTypeGZip CompressionType = "gzip"
+)
+
 type FileSpec struct {
-	Format      FormatType `json:"format,omitempty"`
-	FormatSpec  any        `json:"format_spec,omitempty"`
+	Format      FormatType      `json:"format,omitempty"`
+	FormatSpec  any             `json:"format_spec,omitempty"`
+	Compression CompressionType `json:"compression,omitempty"`
 	csvSpec     *csv.Spec
 	jsonSpec    *jsonFile.Spec
 	parquetSpec *parquet.Spec
@@ -38,6 +46,9 @@ func (s *FileSpec) SetDefaults() {
 }
 
 func (s *FileSpec) Validate() error {
+	if !s.Compression.IsValid() {
+		return fmt.Errorf("`compression` must be either empty or `%s`", CompressionTypeGZip)
+	}
 	if s.Format == "" {
 		return fmt.Errorf("format is required")
 	}
@@ -47,6 +58,10 @@ func (s *FileSpec) Validate() error {
 	case FormatTypeJSON:
 		return s.jsonSpec.Validate()
 	case FormatTypeParquet:
+		if s.Compression != CompressionTypeNone {
+			return fmt.Errorf("compression is not supported for parquet format") // This won't work even if we wanted to, because parquet writer prematurely closes the file handle
+		}
+
 		return s.parquetSpec.Validate()
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
@@ -74,5 +89,23 @@ func (s *FileSpec) UnmarshalSpec() error {
 		return dec.Decode(s.parquetSpec)
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
+	}
+}
+
+func (c CompressionType) IsValid() bool {
+	switch c {
+	case CompressionTypeNone, CompressionTypeGZip:
+		return true
+	default:
+		return false
+	}
+}
+
+func (c CompressionType) Extension() string {
+	switch c {
+	case CompressionTypeGZip:
+		return ".gz"
+	default:
+		return ""
 	}
 }

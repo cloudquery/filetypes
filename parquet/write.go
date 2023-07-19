@@ -21,7 +21,7 @@ type Handle struct {
 
 var _ ftypes.Handle = (*Handle)(nil)
 
-func (*Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error) {
+func (*Client) WriteHeaderRaw(w io.Writer, t *schema.Table, _ ftypes.AfterFooterFunc) (ftypes.Handle, error) {
 	props := parquet.NewWriterProperties(
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),

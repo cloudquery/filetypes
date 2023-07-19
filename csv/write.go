@@ -15,12 +15,13 @@ import (
 )
 
 type Handle struct {
-	w *csv.Writer
+	w           *csv.Writer
+	afterFooter types.AfterFooterFunc
 }
 
 var _ types.Handle = (*Handle)(nil)
 
-func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error) {
+func (cl *Client) WriteHeaderRaw(w io.Writer, t *schema.Table, afterFooter types.AfterFooterFunc) (types.Handle, error) {
 	s := t.ToArrowSchema()
 	newSchema := convertSchema(s)
 	writer := csv.NewWriter(w, newSchema,
@@ -30,7 +31,8 @@ func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error
 	)
 
 	return &Handle{
-		w: writer,
+		w:           writer,
+		afterFooter: afterFooter,
 	}, nil
 }
 
@@ -49,7 +51,10 @@ func (h *Handle) WriteContent(records []arrow.Record) error {
 }
 
 func (h *Handle) WriteFooter() error {
-	return h.w.Flush()
+	if err := h.w.Flush(); err != nil {
+		return err
+	}
+	return h.afterFooter(h)
 }
 
 func convertSchema(sch *arrow.Schema) *arrow.Schema {
