@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/cloudquery/filetypes/compare/v4.0.3...v4.1.0) (2023-07-21)
+
+
+### Features
+
+* Compression ([#245](https://github.com/cloudquery/filetypes/issues/245)) ([9794651](https://github.com/cloudquery/filetypes/commit/9794651c88a13064d973bc5f37ac640b41b6f2c4))
+
 ## [4.0.3](https://github.com/cloudquery/filetypes/compare/v4.0.2...v4.0.3) (2023-07-20)
 
 
