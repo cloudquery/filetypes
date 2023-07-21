@@ -8,9 +8,8 @@ import (
 )
 
 type Client struct {
-	spec *FileSpec
-
-	types.FileType
+	spec     *FileSpec
+	filetype types.FileType
 
 	csv     *csvFile.Client
 	json    *jsonFile.Client
@@ -52,7 +51,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		return &Client{
 			spec:     spec,
 			csv:      client,
-			FileType: client,
+			filetype: client,
 		}, nil
 
 	case FormatTypeJSON:
@@ -63,7 +62,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		return &Client{
 			spec:     spec,
 			json:     client,
-			FileType: client,
+			filetype: client,
 		}, nil
 
 	case FormatTypeParquet:
@@ -74,7 +73,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		return &Client{
 			spec:     spec,
 			parquet:  client,
-			FileType: client,
+			filetype: client,
 		}, nil
 
 	default:
