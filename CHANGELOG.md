@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.1.1](https://github.com/cloudquery/filetypes/compare/v4.1.0...v4.1.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v13 digest to 112f949 ([#251](https://github.com/cloudquery/filetypes/issues/251)) ([fedbd1f](https://github.com/cloudquery/filetypes/commit/fedbd1f985c356666841a8c5a83050675aa5bc30))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to 10df4b9 ([#248](https://github.com/cloudquery/filetypes/issues/248)) ([720d982](https://github.com/cloudquery/filetypes/commit/720d98280a44a39da6109b6bfc7ba15b7e4f7320))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to 3452eb0 ([#250](https://github.com/cloudquery/filetypes/issues/250)) ([e8cd887](https://github.com/cloudquery/filetypes/commit/e8cd887e071222a287b2d5bac53a65c996e9abc2))
+* **deps:** Update github.com/cloudquery/arrow/go/v13 digest to f53878d ([#261](https://github.com/cloudquery/filetypes/issues/261)) ([e506e2d](https://github.com/cloudquery/filetypes/commit/e506e2dc605185aa3629ac588e0fd91d179fd8b4))
+* **deps:** Update golang.org/x/exp digest to b0cb94b ([#252](https://github.com/cloudquery/filetypes/issues/252)) ([cf0cb02](https://github.com/cloudquery/filetypes/commit/cf0cb022e0ad69fd032554a9d6c7e30ff17f431b))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to e0aa005 ([#253](https://github.com/cloudquery/filetypes/issues/253)) ([2e64dda](https://github.com/cloudquery/filetypes/commit/2e64dda21c8d8efc3a6fd22946755a2288322baa))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.2.4 ([#259](https://github.com/cloudquery/filetypes/issues/259)) ([ba9391e](https://github.com/cloudquery/filetypes/commit/ba9391e2e79e1dca91ba3ccdcb86ffb701d900fb))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.2.5 ([#260](https://github.com/cloudquery/filetypes/issues/260)) ([17996a6](https://github.com/cloudquery/filetypes/commit/17996a65ed1e1c3cef08f75081d28730141a9ebc))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.2.6 ([#262](https://github.com/cloudquery/filetypes/issues/262)) ([1669235](https://github.com/cloudquery/filetypes/commit/166923592d349a148938897579767bcbd4712921))
+* **deps:** Update module github.com/google/flatbuffers to v23.5.26+incompatible ([#257](https://github.com/cloudquery/filetypes/issues/257)) ([76ae2e6](https://github.com/cloudquery/filetypes/commit/76ae2e6b86f7feada686516719bedcf66c3d3bc4))
+* **deps:** Update module github.com/klauspost/compress to v1.16.7 ([#254](https://github.com/cloudquery/filetypes/issues/254)) ([e0eecf0](https://github.com/cloudquery/filetypes/commit/e0eecf05646afb44e3898676d7eeaf34a51027cc))
+* **deps:** Update module github.com/pierrec/lz4/v4 to v4.1.18 ([#255](https://github.com/cloudquery/filetypes/issues/255)) ([28f98e7](https://github.com/cloudquery/filetypes/commit/28f98e72f7920f5e2154fa8122505eb779072235))
+* **deps:** Update module github.com/rs/zerolog to v1.30.0 ([#258](https://github.com/cloudquery/filetypes/issues/258)) ([bc0570b](https://github.com/cloudquery/filetypes/commit/bc0570b7290c5277b7d5564d0ecdfa41a65d0715))
+
 ## [4.1.0](https://github.com/cloudquery/filetypes/compare/v4.0.3...v4.1.0) (2023-07-21)
 
 
