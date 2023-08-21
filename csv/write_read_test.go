@@ -13,6 +13,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/plugin"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWriteRead(t *testing.T) {
@@ -40,7 +41,7 @@ func TestWriteRead(t *testing.T) {
 				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
 			tg := schema.NewTestDataGenerator()
-			records := tg.Generate(table, opts)
+			record := tg.Generate(table, opts)
 
 			cl, err := NewClient(tc.options...)
 			if err != nil {
@@ -51,7 +52,7 @@ func TestWriteRead(t *testing.T) {
 			writer := bufio.NewWriter(&b)
 			reader := bufio.NewReader(&b)
 
-			if err := types.WriteAll(cl, writer, table, records); err != nil {
+			if err := types.WriteAll(cl, writer, table, []arrow.Record{record}); err != nil {
 				t.Fatal(err)
 			}
 			writer.Flush()
@@ -74,19 +75,13 @@ func TestWriteRead(t *testing.T) {
 				readErr = cl.Read(byteReader, table, ch)
 				close(ch)
 			}()
-			totalCount := 0
+			received := make([]arrow.Record, 0, tc.outputCount)
 			for got := range ch {
-				if diff := plugin.RecordDiff(records[totalCount], got); diff != "" {
-					t.Errorf("got diff: %s", diff)
-				}
-				totalCount++
+				received = append(received, got)
 			}
-			if readErr != nil {
-				t.Fatal(readErr)
-			}
-			if totalCount != tc.outputCount {
-				t.Errorf("got %d row(s), want %d", totalCount, tc.outputCount)
-			}
+			require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
+			require.NoError(t, readErr)
+			require.Equalf(t, tc.outputCount, len(received), "got %d row(s), want %d", len(received), tc.outputCount)
 		})
 	}
 }
@@ -101,7 +96,7 @@ func BenchmarkWrite(b *testing.B) {
 		MaxRows:    1000,
 	}
 	tg := schema.NewTestDataGenerator()
-	records := tg.Generate(table, opts)
+	record := tg.Generate(table, opts)
 
 	cl, err := NewClient()
 	if err != nil {
@@ -111,7 +106,7 @@ func BenchmarkWrite(b *testing.B) {
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		if err := types.WriteAll(cl, writer, table, records); err != nil {
+		if err := types.WriteAll(cl, writer, table, []arrow.Record{record}); err != nil {
 			b.Fatal(err)
 		}
 
