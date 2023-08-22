@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.5](https://github.com/cloudquery/filetypes/compare/v4.1.4...v4.1.5) (2023-08-21)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.5.3 ([#273](https://github.com/cloudquery/filetypes/issues/273)) ([18a101e](https://github.com/cloudquery/filetypes/commit/18a101e408a0df337361fb50cf27e5cee57ee2d4))
+
 ## [4.1.4](https://github.com/cloudquery/filetypes/compare/v4.1.3...v4.1.4) (2023-08-21)
 
 
