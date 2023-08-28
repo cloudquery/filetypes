@@ -3,9 +3,9 @@ module github.com/cloudquery/filetypes/v4
 go 1.19
 
 require (
-	github.com/apache/arrow/go/v13 v13.0.0-20230731205701-112f94971882
+	github.com/apache/arrow/go/v14 v14.0.0-20230826001106-a069d71cc1bcd
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/plugin-sdk/v4 v4.5.6
+	github.com/cloudquery/plugin-sdk/v4 v4.5.7
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.4
@@ -14,7 +14,7 @@ require (
 require google.golang.org/genproto/googleapis/rpc v0.0.0-20230731193218-e0aa005b6bdf // indirect
 
 // TODO: remove once all updates are merged
-replace github.com/apache/arrow/go/v13 => github.com/cloudquery/arrow/go/v13 v13.0.0-20230821001142-5b83d4f91697
+replace github.com/apache/arrow/go/v14 => github.com/cloudquery/arrow/go/v14 v14.0.0-20230826001106-a069d71cc1bc
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
