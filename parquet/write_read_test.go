@@ -15,6 +15,7 @@ import (
 )
 
 func TestWriteRead(t *testing.T) {
+	const rows = 10
 	var b bytes.Buffer
 	table := schema.TestTable("test", schema.TestSourceOptions{})
 	sourceName := "test-source"
@@ -22,7 +23,7 @@ func TestWriteRead(t *testing.T) {
 	opts := schema.GenTestDataOptions{
 		SourceName: sourceName,
 		SyncTime:   syncTime,
-		MaxRows:    2,
+		MaxRows:    rows,
 	}
 	tg := schema.NewTestDataGenerator()
 	record := tg.Generate(table, opts)
@@ -53,13 +54,61 @@ func TestWriteRead(t *testing.T) {
 		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
-	received := make([]arrow.Record, 0, 2)
+	received := make([]arrow.Record, 0, rows)
 	for got := range ch {
 		received = append(received, got)
 	}
 	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
 	require.NoError(t, readErr)
-	require.Equalf(t, 2, len(received), "got %d row(s), want %d", len(received), 2)
+	require.Equalf(t, rows, len(received), "got %d row(s), want %d", len(received), rows)
+}
+func TestWriteReadSliced(t *testing.T) {
+	const rows = 10
+	var b bytes.Buffer
+	table := schema.TestTable("test", schema.TestSourceOptions{})
+	sourceName := "test-source"
+	syncTime := time.Now().UTC().Round(time.Second)
+	opts := schema.GenTestDataOptions{
+		SourceName: sourceName,
+		SyncTime:   syncTime,
+		MaxRows:    rows,
+	}
+	tg := schema.NewTestDataGenerator()
+	record := tg.Generate(table, opts)
+
+	writer := bufio.NewWriter(&b)
+	reader := bufio.NewReader(&b)
+
+	cl, err := NewClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := types.WriteAll(cl, writer, table, slice(record)); err != nil {
+		t.Fatal(err)
+	}
+	err = writer.Flush()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rawBytes, err := io.ReadAll(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	byteReader := bytes.NewReader(rawBytes)
+	ch := make(chan arrow.Record)
+	var readErr error
+	go func() {
+		readErr = cl.Read(byteReader, table, ch)
+		close(ch)
+	}()
+	received := make([]arrow.Record, 0, rows)
+	for got := range ch {
+		received = append(received, got)
+	}
+	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
+	require.NoError(t, readErr)
+	require.Equalf(t, rows, len(received), "got %d row(s), want %d", len(received), rows)
 }
 
 func BenchmarkWrite(b *testing.B) {
