@@ -126,7 +126,8 @@ func transformArray(arr arrow.Array) arrow.Array {
 			transformDataType(dt), arr.Len(),
 			arr.Data().Buffers(),
 			children,
-			arr.NullN(), arr.Data().Offset(),
+			arr.NullN(),
+			0, // we use 0 as offset for struct arrays, as the child arrays would already be sliced properly
 		))
 
 	case array.ListLike: // this also handles maps
@@ -134,7 +135,9 @@ func transformArray(arr arrow.Array) arrow.Array {
 			transformDataType(arr.DataType()), arr.Len(),
 			arr.Data().Buffers(),
 			[]arrow.ArrayData{transformArray(arr.ListValues()).Data()},
-			arr.NullN(), arr.Data().Offset(),
+			arr.NullN(),
+			// we use data offset for list like as the `ListValues` can be a larger array (happens when slicing)
+			arr.Data().Offset(),
 		))
 
 	default:

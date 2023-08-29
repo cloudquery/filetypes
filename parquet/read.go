@@ -35,9 +35,7 @@ func (*Client) Read(f parquet.ReaderAtSeeker, table *schema.Table, res chan<- ar
 
 	sc := table.ToArrowSchema()
 	for rr.Next() {
-		rec := rr.Record()
-		newRecs := convertToSingleRowRecords(sc, rec)
-		for _, r := range newRecs {
+		for _, r := range slice(reverseTransformRecord(sc, rr.Record())) {
 			res <- r
 		}
 	}
@@ -48,15 +46,12 @@ func (*Client) Read(f parquet.ReaderAtSeeker, table *schema.Table, res chan<- ar
 	return nil
 }
 
-func convertToSingleRowRecords(sc *arrow.Schema, rec arrow.Record) []arrow.Record {
-	// transform first
-	transformed := reverseTransformRecord(sc, rec)
-	// slice after
-	records := make([]arrow.Record, transformed.NumRows())
-	for i := int64(0); i < transformed.NumRows(); i++ {
-		records[i] = transformed.NewSlice(i, i+1)
+func slice(r arrow.Record) []arrow.Record {
+	res := make([]arrow.Record, r.NumRows())
+	for i := int64(0); i < r.NumRows(); i++ {
+		res[i] = r.NewSlice(i, i+1)
 	}
-	return records
+	return res
 }
 
 func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
@@ -90,7 +85,8 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 			dt, arr.Len(),
 			arr.Data().Buffers(),
 			children,
-			arr.NullN(), arr.Data().Offset(),
+			arr.NullN(),
+			0, // we use 0 as offset for struct arrays, as the child arrays would already be sliced properly
 		))
 
 	case array.ListLike: // this also handles maps
@@ -98,7 +94,9 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 			dt, arr.Len(),
 			arr.Data().Buffers(),
 			[]arrow.ArrayData{reverseTransformArray(dt.(arrow.ListLikeType).Elem(), arr.ListValues()).Data()},
-			arr.NullN(), arr.Data().Offset(),
+			arr.NullN(),
+			// we use data offset for list like as the `ListValues` can be a larger array (happens when slicing)
+			arr.Data().Offset(),
 		))
 
 	default:
