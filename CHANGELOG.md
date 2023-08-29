@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.7](https://github.com/cloudquery/filetypes/compare/v4.1.6...v4.1.7) (2023-08-29)
+
+
+### Bug Fixes
+
+* Properly handle sliced struct arrays ([e5feaf9](https://github.com/cloudquery/filetypes/commit/e5feaf94d73fff0c3be32f66a432d11fbe58f608))
+
 ## [4.1.6](https://github.com/cloudquery/filetypes/compare/v4.1.5...v4.1.6) (2023-08-28)
 
 
