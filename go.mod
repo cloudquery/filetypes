@@ -7,7 +7,7 @@ require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/plugin-sdk/v4 v4.6.0
 	github.com/goccy/go-json v0.10.2
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.3.1
 	github.com/stretchr/testify v1.8.4
 )
 
