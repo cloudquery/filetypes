@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.9](https://github.com/cloudquery/filetypes/compare/v4.1.8...v4.1.9) (2023-09-01)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v14 digest to 84583d6 ([#283](https://github.com/cloudquery/filetypes/issues/283)) ([135b32b](https://github.com/cloudquery/filetypes/commit/135b32b4f1308ca39d0323a1a08558296251e716))
+* **deps:** Update github.com/apache/arrow/go/v14 digest to b6c0ea4 ([#290](https://github.com/cloudquery/filetypes/issues/290)) ([4a83c8e](https://github.com/cloudquery/filetypes/commit/4a83c8e26a8f16583b15220558e56b340aada7b8))
+* **deps:** Update golang.org/x/exp digest to d852ddb ([#284](https://github.com/cloudquery/filetypes/issues/284)) ([307197c](https://github.com/cloudquery/filetypes/commit/307197c8843f885335778a0f8b66f24ee685c457))
+* **deps:** Update golang.org/x/tools digest to 914b218 ([#286](https://github.com/cloudquery/filetypes/issues/286)) ([839bbdd](https://github.com/cloudquery/filetypes/commit/839bbdd60f36ab17cdfc29723d3f4265f36faeb0))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to b8732ec ([#287](https://github.com/cloudquery/filetypes/issues/287)) ([99beeed](https://github.com/cloudquery/filetypes/commit/99beeedc3a7b195748d394963cda1bffaffc6ccb))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.6.1 ([#291](https://github.com/cloudquery/filetypes/issues/291)) ([de12b6e](https://github.com/cloudquery/filetypes/commit/de12b6ee9fe731a982c952c18ac66c464c79ad63))
+* **deps:** Update module github.com/google/uuid to v1.3.1 ([#288](https://github.com/cloudquery/filetypes/issues/288)) ([ef05c4e](https://github.com/cloudquery/filetypes/commit/ef05c4ed10ffe0c6c67a299a02671cc49fe931e1))
+
 ## [4.1.8](https://github.com/cloudquery/filetypes/compare/v4.1.7...v4.1.8) (2023-08-31)
 
 
