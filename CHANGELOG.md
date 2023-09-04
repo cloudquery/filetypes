@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.11](https://github.com/cloudquery/filetypes/compare/v4.1.10...v4.1.11) (2023-09-04)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/cloudquery/arrow/go/v14 digest to cd3d411 ([#294](https://github.com/cloudquery/filetypes/issues/294)) ([b14b61f](https://github.com/cloudquery/filetypes/commit/b14b61f6293e2de2ddc08a67935052518c233eb9))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.6.3 ([#296](https://github.com/cloudquery/filetypes/issues/296)) ([0819064](https://github.com/cloudquery/filetypes/commit/0819064a8bfaa21f0b6091c32d9ee4307ed3c2fa))
+
 ## [4.1.10](https://github.com/cloudquery/filetypes/compare/v4.1.9...v4.1.10) (2023-09-01)
 
 
