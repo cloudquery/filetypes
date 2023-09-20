@@ -5,13 +5,16 @@ go 1.19
 require (
 	github.com/apache/arrow/go/v14 v14.0.0-20230901024001-b6c0ea455d08
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/plugin-sdk/v4 v4.8.0
+	github.com/cloudquery/plugin-sdk/v4 v4.9.0
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.3.1
 	github.com/stretchr/testify v1.8.4
 )
 
-require google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
+require (
+	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
+)
 
 // TODO: remove once all updates are merged
 replace github.com/apache/arrow/go/v14 => github.com/cloudquery/arrow/go/v14 v14.0.0-20230916001126-ffb7089245ac
