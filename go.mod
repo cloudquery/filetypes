@@ -13,7 +13,7 @@ require (
 
 require (
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230920204549-e6e6cdab5c13 // indirect
 )
 
 // TODO: remove once all updates are merged
