@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.1.14](https://github.com/cloudquery/filetypes/compare/v4.1.13...v4.1.14) (2023-10-02)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v14 digest to 00efb06 ([#316](https://github.com/cloudquery/filetypes/issues/316)) ([fb53b10](https://github.com/cloudquery/filetypes/commit/fb53b10fd781bff13a4cf07967858602c8535fce))
+* **deps:** Update github.com/cloudquery/arrow/go/v14 digest to 7ded38b ([#323](https://github.com/cloudquery/filetypes/issues/323)) ([20af2af](https://github.com/cloudquery/filetypes/commit/20af2afe9e1fcafd5ae701b72b6b80fac4cebf90))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to e6e6cda ([#317](https://github.com/cloudquery/filetypes/issues/317)) ([187fa58](https://github.com/cloudquery/filetypes/commit/187fa58093a82b600da4d2d59862883493d3de87))
+* **deps:** Update module github.com/apache/thrift to v0.19.0 ([#318](https://github.com/cloudquery/filetypes/issues/318)) ([214f174](https://github.com/cloudquery/filetypes/commit/214f1748cd87820296767c3cb61cb5a9ee01c72e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.11.1 ([#314](https://github.com/cloudquery/filetypes/issues/314)) ([cce4387](https://github.com/cloudquery/filetypes/commit/cce438796682e71e1ed2d65e8d318a308e70af46))
+* **deps:** Update module github.com/klauspost/compress to v1.17.0 ([#319](https://github.com/cloudquery/filetypes/issues/319)) ([e02ab7a](https://github.com/cloudquery/filetypes/commit/e02ab7abb97a9149f28ec5abb596dd7be42f8b11))
+* **deps:** Update module github.com/rs/zerolog to v1.31.0 ([#320](https://github.com/cloudquery/filetypes/issues/320)) ([6a08303](https://github.com/cloudquery/filetypes/commit/6a08303f77f5df05202c98f23868e8c88be88f98))
+* **deps:** Update module google.golang.org/grpc to v1.58.2 ([#321](https://github.com/cloudquery/filetypes/issues/321)) ([6d97ad9](https://github.com/cloudquery/filetypes/commit/6d97ad94a6871d7d20e42aaefa8e348cb38669e8))
+
 ## [4.1.13](https://github.com/cloudquery/filetypes/compare/v4.1.12...v4.1.13) (2023-09-25)
 
 
