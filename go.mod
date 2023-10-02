@@ -1,11 +1,11 @@
 module github.com/cloudquery/filetypes/v4
 
-go 1.19
+go 1.21.1
 
 require (
 	github.com/apache/arrow/go/v14 v14.0.0-20230929201650-00efb06dc0de
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/plugin-sdk/v4 v4.11.1
+	github.com/cloudquery/plugin-sdk/v4 v4.12.0
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.3.1
 	github.com/stretchr/testify v1.8.4
