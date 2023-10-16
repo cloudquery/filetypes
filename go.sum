@@ -8,8 +8,8 @@ github.com/bradleyjkemp/cupaloy/v2 v2.8.0 h1:any4BmKE+jGIaMpnU8YgH/I2LPiLBufr6oM
 github.com/bradleyjkemp/cupaloy/v2 v2.8.0/go.mod h1:bm7JXdkRd4BHJk9HpwqAI8BoAY1lps46Enkdqw6aRX0=
 github.com/cloudquery/arrow/go/v14 v14.0.0-20231014001145-dbcb1498009c h1:z0ZtXvDjtohLaNHLGl25gyq7ULS0y64CayNvReJJCTc=
 github.com/cloudquery/arrow/go/v14 v14.0.0-20231014001145-dbcb1498009c/go.mod h1:EkHPhLB+98ANnPojOy2sUhM0rzYbPEmrtuA9v8aZp/c=
-github.com/cloudquery/plugin-sdk/v4 v4.13.0 h1:ieTNPVPdzHAH6xQTOGz2sIS3WGtbfII6Rj4c9eBxQcs=
-github.com/cloudquery/plugin-sdk/v4 v4.13.0/go.mod h1:m7UY//dEzq2b/F6wDAqU2Vd9DLfZRrMjgn4qlnOrkPY=
+github.com/cloudquery/plugin-sdk/v4 v4.14.0 h1:FzbJ2AEeZu0A4TBKcr+In2Cs5PeLyiwIBxg8EMRbXXQ=
+github.com/cloudquery/plugin-sdk/v4 v4.14.0/go.mod h1:m7UY//dEzq2b/F6wDAqU2Vd9DLfZRrMjgn4qlnOrkPY=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
