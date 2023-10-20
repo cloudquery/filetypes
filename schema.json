@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cloudquery/filetypes/v4/file-spec",
+  "$ref": "#/$defs/FileSpec",
+  "$defs": {
+    "FileSpec": {
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "format_spec": {
+          "oneOf": [
+            true,
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "compression": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  }
+}

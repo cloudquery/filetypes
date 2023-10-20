@@ -8,6 +8,7 @@ import (
 	"github.com/cloudquery/filetypes/v4/csv"
 	jsonFile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
+	"github.com/invopop/jsonschema"
 )
 
 type FormatType string
@@ -32,6 +33,10 @@ type FileSpec struct {
 	csvSpec     *csv.Spec
 	jsonSpec    *jsonFile.Spec
 	parquetSpec *parquet.Spec
+}
+
+func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
+	
 }
 
 func (s *FileSpec) SetDefaults() {
