@@ -34,6 +34,80 @@
           "description": "CloudQuery Parquet file output spec"
         }
       },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "csv"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "format_spec": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/CSV"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "json"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "format_spec": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/JSON"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "parquet"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "format_spec": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/Parquet"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
       "properties": {
         "format": {
           "type": "string",
