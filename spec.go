@@ -53,78 +53,54 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 	sc.Definitions["Parquet"] = parquet.Spec{}.JSONSchema()
 
 	// now we need to enforce format -> specific type
-	sc.AllOf = []*jsonschema.Schema{
+	sc.OneOf = []*jsonschema.Schema{
 		// CSV
 		{
-			If: &jsonschema.Schema{
-				Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-					properties := jsonschema.NewProperties()
-					properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
-					return properties
-				}(),
-			},
-			Then: &jsonschema.Schema{
-				Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-					properties := jsonschema.NewProperties()
-					properties.Set("format_spec", &jsonschema.Schema{
-						OneOf: []*jsonschema.Schema{
-							{
-								Ref: jsonschema.ID("").Def("CSV").String(),
-							},
-							{Type: "null"},
+			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
+				properties := jsonschema.NewProperties()
+				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
+				properties.Set("format_spec", &jsonschema.Schema{
+					OneOf: []*jsonschema.Schema{
+						{
+							Ref: jsonschema.ID("").Def("CSV").String(),
 						},
-					})
-					return properties
-				}(),
-			},
+						{Type: "null"},
+					},
+				})
+				return properties
+			}(),
 		},
 		// JSON
 		{
-			If: &jsonschema.Schema{
-				Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-					properties := jsonschema.NewProperties()
-					properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
-					return properties
-				}(),
-			},
-			Then: &jsonschema.Schema{
-				Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-					properties := jsonschema.NewProperties()
-					properties.Set("format_spec", &jsonschema.Schema{
-						OneOf: []*jsonschema.Schema{
-							{
-								Ref: jsonschema.ID("").Def("JSON").String(),
-							},
-							{Type: "null"},
+			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
+				properties := jsonschema.NewProperties()
+				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
+				properties.Set("format_spec", &jsonschema.Schema{
+					OneOf: []*jsonschema.Schema{
+						{
+							Ref: jsonschema.ID("").Def("JSON").String(),
 						},
-					})
-					return properties
-				}(),
-			},
+						{Type: "null"},
+					},
+				})
+				return properties
+			}(),
 		},
 		// Parquet
 		{
-			If: &jsonschema.Schema{
-				Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-					properties := jsonschema.NewProperties()
-					properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
-					return properties
-				}(),
-			},
-			Then: &jsonschema.Schema{
-				Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-					properties := jsonschema.NewProperties()
-					properties.Set("format_spec", &jsonschema.Schema{
-						OneOf: []*jsonschema.Schema{
-							{
-								Ref: jsonschema.ID("").Def("Parquet").String(),
-							},
-							{Type: "null"},
+			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
+				properties := jsonschema.NewProperties()
+				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
+				properties.Set("format_spec", &jsonschema.Schema{
+					OneOf: []*jsonschema.Schema{
+						{
+							Ref: jsonschema.ID("").Def("Parquet").String(),
 						},
-					})
-					return properties
-				}(),
-			},
+						{Type: "null"},
+					},
+				})
+				return properties
+			}(),
 		},
 	}
 }
