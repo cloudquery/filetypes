@@ -2,16 +2,16 @@ package csv
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/apache/arrow/go/v14/arrow"
 	"github.com/apache/arrow/go/v14/arrow/array"
 	"github.com/apache/arrow/go/v14/arrow/csv"
 	"github.com/apache/arrow/go/v14/arrow/memory"
+	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (cl *Client) Read(r io.Reader, table *schema.Table, res chan<- arrow.Record) error {
+func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error {
 	arrowSchema := table.ToArrowSchema()
 	newSchema := convertSchema(arrowSchema)
 	reader := csv.NewReader(r, newSchema,

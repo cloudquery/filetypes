@@ -10,10 +10,6 @@ import (
 type Client struct {
 	spec     *FileSpec
 	filetype types.FileType
-
-	csv     *csvFile.Client
-	json    *jsonFile.Client
-	parquet *parquet.Client
 }
 
 var (
@@ -50,7 +46,6 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		}
 		return &Client{
 			spec:     spec,
-			csv:      client,
 			filetype: client,
 		}, nil
 
@@ -61,7 +56,6 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		}
 		return &Client{
 			spec:     spec,
-			json:     client,
 			filetype: client,
 		}, nil
 
@@ -70,11 +64,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		if err != nil {
 			return &Client{}, err
 		}
-		return &Client{
-			spec:     spec,
-			parquet:  client,
-			filetype: client,
-		}, nil
+		return &Client{spec: spec, filetype: client}, nil
 
 	default:
 		panic("unknown format " + spec.Format)

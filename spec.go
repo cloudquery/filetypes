@@ -36,7 +36,6 @@ type FileSpec struct {
 }
 
 func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
-	
 }
 
 func (s *FileSpec) SetDefaults() {
