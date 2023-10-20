@@ -31,6 +31,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		return &Client{}, err
 	}
 
+	var client types.FileType
 	switch spec.Format {
 	case FormatTypeCSV:
 		opts := []csvFile.Options{
@@ -40,33 +41,19 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			opts = append(opts, csvFile.WithHeader())
 		}
 
-		client, err := csvFile.NewClient(opts...)
-		if err != nil {
-			return &Client{}, err
-		}
-		return &Client{
-			spec:     spec,
-			filetype: client,
-		}, nil
+		client, err = csvFile.NewClient(opts...)
 
 	case FormatTypeJSON:
-		client, err := jsonFile.NewClient()
-		if err != nil {
-			return &Client{}, err
-		}
-		return &Client{
-			spec:     spec,
-			filetype: client,
-		}, nil
+		client, err = jsonFile.NewClient()
 
 	case FormatTypeParquet:
-		client, err := parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
-		if err != nil {
-			return &Client{}, err
-		}
-		return &Client{spec: spec, filetype: client}, nil
+		client, err = parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
 
 	default:
 		panic("unknown format " + spec.Format)
 	}
+	if err != nil {
+		return nil, err
+	}
+	return &Client{spec: spec, filetype: client}, nil
 }
