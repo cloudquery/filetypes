@@ -4,24 +4,81 @@
   "$ref": "#/$defs/FileSpec",
   "$defs": {
     "FileSpec": {
+      "$defs": {
+        "CSV": {
+          "properties": {
+            "skip_header": {
+              "type": "boolean",
+              "description": "Specifies if the first line of a file should be the header.",
+              "default": false
+            },
+            "delimiter": {
+              "type": "string",
+              "pattern": "^.$",
+              "description": "Character that will be used as want to use as the delimiter.",
+              "default": ","
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "description": "CloudQuery CSV file output spec"
+        },
+        "JSON": {
+          "additionalProperties": false,
+          "type": "object",
+          "description": "CloudQuery JSON file output spec"
+        },
+        "Parquet": {
+          "additionalProperties": false,
+          "type": "object",
+          "description": "CloudQuery Parquet file output spec"
+        }
+      },
       "properties": {
         "format": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "csv",
+            "json",
+            "parquet"
+          ],
+          "description": "Output format."
         },
         "format_spec": {
           "oneOf": [
-            true,
+            {
+              "oneOf": [
+                {
+                  "$ref": "CSV"
+                },
+                {
+                  "$ref": "JSON"
+                },
+                {
+                  "$ref": "Parquet"
+                }
+              ],
+              "description": "Format spec."
+            },
             {
               "type": "null"
             }
           ]
         },
         "compression": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "",
+            "gzip"
+          ],
+          "description": "Compression type.\nEmpty or missing stands for no compression."
         }
       },
       "additionalProperties": false,
-      "type": "object"
+      "type": "object",
+      "required": [
+        "format"
+      ]
     }
   }
 }

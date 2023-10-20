@@ -19,6 +19,7 @@ const (
 	FormatTypeParquet = "parquet"
 )
 
+// Compression type.
 type CompressionType string
 
 const (
@@ -27,15 +28,28 @@ const (
 )
 
 type FileSpec struct {
-	Format      FormatType      `json:"format,omitempty"`
-	FormatSpec  any             `json:"format_spec,omitempty"`
-	Compression CompressionType `json:"compression,omitempty"`
+	// Output format.
+	Format FormatType `json:"format,omitempty" jsonschema:"required,enum=csv,enum=json,enum=parquet"`
+
+	// Format spec.
+	FormatSpec any `json:"format_spec,omitempty" jsonschema:"oneof_ref=CSV;JSON;Parquet"`
+
+	// Compression type.
+	// Empty or missing stands for no compression.
+	Compression CompressionType `json:"compression,omitempty" jsonschema:"enum=,enum=gzip"`
+
 	csvSpec     *csv.Spec
 	jsonSpec    *jsonFile.Spec
 	parquetSpec *parquet.Spec
 }
 
 func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
+	if sc.Definitions == nil {
+		sc.Definitions = make(jsonschema.Definitions)
+	}
+	sc.Definitions["CSV"] = csv.Spec{}.JSONSchema()
+	sc.Definitions["JSON"] = jsonFile.Spec{}.JSONSchema()
+	sc.Definitions["Parquet"] = parquet.Spec{}.JSONSchema()
 }
 
 func (s *FileSpec) SetDefaults() {
@@ -78,7 +92,6 @@ func (s *FileSpec) UnmarshalSpec() error {
 		return err
 	}
 	dec := json.NewDecoder(bytes.NewReader(b))
-	dec.UseNumber()
 	dec.DisallowUnknownFields()
 
 	switch s.Format {
