@@ -6,6 +6,7 @@
     "FileSpec": {
       "$defs": {
         "CSV": {
+          "$anchor": "csv-spec",
           "properties": {
             "skip_header": {
               "type": "boolean",
@@ -24,11 +25,13 @@
           "description": "CloudQuery CSV file output spec"
         },
         "JSON": {
+          "$anchor": "json-spec",
           "additionalProperties": false,
           "type": "object",
           "description": "CloudQuery JSON file output spec"
         },
         "Parquet": {
+          "$anchor": "parquet-spec",
           "additionalProperties": false,
           "type": "object",
           "description": "CloudQuery Parquet file output spec"
@@ -44,7 +47,7 @@
             "format_spec": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/CSV"
+                  "$ref": "#csv-spec"
                 },
                 {
                   "type": "null"
@@ -62,7 +65,7 @@
             "format_spec": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/JSON"
+                  "$ref": "#json-spec"
                 },
                 {
                   "type": "null"
@@ -80,7 +83,7 @@
             "format_spec": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/Parquet"
+                  "$ref": "#parquet-spec"
                 },
                 {
                   "type": "null"

@@ -3,9 +3,11 @@ package filetypes
 import (
 	"testing"
 
+	"github.com/cloudquery/codegen/jsonschema"
 	"github.com/cloudquery/filetypes/v4/csv"
 	"github.com/cloudquery/filetypes/v4/json"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSpecMethods(t *testing.T) {
@@ -101,4 +103,49 @@ func TestSpecMethods(t *testing.T) {
 		assert.Equal(t, tc.postDefaultsCSV, tc.FileSpec.csvSpec)
 		assert.Equal(t, tc.postDefaultsJSON, tc.FileSpec.jsonSpec)
 	}
+}
+
+func TestFileSpec_JSONSchemaExtend(t *testing.T) {
+	schema, err := jsonschema.Generate(FileSpec{})
+	require.NoError(t, err)
+
+	jsonschema.TestJSONSchema(t, string(schema), []jsonschema.TestCase{
+		{
+			Name: "empty",
+			Err:  true, // missing format
+			Spec: `{}`,
+		},
+		{
+			Name: "empty format",
+			Err:  true,
+			Spec: `{"format":""}`,
+		},
+		{
+			Name: "null format",
+			Err:  true,
+			Spec: `{"format":null}`,
+		},
+		{
+			Name: "bad format",
+			Err:  true,
+			Spec: `{"format":123}`,
+		},
+		{
+			Name: "bad format value",
+			Err:  true,
+			Spec: `{"format":"abc"}`,
+		},
+		{
+			Name: "csv format",
+			Spec: `{"format":"csv"}`,
+		},
+		{
+			Name: "json format",
+			Spec: `{"format":"json"}`,
+		},
+		{
+			Name: "parquet format",
+			Spec: `{"format":"parquet"}`,
+		},
+	})
 }

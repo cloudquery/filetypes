@@ -25,6 +25,7 @@ func (Spec) JSONSchema() *jsonschema.Schema {
 		Default:     ",",
 	})
 	return &jsonschema.Schema{
+		Anchor:               "csv-spec",
 		Description:          "CloudQuery CSV file output spec",
 		Properties:           properties,
 		Type:                 "object",

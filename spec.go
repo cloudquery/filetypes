@@ -61,9 +61,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{
-							Ref: jsonschema.ID("").Def("CSV").String(),
-						},
+						{Ref: "#csv-spec"},
 						{Type: "null"},
 					},
 				})
@@ -77,9 +75,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{
-							Ref: jsonschema.ID("").Def("JSON").String(),
-						},
+						{Ref: "#json-spec"},
 						{Type: "null"},
 					},
 				})
@@ -93,9 +89,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{
-							Ref: jsonschema.ID("").Def("Parquet").String(),
-						},
+						{Ref: "#parquet-spec"},
 						{Type: "null"},
 					},
 				})
