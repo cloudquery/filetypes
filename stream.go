@@ -27,7 +27,7 @@ func (w *writeCloser) Close() error {
 }
 
 // StartStream starts a streaming upload using the provided uploadFunc.
-func (c *Client) StartStream(table *schema.Table, uploadFunc func(io.Reader) error) (*Stream, error) {
+func (cl *Client) StartStream(table *schema.Table, uploadFunc func(io.Reader) error) (*Stream, error) {
 	pr, pw := io.Pipe()
 	doneCh := make(chan error)
 
@@ -39,7 +39,7 @@ func (c *Client) StartStream(table *schema.Table, uploadFunc func(io.Reader) err
 	}()
 
 	wc := &writeCloser{PipeWriter: pw}
-	h, err := c.WriteHeader(wc, table)
+	h, err := cl.WriteHeader(wc, table)
 	if err != nil {
 		_ = pw.CloseWithError(err)
 		<-doneCh

@@ -7,8 +7,15 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
+type ReaderAtSeeker interface {
+	io.Reader
+	io.ReaderAt
+	io.Seeker
+}
+
 type FileType interface {
 	WriteHeader(io.Writer, *schema.Table) (Handle, error)
+	Read(ReaderAtSeeker, *schema.Table, chan<- arrow.Record) error
 }
 
 type Handle interface {
