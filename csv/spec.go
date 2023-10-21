@@ -20,13 +20,12 @@ func (Spec) JSONSchema() *jsonschema.Schema {
 	})
 	properties.Set("delimiter", &jsonschema.Schema{
 		Type:        "string",
-		Description: "Character that will be used as want to use as the delimiter.",
+		Description: "Character that will be used as the delimiter.",
 		Pattern:     `^.$`, // a single character
 		Default:     ",",
 	})
 	return &jsonschema.Schema{
-		Anchor:               "csv-spec",
-		Description:          "CloudQuery CSV file output spec",
+		Description:          "CloudQuery CSV file output spec.",
 		Properties:           properties,
 		Type:                 "object",
 		AdditionalProperties: jsonschema.FalseSchema, // "additionalProperties": false

@@ -33,7 +33,7 @@ type FileSpec struct {
 	Format FormatType `json:"format,omitempty" jsonschema:"required,enum=csv,enum=json,enum=parquet"`
 
 	// Format spec.
-	FormatSpec any `json:"format_spec,omitempty" jsonschema:"oneof_ref=CSV;JSON;Parquet"`
+	FormatSpec any `json:"format_spec,omitempty"`
 
 	// Compression type.
 	// Empty or missing stands for no compression.
@@ -45,12 +45,25 @@ type FileSpec struct {
 }
 
 func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
-	if sc.Definitions == nil {
-		sc.Definitions = make(jsonschema.Definitions)
+	sc.ID = "/schemas/FileSpec"
+	sc.Definitions = jsonschema.Definitions{
+		"csv":     csv.Spec{}.JSONSchema(),
+		"json":    jsonFile.Spec{}.JSONSchema(),
+		"parquet": parquet.Spec{}.JSONSchema(),
 	}
-	sc.Definitions["CSV"] = csv.Spec{}.JSONSchema()
-	sc.Definitions["JSON"] = jsonFile.Spec{}.JSONSchema()
-	sc.Definitions["Parquet"] = parquet.Spec{}.JSONSchema()
+
+	sc.Properties.Set("format_spec", &jsonschema.Schema{
+		OneOf: []*jsonschema.Schema{
+			{
+				AnyOf: []*jsonschema.Schema{
+					{Ref: jsonschema.EmptyID.Def("csv").String()},
+					{Ref: jsonschema.EmptyID.Def("json").String()},
+					{Ref: jsonschema.EmptyID.Def("parquet").String()},
+				},
+			},
+			{Type: "null"},
+		},
+	})
 
 	// now we need to enforce format -> specific type
 	sc.OneOf = []*jsonschema.Schema{
@@ -61,7 +74,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{Ref: "#csv-spec"},
+						{Ref: jsonschema.EmptyID.Def("csv").String()},
 						{Type: "null"},
 					},
 				})
@@ -75,7 +88,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{Ref: "#json-spec"},
+						{Ref: jsonschema.EmptyID.Def("json").String()},
 						{Type: "null"},
 					},
 				})
@@ -89,7 +102,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{Ref: "#parquet-spec"},
+						{Ref: jsonschema.EmptyID.Def("parquet").String()},
 						{Type: "null"},
 					},
 				})
