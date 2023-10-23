@@ -152,6 +152,7 @@ func (s *FileSpec) UnmarshalSpec() error {
 		return err
 	}
 	dec := json.NewDecoder(bytes.NewReader(b))
+	dec.UseNumber()
 	dec.DisallowUnknownFields()
 
 	switch s.Format {
