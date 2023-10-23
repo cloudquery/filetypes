@@ -47,18 +47,18 @@ type FileSpec struct {
 func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 	sc.ID = "/schemas/FileSpec"
 	sc.Definitions = jsonschema.Definitions{
-		"csv":     csv.Spec{}.JSONSchema(),
-		"json":    jsonFile.Spec{}.JSONSchema(),
-		"parquet": parquet.Spec{}.JSONSchema(),
+		"CSVSpec":     csv.Spec{}.JSONSchema(),
+		"JSONSpec":    jsonFile.Spec{}.JSONSchema(),
+		"ParquetSpec": parquet.Spec{}.JSONSchema(),
 	}
 
 	sc.Properties.Set("format_spec", &jsonschema.Schema{
 		OneOf: []*jsonschema.Schema{
 			{
 				AnyOf: []*jsonschema.Schema{
-					{Ref: jsonschema.EmptyID.Def("csv").String()},
-					{Ref: jsonschema.EmptyID.Def("json").String()},
-					{Ref: jsonschema.EmptyID.Def("parquet").String()},
+					{Ref: jsonschema.EmptyID.Def("CSVSpec").String()},
+					{Ref: jsonschema.EmptyID.Def("JSONSpec").String()},
+					{Ref: jsonschema.EmptyID.Def("ParquetSpec").String()},
 				},
 			},
 			{Type: "null"},
@@ -74,7 +74,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{Ref: jsonschema.EmptyID.Def("csv").String()},
+						{Ref: jsonschema.EmptyID.Def("CSVSpec").String()},
 						{Type: "null"},
 					},
 				})
@@ -88,7 +88,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{Ref: jsonschema.EmptyID.Def("json").String()},
+						{Ref: jsonschema.EmptyID.Def("JSONSpec").String()},
 						{Type: "null"},
 					},
 				})
@@ -102,7 +102,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
 				properties.Set("format_spec", &jsonschema.Schema{
 					OneOf: []*jsonschema.Schema{
-						{Ref: jsonschema.EmptyID.Def("parquet").String()},
+						{Ref: jsonschema.EmptyID.Def("ParquetSpec").String()},
 						{Type: "null"},
 					},
 				})

@@ -11,6 +11,7 @@ require (
 	github.com/google/uuid v1.3.1
 	github.com/invopop/jsonschema v0.11.0
 	github.com/stretchr/testify v1.8.4
+	github.com/wk8/go-ordered-map/v2 v2.1.8
 )
 
 require (
@@ -36,13 +37,12 @@ require (
 	github.com/rs/zerolog v1.31.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect
-	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.13.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect; indirect // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
