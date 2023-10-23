@@ -10,10 +10,6 @@ import (
 type Client struct {
 	spec     *FileSpec
 	filetype types.FileType
-
-	csv     *csvFile.Client
-	json    *jsonFile.Client
-	parquet *parquet.Client
 }
 
 var (
@@ -35,6 +31,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		return &Client{}, err
 	}
 
+	var client types.FileType
 	switch spec.Format {
 	case FormatTypeCSV:
 		opts := []csvFile.Options{
@@ -44,39 +41,22 @@ func NewClient(spec *FileSpec) (*Client, error) {
 			opts = append(opts, csvFile.WithHeader())
 		}
 
-		client, err := csvFile.NewClient(opts...)
-		if err != nil {
-			return &Client{}, err
-		}
-		return &Client{
-			spec:     spec,
-			csv:      client,
-			filetype: client,
-		}, nil
+		client, err = csvFile.NewClient(opts...)
 
 	case FormatTypeJSON:
-		client, err := jsonFile.NewClient()
-		if err != nil {
-			return &Client{}, err
-		}
-		return &Client{
-			spec:     spec,
-			json:     client,
-			filetype: client,
-		}, nil
+		client, err = jsonFile.NewClient()
 
 	case FormatTypeParquet:
-		client, err := parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
-		if err != nil {
-			return &Client{}, err
-		}
-		return &Client{
-			spec:     spec,
-			parquet:  client,
-			filetype: client,
-		}, nil
+		client, err = parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
 
 	default:
+		// shouldn't be possible as Validate checks for type
 		panic("unknown format " + spec.Format)
 	}
+
+	if err != nil {
+		return &Client{}, err
+	}
+
+	return &Client{spec: spec, filetype: client}, nil
 }

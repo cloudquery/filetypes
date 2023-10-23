@@ -2,17 +2,17 @@ package json
 
 import (
 	"bufio"
-	"io"
 
 	"github.com/apache/arrow/go/v14/arrow"
 	"github.com/apache/arrow/go/v14/arrow/array"
 	"github.com/apache/arrow/go/v14/arrow/memory"
+	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
 const maxJSONSize = 1024 * 1024 * 20
 
-func (*Client) Read(r io.Reader, table *schema.Table, res chan<- arrow.Record) error {
+func (*Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, maxJSONSize), maxJSONSize)
 	rb := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
