@@ -8,6 +8,8 @@ import (
 	"github.com/cloudquery/filetypes/v4/csv"
 	jsonFile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
+	"github.com/invopop/jsonschema"
+	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
 type FormatType string
@@ -18,6 +20,7 @@ const (
 	FormatTypeParquet = "parquet"
 )
 
+// Compression type.
 type CompressionType string
 
 const (
@@ -26,12 +29,87 @@ const (
 )
 
 type FileSpec struct {
-	Format      FormatType      `json:"format,omitempty"`
-	FormatSpec  any             `json:"format_spec,omitempty"`
-	Compression CompressionType `json:"compression,omitempty"`
+	// Output format.
+	Format FormatType `json:"format,omitempty" jsonschema:"required,enum=csv,enum=json,enum=parquet"`
+
+	// Format spec.
+	FormatSpec any `json:"format_spec,omitempty"`
+
+	// Compression type.
+	// Empty or missing stands for no compression.
+	Compression CompressionType `json:"compression,omitempty" jsonschema:"enum=,enum=gzip"`
+
 	csvSpec     *csv.Spec
 	jsonSpec    *jsonFile.Spec
 	parquetSpec *parquet.Spec
+}
+
+func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
+	sc.ID = "/schemas/FileSpec"
+	sc.Definitions = jsonschema.Definitions{
+		"CSVSpec":     csv.Spec{}.JSONSchema(),
+		"JSONSpec":    jsonFile.Spec{}.JSONSchema(),
+		"ParquetSpec": parquet.Spec{}.JSONSchema(),
+	}
+
+	sc.Properties.Set("format_spec", &jsonschema.Schema{
+		OneOf: []*jsonschema.Schema{
+			{
+				AnyOf: []*jsonschema.Schema{
+					{Ref: jsonschema.EmptyID.Def("CSVSpec").String()},
+					{Ref: jsonschema.EmptyID.Def("JSONSpec").String()},
+					{Ref: jsonschema.EmptyID.Def("ParquetSpec").String()},
+				},
+			},
+			{Type: "null"},
+		},
+	})
+
+	// now we need to enforce format -> specific type
+	sc.OneOf = []*jsonschema.Schema{
+		// CSV
+		{
+			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
+				properties := jsonschema.NewProperties()
+				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
+				properties.Set("format_spec", &jsonschema.Schema{
+					OneOf: []*jsonschema.Schema{
+						{Ref: jsonschema.EmptyID.Def("CSVSpec").String()},
+						{Type: "null"},
+					},
+				})
+				return properties
+			}(),
+		},
+		// JSON
+		{
+			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
+				properties := jsonschema.NewProperties()
+				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
+				properties.Set("format_spec", &jsonschema.Schema{
+					OneOf: []*jsonschema.Schema{
+						{Ref: jsonschema.EmptyID.Def("JSONSpec").String()},
+						{Type: "null"},
+					},
+				})
+				return properties
+			}(),
+		},
+		// Parquet
+		{
+			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
+				properties := jsonschema.NewProperties()
+				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
+				properties.Set("format_spec", &jsonschema.Schema{
+					OneOf: []*jsonschema.Schema{
+						{Ref: jsonschema.EmptyID.Def("ParquetSpec").String()},
+						{Type: "null"},
+					},
+				})
+				return properties
+			}(),
+		},
+	}
 }
 
 func (s *FileSpec) SetDefaults() {

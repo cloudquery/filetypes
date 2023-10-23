@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cloudquery/filetypes/v4/file-spec",
+  "$ref": "#/$defs/FileSpec",
+  "$defs": {
+    "FileSpec": {
+      "$id": "/schemas/FileSpec",
+      "$defs": {
+        "CSVSpec": {
+          "properties": {
+            "skip_header": {
+              "type": "boolean",
+              "description": "Specifies if the first line of a file should be the header.",
+              "default": false
+            },
+            "delimiter": {
+              "type": "string",
+              "pattern": "^.$",
+              "description": "Character that will be used as the delimiter.",
+              "default": ","
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "description": "CloudQuery CSV file output spec."
+        },
+        "JSONSpec": {
+          "additionalProperties": false,
+          "type": "object",
+          "description": "CloudQuery JSON file output spec."
+        },
+        "ParquetSpec": {
+          "additionalProperties": false,
+          "type": "object",
+          "description": "CloudQuery Parquet file output spec."
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "format": {
+              "type": "string",
+              "const": "csv"
+            },
+            "format_spec": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/CSVSpec"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "format": {
+              "type": "string",
+              "const": "json"
+            },
+            "format_spec": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/JSONSpec"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "format": {
+              "type": "string",
+              "const": "parquet"
+            },
+            "format_spec": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/ParquetSpec"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "csv",
+            "json",
+            "parquet"
+          ],
+          "description": "Output format."
+        },
+        "format_spec": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/CSVSpec"
+                },
+                {
+                  "$ref": "#/$defs/JSONSpec"
+                },
+                {
+                  "$ref": "#/$defs/ParquetSpec"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "compression": {
+          "type": "string",
+          "enum": [
+            "",
+            "gzip"
+          ],
+          "description": "Compression type.\nEmpty or missing stands for no compression."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "format"
+      ]
+    }
+  }
+}

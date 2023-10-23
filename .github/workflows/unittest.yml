@@ -19,5 +19,11 @@ jobs:
           go-version-file: go.mod
       - run: go mod download
       - run: go build ./...
+      - name: gen
+        if: github.event_name == 'pull_request'
+        run: make gen
+      - name: Fail if generation updated files
+        if: github.event_name == 'pull_request'
+        run: test "$(git status -s | wc -l)" -eq 0 || (git status -s; exit 1)
       - name: Run tests
         run: go test -race ./...

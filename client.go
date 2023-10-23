@@ -55,7 +55,7 @@ func NewClient(spec *FileSpec) (*Client, error) {
 	}
 
 	if err != nil {
-		return &Client{}, err
+		return nil, err
 	}
 
 	return &Client{spec: spec, filetype: client}, nil
