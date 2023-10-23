@@ -15,7 +15,7 @@ type ReaderAtSeeker interface {
 
 type FileType interface {
 	WriteHeader(io.Writer, *schema.Table) (Handle, error)
-	Read(r ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error
+	Read(ReaderAtSeeker, *schema.Table, chan<- arrow.Record) error
 }
 
 type Handle interface {

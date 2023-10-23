@@ -50,10 +50,13 @@ func NewClient(spec *FileSpec) (*Client, error) {
 		client, err = parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
 
 	default:
+		// shouldn't be possible as Validate checks for type
 		panic("unknown format " + spec.Format)
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &Client{spec: spec, filetype: client}, nil
 }
