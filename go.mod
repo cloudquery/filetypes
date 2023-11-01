@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/apache/arrow/go/v14 v14.0.0-20231031200323-c49e24273160
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/codegen v0.3.11
+	github.com/cloudquery/codegen v0.3.12
 	github.com/cloudquery/plugin-sdk/v4 v4.17.1
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.4.0
