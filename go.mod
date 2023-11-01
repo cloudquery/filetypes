@@ -8,7 +8,7 @@ require (
 	github.com/cloudquery/codegen v0.3.11
 	github.com/cloudquery/plugin-sdk/v4 v4.17.1
 	github.com/goccy/go-json v0.10.2
-	github.com/google/uuid v1.3.1
+	github.com/google/uuid v1.4.0
 	github.com/invopop/jsonschema v0.11.0
 	github.com/stretchr/testify v1.8.4
 	github.com/wk8/go-ordered-map/v2 v2.1.8
