@@ -9,7 +9,7 @@ require (
 	github.com/cloudquery/plugin-sdk/v4 v4.19.0
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.4.0
-	github.com/invopop/jsonschema v0.11.0
+	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.8.4
 	github.com/wk8/go-ordered-map/v2 v2.1.8
 )
