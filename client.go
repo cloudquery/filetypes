@@ -1,8 +1,8 @@
 package filetypes
 
 import (
-	csvFile "github.com/cloudquery/filetypes/v4/csv"
-	jsonFile "github.com/cloudquery/filetypes/v4/json"
+	csvfile "github.com/cloudquery/filetypes/v4/csv"
+	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
 	"github.com/cloudquery/filetypes/v4/types"
 )
@@ -14,8 +14,8 @@ type Client struct {
 
 var (
 	_ types.FileType = (*Client)(nil)
-	_ types.FileType = (*csvFile.Client)(nil)
-	_ types.FileType = (*jsonFile.Client)(nil)
+	_ types.FileType = (*csvfile.Client)(nil)
+	_ types.FileType = (*jsonfile.Client)(nil)
 	_ types.FileType = (*parquet.Client)(nil)
 )
 
@@ -34,17 +34,17 @@ func NewClient(spec *FileSpec) (*Client, error) {
 	var client types.FileType
 	switch spec.Format {
 	case FormatTypeCSV:
-		opts := []csvFile.Options{
-			csvFile.WithDelimiter([]rune(spec.csvSpec.Delimiter)[0]),
+		opts := []csvfile.Options{
+			csvfile.WithDelimiter([]rune(spec.csvSpec.Delimiter)[0]),
 		}
 		if !spec.csvSpec.SkipHeader {
-			opts = append(opts, csvFile.WithHeader())
+			opts = append(opts, csvfile.WithHeader())
 		}
 
-		client, err = csvFile.NewClient(opts...)
+		client, err = csvfile.NewClient(opts...)
 
 	case FormatTypeJSON:
-		client, err = jsonFile.NewClient()
+		client, err = jsonfile.NewClient()
 
 	case FormatTypeParquet:
 		client, err = parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
