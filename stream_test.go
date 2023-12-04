@@ -2,7 +2,7 @@ package filetypes_test
 
 import (
 	"bufio"
-	fmt "fmt"
+	"fmt"
 	"io"
 	"testing"
 
