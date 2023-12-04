@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/cloudquery/filetypes/v4/csv"
-	jsonFile "github.com/cloudquery/filetypes/v4/json"
+	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
 	"github.com/invopop/jsonschema"
 	orderedmap "github.com/wk8/go-ordered-map/v2"
@@ -40,7 +40,7 @@ type FileSpec struct {
 	Compression CompressionType `json:"compression,omitempty" jsonschema:"enum=,enum=gzip"`
 
 	csvSpec     *csv.Spec
-	jsonSpec    *jsonFile.Spec
+	jsonSpec    *jsonfile.Spec
 	parquetSpec *parquet.Spec
 }
 
@@ -48,7 +48,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 	sc.ID = "/schemas/FileSpec"
 	sc.Definitions = jsonschema.Definitions{
 		"CSVSpec":     csv.Spec{}.JSONSchema(),
-		"JSONSpec":    jsonFile.Spec{}.JSONSchema(),
+		"JSONSpec":    jsonfile.Spec{}.JSONSchema(),
 		"ParquetSpec": parquet.Spec{}.JSONSchema(),
 	}
 
@@ -160,7 +160,7 @@ func (s *FileSpec) UnmarshalSpec() error {
 		s.csvSpec = &csv.Spec{}
 		return dec.Decode(s.csvSpec)
 	case FormatTypeJSON:
-		s.jsonSpec = &jsonFile.Spec{}
+		s.jsonSpec = &jsonfile.Spec{}
 		return dec.Decode(s.jsonSpec)
 	case FormatTypeParquet:
 		s.parquetSpec = &parquet.Spec{}
