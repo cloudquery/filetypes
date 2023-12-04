@@ -1,5 +1,34 @@
 # Changelog
 
+## [4.2.1](https://github.com/cloudquery/filetypes/compare/v4.2.0...v4.2.1) (2023-12-04)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v14 digest to c49e242 ([#352](https://github.com/cloudquery/filetypes/issues/352)) ([9ac6f63](https://github.com/cloudquery/filetypes/commit/9ac6f631a88c445996454be8c1b3b6b1efcc22cd))
+* **deps:** Update github.com/cloudquery/arrow/go/v14 digest to 50d3871 ([#349](https://github.com/cloudquery/filetypes/issues/349)) ([a39eff8](https://github.com/cloudquery/filetypes/commit/a39eff814619d6cebb874c19ffb4a2ad5288ebe1))
+* **deps:** Update golang.org/x/exp digest to 6522937 ([#370](https://github.com/cloudquery/filetypes/issues/370)) ([1468762](https://github.com/cloudquery/filetypes/commit/1468762c3ba1f7065efef6ecd98f466da574d515))
+* **deps:** Update golang.org/x/xerrors digest to 104605a ([#353](https://github.com/cloudquery/filetypes/issues/353)) ([b919672](https://github.com/cloudquery/filetypes/commit/b9196721c0ff0322cf3bf1252a10dafeaedfad0d))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to 3a041ad ([#371](https://github.com/cloudquery/filetypes/issues/371)) ([27aa5eb](https://github.com/cloudquery/filetypes/commit/27aa5ebc862ea44b381350ec3e5233e9d1925b58))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to d783a09 ([#354](https://github.com/cloudquery/filetypes/issues/354)) ([58b0937](https://github.com/cloudquery/filetypes/commit/58b0937af42ff58e6f722759220d6efb6a2deffe))
+* **deps:** Update module github.com/andybalholm/brotli to v1.0.6 ([#355](https://github.com/cloudquery/filetypes/issues/355)) ([3d1fc0b](https://github.com/cloudquery/filetypes/commit/3d1fc0ba0acb7b8c09289e1da8165418a0494e0a))
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.11 ([#347](https://github.com/cloudquery/filetypes/issues/347)) ([3e090c4](https://github.com/cloudquery/filetypes/commit/3e090c41298b3b54b4ecbbd9244336c0745a1114))
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.12 ([#360](https://github.com/cloudquery/filetypes/issues/360)) ([a1cee7d](https://github.com/cloudquery/filetypes/commit/a1cee7de1b23d207e1d508023833581c0b939559))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.17.0 ([#350](https://github.com/cloudquery/filetypes/issues/350)) ([f6fcd53](https://github.com/cloudquery/filetypes/commit/f6fcd533b744b0e1cb728466f1e1c370aa1552b6))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.17.1 ([#351](https://github.com/cloudquery/filetypes/issues/351)) ([d7e2eef](https://github.com/cloudquery/filetypes/commit/d7e2eef1f4187524db60df13ff93b7fa40bb31ff))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.17.2 ([#361](https://github.com/cloudquery/filetypes/issues/361)) ([31f0e51](https://github.com/cloudquery/filetypes/commit/31f0e514cbe54295f0b1fface2753037b10430e0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.18.0 ([#363](https://github.com/cloudquery/filetypes/issues/363)) ([c0c3807](https://github.com/cloudquery/filetypes/commit/c0c38075b77fcaf692d5f1516603033a52761f31))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.18.1 ([#364](https://github.com/cloudquery/filetypes/issues/364)) ([39cc163](https://github.com/cloudquery/filetypes/commit/39cc16399ce6592c5cc08f9aee3ee48d2053fb5b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.18.2 ([#365](https://github.com/cloudquery/filetypes/issues/365)) ([4f25740](https://github.com/cloudquery/filetypes/commit/4f257400ce73b35e45a95168c4416939e6f32fe6))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.18.3 ([#366](https://github.com/cloudquery/filetypes/issues/366)) ([b9cb518](https://github.com/cloudquery/filetypes/commit/b9cb518a1b56bd14fe487982942ed42e85b5ab82))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.19.0 ([#369](https://github.com/cloudquery/filetypes/issues/369)) ([d21204e](https://github.com/cloudquery/filetypes/commit/d21204e9adb489d60cb56017fdffcc3d83c77b53))
+* **deps:** Update module github.com/google/uuid to v1.4.0 ([#359](https://github.com/cloudquery/filetypes/issues/359)) ([c6b2a21](https://github.com/cloudquery/filetypes/commit/c6b2a21f59b053b682088cc4255acd75b799592a))
+* **deps:** Update module github.com/invopop/jsonschema to v0.12.0 ([#374](https://github.com/cloudquery/filetypes/issues/374)) ([3d623b6](https://github.com/cloudquery/filetypes/commit/3d623b6ed6ce77f7317adae39cdc67147d194a79))
+* **deps:** Update module github.com/klauspost/compress to v1.17.2 ([#356](https://github.com/cloudquery/filetypes/issues/356)) ([09a5619](https://github.com/cloudquery/filetypes/commit/09a561928c08b2a6c6670c4d3c8c7c7080a93d00))
+* **deps:** Update module github.com/klauspost/compress to v1.17.3 ([#372](https://github.com/cloudquery/filetypes/issues/372)) ([f9e7399](https://github.com/cloudquery/filetypes/commit/f9e7399e539e70abd224551eee536b1963583461))
+* **deps:** Update module github.com/klauspost/cpuid/v2 to v2.2.6 ([#373](https://github.com/cloudquery/filetypes/issues/373)) ([a8e04bd](https://github.com/cloudquery/filetypes/commit/a8e04bd83e75e4bb8a0eab5fb1623d85e6325063))
+* **deps:** Update module github.com/mattn/go-isatty to v0.0.20 ([#357](https://github.com/cloudquery/filetypes/issues/357)) ([7b84530](https://github.com/cloudquery/filetypes/commit/7b845306a7e827205563009694f5e7b9d84dc9d1))
+
 ## [4.2.0](https://github.com/cloudquery/filetypes/compare/v4.1.15...v4.2.0) (2023-10-23)
 
 
