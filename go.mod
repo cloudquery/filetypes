@@ -9,7 +9,7 @@ require (
 	github.com/cloudquery/plugin-sdk/v4 v4.19.0
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.4.0
-	github.com/invopop/jsonschema v0.11.0
+	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.8.4
 	github.com/wk8/go-ordered-map/v2 v2.1.8
 )
@@ -26,7 +26,7 @@ require (
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
 	github.com/klauspost/compress v1.17.3 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
