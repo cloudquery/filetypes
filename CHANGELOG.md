@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.2](https://github.com/cloudquery/filetypes/compare/v4.2.1...v4.2.2) (2023-12-19)
+
+
+### Bug Fixes
+
+* **deps:** Update `github.com/apache/arrow/go` to `v15` ([#386](https://github.com/cloudquery/filetypes/issues/386)) ([f3501fe](https://github.com/cloudquery/filetypes/commit/f3501fe9aa885eb9b56d598318bfaaab742408d2))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.19.1 ([#377](https://github.com/cloudquery/filetypes/issues/377)) ([e51a5da](https://github.com/cloudquery/filetypes/commit/e51a5da70cba8d22bef4d0d4724f45efcbae860d))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.20.0 ([#379](https://github.com/cloudquery/filetypes/issues/379)) ([5e1f7a5](https://github.com/cloudquery/filetypes/commit/5e1f7a5572f2a1559414afd13b9f80b3f6d89e5d))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.21.0 ([#381](https://github.com/cloudquery/filetypes/issues/381)) ([f605aa5](https://github.com/cloudquery/filetypes/commit/f605aa552261a9e24d4302d8323890614c0c97fb))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.21.1 ([#382](https://github.com/cloudquery/filetypes/issues/382)) ([f55ac46](https://github.com/cloudquery/filetypes/commit/f55ac4638aeff2641923c30ff32941cbcc0dcc49))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.21.2 ([#384](https://github.com/cloudquery/filetypes/issues/384)) ([00d607f](https://github.com/cloudquery/filetypes/commit/00d607f715019423e7b5560c9f2c470abd60ae16))
+
 ## [4.2.1](https://github.com/cloudquery/filetypes/compare/v4.2.0...v4.2.1) (2023-12-04)
 
 
