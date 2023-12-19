@@ -3,10 +3,10 @@ module github.com/cloudquery/filetypes/v4
 go 1.21.1
 
 require (
-	github.com/apache/arrow/go/v14 v14.0.0-20231031200323-c49e24273160
+	github.com/apache/arrow/go/v15 v15.0.0-20231219110838-0479f8532d5a
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.12
-	github.com/cloudquery/plugin-sdk/v4 v4.21.2
+	github.com/cloudquery/plugin-sdk/v4 v4.21.3
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.4.0
 	github.com/invopop/jsonschema v0.12.0
@@ -51,9 +51,6 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// TODO: remove once all updates are merged
-replace github.com/apache/arrow/go/v14 => github.com/cloudquery/arrow/go/v14 v14.0.0-20231029080147-50d3871d0804
 
 // github.com/cloudquery/jsonschema @ cqmain
 replace github.com/invopop/jsonschema => github.com/cloudquery/jsonschema v0.0.0-20231018073309-6c617a23d42f
