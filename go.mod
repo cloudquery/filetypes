@@ -3,7 +3,7 @@ module github.com/cloudquery/filetypes/v4
 go 1.21.1
 
 require (
-	github.com/apache/arrow/go/v15 v15.0.0-20231219110838-0479f8532d5a
+	github.com/apache/arrow/go/v15 v15.0.0-20231223155039-ec41209ea02b
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.12
 	github.com/cloudquery/plugin-sdk/v4 v4.21.3
