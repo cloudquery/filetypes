@@ -6,7 +6,7 @@ require (
 	github.com/apache/arrow/go/v15 v15.0.0-20231229025812-7c3480e2f028
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.12
-	github.com/cloudquery/plugin-sdk/v4 v4.24.0
+	github.com/cloudquery/plugin-sdk/v4 v4.24.1
 	github.com/goccy/go-json v0.10.2
 	github.com/google/uuid v1.4.0
 	github.com/invopop/jsonschema v0.12.0
@@ -101,7 +101,7 @@ require (
 	golang.org/x/tools v0.16.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0 // indirect
-	google.golang.org/grpc v1.59.0 // indirect
+	google.golang.org/grpc v1.60.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
