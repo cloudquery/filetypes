@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.4](https://github.com/cloudquery/filetypes/compare/v4.2.3...v4.2.4) (2024-01-01)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v15 digest to 7c3480e ([#391](https://github.com/cloudquery/filetypes/issues/391)) ([0805592](https://github.com/cloudquery/filetypes/commit/0805592d65d71aefba0d003dc9e7b1c31051a5c1))
+* **deps:** Update github.com/gomarkdown/markdown digest to 1d6d208 ([#392](https://github.com/cloudquery/filetypes/issues/392)) ([a36e87e](https://github.com/cloudquery/filetypes/commit/a36e87e2662768931d3e8e44cf0f746dba007c2e))
+* **deps:** Update golang.org/x/exp digest to 02704c9 ([#394](https://github.com/cloudquery/filetypes/issues/394)) ([bbfddd0](https://github.com/cloudquery/filetypes/commit/bbfddd02dff3d17612b0354cfe819ad2340bb475))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to 995d672 ([#395](https://github.com/cloudquery/filetypes/issues/395)) ([505e046](https://github.com/cloudquery/filetypes/commit/505e04608d4e7bca8a23090a2793674113f42d0e))
+* **deps:** Update module github.com/klauspost/compress to v1.17.4 ([#397](https://github.com/cloudquery/filetypes/issues/397)) ([3c5d0c0](https://github.com/cloudquery/filetypes/commit/3c5d0c02f4ed543c000195395bb9dd07551fbd25))
+* **deps:** Update module github.com/labstack/echo/v4 to v4.11.4 ([#398](https://github.com/cloudquery/filetypes/issues/398)) ([e226b95](https://github.com/cloudquery/filetypes/commit/e226b954363214ce52c86317edb902a0202c1aac))
+
 ## [4.2.3](https://github.com/cloudquery/filetypes/compare/v4.2.2...v4.2.3) (2023-12-29)
 
 
