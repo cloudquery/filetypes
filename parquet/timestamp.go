@@ -1,8 +1,6 @@
 package parquet
 
 import (
-	"fmt"
-
 	"github.com/apache/arrow/go/v15/arrow"
 	"github.com/apache/arrow/go/v15/arrow/array"
 	"github.com/apache/arrow/go/v15/arrow/memory"
@@ -25,16 +23,7 @@ func reverseTransformTimestamp(dt *arrow.TimestampType, arr *array.Timestamp) ar
 }
 
 func reverseTransformFromTimestamp(dt arrow.DataType, arr *array.Timestamp) arrow.Array {
-	toTime, err := arr.DataType().(*arrow.TimestampType).GetToTimeFunc()
-	if err != nil {
-		panic(fmt.Errorf("failed GetToTimeFunc: %w", err))
-	}
-
 	switch dt := dt.(type) {
-	case *arrow.Date32Type:
-		return reverseTransformDate32(arr, toTime)
-	case *arrow.Date64Type:
-		return reverseTransformDate64(arr, toTime)
 	case *arrow.TimestampType:
 		return reverseTransformTimestamp(dt, arr)
 	default:
