@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.2.5](https://github.com/cloudquery/filetypes/compare/v4.2.4...v4.2.5) (2024-01-15)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/apache/arrow/go/v15 digest to 7acbaf4 ([#407](https://github.com/cloudquery/filetypes/issues/407)) ([fad9897](https://github.com/cloudquery/filetypes/commit/fad9897a91fdbc819f70321687b49239b5b5116c))
+* **deps:** Update github.com/apache/arrow/go/v15 digest to de3130e ([#405](https://github.com/cloudquery/filetypes/issues/405)) ([94d4526](https://github.com/cloudquery/filetypes/commit/94d45268926989b3f04ce8a365d95d28fdc6bb53))
+* **deps:** Update module github.com/cloudquery/cloudquery-api-go to v1.6.4 ([#403](https://github.com/cloudquery/filetypes/issues/403)) ([f202bb6](https://github.com/cloudquery/filetypes/commit/f202bb63ee0772b265982eae22b3cb66d680d7ac))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.24.1 ([#400](https://github.com/cloudquery/filetypes/issues/400)) ([3fe1790](https://github.com/cloudquery/filetypes/commit/3fe1790b557d550379a807525b2aa5085c504dc2))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.25.0 ([#402](https://github.com/cloudquery/filetypes/issues/402)) ([d14ab57](https://github.com/cloudquery/filetypes/commit/d14ab571efba282f3b7c6e3e0de0088a717d960d))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.25.1 ([#404](https://github.com/cloudquery/filetypes/issues/404)) ([d3c1e0a](https://github.com/cloudquery/filetypes/commit/d3c1e0a382a6b9738bd30c728f75349a042f0a7b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.25.2 ([#406](https://github.com/cloudquery/filetypes/issues/406)) ([74516d5](https://github.com/cloudquery/filetypes/commit/74516d5648fb265cdceb065d47ad455b5e51ecee))
+* Support Arrow `date64` in Parquet ([#410](https://github.com/cloudquery/filetypes/issues/410)) ([27c1c0c](https://github.com/cloudquery/filetypes/commit/27c1c0c670487dc9ac30e6c87a65b032cbec35dd))
+
 ## [4.2.4](https://github.com/cloudquery/filetypes/compare/v4.2.3...v4.2.4) (2024-01-01)
 
 
