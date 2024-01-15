@@ -17,7 +17,8 @@ import (
 func TestWriteRead(t *testing.T) {
 	const rows = 10
 	var b bytes.Buffer
-	table := schema.TestTable("test", schema.TestSourceOptions{})
+	// We can't test DATE64 since arrow changes it to DATE32 see https://github.com/apache/arrow/pull/39460
+	table := schema.TestTable("test", schema.TestSourceOptions{SkipDates: true})
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
@@ -65,7 +66,8 @@ func TestWriteRead(t *testing.T) {
 func TestWriteReadSliced(t *testing.T) {
 	const rows = 10
 	var b bytes.Buffer
-	table := schema.TestTable("test", schema.TestSourceOptions{})
+	// We can't test DATE64 since arrow changes it to DATE32 see https://github.com/apache/arrow/pull/39460
+	table := schema.TestTable("test", schema.TestSourceOptions{SkipDates: true})
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
@@ -112,7 +114,8 @@ func TestWriteReadSliced(t *testing.T) {
 }
 
 func BenchmarkWrite(b *testing.B) {
-	table := schema.TestTable("test", schema.TestSourceOptions{})
+	// We can't test DATE64 since arrow changes it to DATE32 see https://github.com/apache/arrow/pull/39460
+	table := schema.TestTable("test", schema.TestSourceOptions{SkipDates: true})
 	sourceName := "test-source"
 	syncTime := time.Now().UTC().Round(time.Second)
 	opts := schema.GenTestDataOptions{
