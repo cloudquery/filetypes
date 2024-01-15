@@ -72,6 +72,8 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 		return reverseTransformTime32(dt.(*arrow.Time32Type), arr)
 	case *array.Time64:
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
+	case *array.Date32:
+		return reverseTransformFromDate32(dt, arr)
 	case *array.Struct:
 		dt := dt.(*arrow.StructType)
 		children := make([]arrow.ArrayData, arr.NumField())
