@@ -1,14 +1,10 @@
 package parquet
 
 import (
-	"time"
-
 	"github.com/apache/arrow/go/v15/arrow"
 	"github.com/apache/arrow/go/v15/arrow/array"
 	"github.com/apache/arrow/go/v15/arrow/memory"
 )
-
-type toTimeFunc func(arrow.Timestamp) time.Time
 
 func reverseTransformTime32(dt *arrow.Time32Type, arr *array.Time32) arrow.Array {
 	builder := array.NewTime32Builder(memory.DefaultAllocator, dt)
