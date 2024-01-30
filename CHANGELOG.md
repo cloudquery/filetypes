@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.2.6](https://github.com/cloudquery/filetypes/compare/v4.2.5...v4.2.6) (2024-01-30)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency go to v1.21.5 ([#396](https://github.com/cloudquery/filetypes/issues/396)) ([5578c13](https://github.com/cloudquery/filetypes/commit/5578c138bad097fd6208bae0642871b4e895bba4))
+* **deps:** Update module github.com/cloudquery/cloudquery-api-go to v1.6.5 ([#411](https://github.com/cloudquery/filetypes/issues/411)) ([425bb7e](https://github.com/cloudquery/filetypes/commit/425bb7eefd24e285a4298be5cc5f8b2b51f031e1))
+* **deps:** Update module github.com/cloudquery/cloudquery-api-go to v1.7.0 ([#414](https://github.com/cloudquery/filetypes/issues/414)) ([9d4d44c](https://github.com/cloudquery/filetypes/commit/9d4d44c51411be02cb00e4c0bd9ff1a623f25cf0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.27.2 ([#413](https://github.com/cloudquery/filetypes/issues/413)) ([a363522](https://github.com/cloudquery/filetypes/commit/a363522b76c4e0d876244d485a542ca6dd2b8ba2))
+
 ## [4.2.5](https://github.com/cloudquery/filetypes/compare/v4.2.4...v4.2.5) (2024-01-15)
 
 
