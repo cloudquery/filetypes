@@ -12,7 +12,6 @@ import (
 	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/plugin"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -37,7 +36,6 @@ func TestWriteRead(t *testing.T) {
 				SourceName: sourceName,
 				SyncTime:   syncTime,
 				MaxRows:    2,
-				StableUUID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 			}
 			tg := schema.NewTestDataGenerator()
