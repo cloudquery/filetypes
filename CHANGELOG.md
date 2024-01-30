@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.7](https://github.com/cloudquery/filetypes/compare/v4.2.6...v4.2.7) (2024-01-30)
+
+
+### Bug Fixes
+
+* Better JSON Schema when embedding ([#417](https://github.com/cloudquery/filetypes/issues/417)) ([f87ffc7](https://github.com/cloudquery/filetypes/commit/f87ffc7401287b0fd76072250099ce7723c9ff55))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.28.0 ([#415](https://github.com/cloudquery/filetypes/issues/415)) ([42e7b37](https://github.com/cloudquery/filetypes/commit/42e7b37229520413140aa099e3e753c7c5c05514))
+
 ## [4.2.6](https://github.com/cloudquery/filetypes/compare/v4.2.5...v4.2.6) (2024-01-30)
 
 
