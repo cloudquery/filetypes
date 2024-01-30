@@ -8,8 +8,6 @@ import (
 	"github.com/cloudquery/filetypes/v4/csv"
 	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
-	"github.com/invopop/jsonschema"
-	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
 type FormatType string
@@ -42,84 +40,6 @@ type FileSpec struct {
 	csvSpec     *csv.Spec
 	jsonSpec    *jsonfile.Spec
 	parquetSpec *parquet.Spec
-}
-
-func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
-	sc.ID = "/schemas/FileSpec"
-	sc.Definitions = jsonschema.Definitions{
-		"CSVSpec":     csv.Spec{}.JSONSchema(),
-		"JSONSpec":    jsonfile.Spec{}.JSONSchema(),
-		"ParquetSpec": parquet.Spec{}.JSONSchema(),
-	}
-
-	sc.Properties.Set("format_spec", &jsonschema.Schema{
-		OneOf: []*jsonschema.Schema{
-			{
-				AnyOf: []*jsonschema.Schema{
-					{Ref: jsonschema.EmptyID.Def("CSVSpec").String()},
-					{Ref: jsonschema.EmptyID.Def("JSONSpec").String()},
-					{Ref: jsonschema.EmptyID.Def("ParquetSpec").String()},
-				},
-			},
-			{Type: "null"},
-		},
-	})
-
-	// now we need to enforce format -> specific type
-	formatSpecOneOf := []*jsonschema.Schema{
-		// CSV
-		{
-			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-				properties := jsonschema.NewProperties()
-				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeCSV})
-				properties.Set("format_spec", &jsonschema.Schema{
-					OneOf: []*jsonschema.Schema{
-						{Ref: jsonschema.EmptyID.Def("CSVSpec").String()},
-						{Type: "null"},
-					},
-				})
-				return properties
-			}(),
-		},
-		// JSON
-		{
-			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-				properties := jsonschema.NewProperties()
-				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeJSON})
-				properties.Set("format_spec", &jsonschema.Schema{
-					OneOf: []*jsonschema.Schema{
-						{Ref: jsonschema.EmptyID.Def("JSONSpec").String()},
-						{Type: "null"},
-					},
-				})
-				return properties
-			}(),
-		},
-		// Parquet
-		{
-			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
-				properties := jsonschema.NewProperties()
-				properties.Set("format", &jsonschema.Schema{Type: "string", Const: FormatTypeParquet})
-				properties.Set("format_spec", &jsonschema.Schema{
-					OneOf: []*jsonschema.Schema{
-						{Ref: jsonschema.EmptyID.Def("ParquetSpec").String()},
-						{Type: "null"},
-					},
-				})
-				return properties
-			}(),
-		},
-	}
-	if sc.OneOf == nil {
-		sc.OneOf = formatSpecOneOf
-	} else {
-		// may happen when embedding, so move to all_of{{one_of},{one_of}}
-		sc.AllOf = []*jsonschema.Schema{
-			{OneOf: sc.OneOf},
-			{OneOf: formatSpecOneOf},
-		}
-		sc.OneOf = nil
-	}
 }
 
 func (s *FileSpec) SetDefaults() {
