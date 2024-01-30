@@ -66,7 +66,7 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 	})
 
 	// now we need to enforce format -> specific type
-	sc.OneOf = []*jsonschema.Schema{
+	formatSpecOneOf := []*jsonschema.Schema{
 		// CSV
 		{
 			Properties: func() *orderedmap.OrderedMap[string, *jsonschema.Schema] {
@@ -109,6 +109,16 @@ func (FileSpec) JSONSchemaExtend(sc *jsonschema.Schema) {
 				return properties
 			}(),
 		},
+	}
+	if sc.OneOf == nil {
+		sc.OneOf = formatSpecOneOf
+	} else {
+		// may happen when embedding, so move to all_of{{one_of},{one_of}}
+		sc.AllOf = []*jsonschema.Schema{
+			{OneOf: sc.OneOf},
+			{OneOf: formatSpecOneOf},
+		}
+		sc.OneOf = nil
 	}
 }
 
