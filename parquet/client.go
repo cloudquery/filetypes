@@ -4,7 +4,7 @@ type Options func(*Client)
 
 // Client is a parquet client.
 type Client struct {
-	spec Spec
+	spec ParquetSpec
 }
 
 func NewClient(options ...Options) (*Client, error) {
@@ -16,7 +16,7 @@ func NewClient(options ...Options) (*Client, error) {
 	return c, nil
 }
 
-func WithSpec(spec Spec) Options {
+func WithSpec(spec ParquetSpec) Options {
 	return func(c *Client) {
 		c.spec = spec
 	}

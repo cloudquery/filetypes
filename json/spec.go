@@ -2,9 +2,10 @@ package json
 
 import "github.com/invopop/jsonschema"
 
-type Spec struct{}
+// nolint:revive
+type JSONSpec struct{}
 
-func (Spec) JSONSchema() *jsonschema.Schema {
+func (JSONSpec) JSONSchema() *jsonschema.Schema {
 	return &jsonschema.Schema{
 		Description:          "CloudQuery JSON file output spec.",
 		Type:                 "object",
@@ -12,8 +13,8 @@ func (Spec) JSONSchema() *jsonschema.Schema {
 	}
 }
 
-func (*Spec) SetDefaults() {}
+func (*JSONSpec) SetDefaults() {}
 
-func (*Spec) Validate() error {
+func (*JSONSpec) Validate() error {
 	return nil
 }

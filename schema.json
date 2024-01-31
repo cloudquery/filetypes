@@ -3,6 +3,24 @@
   "$id": "https://github.com/cloudquery/filetypes/v4/file-spec",
   "$ref": "#/$defs/FileSpec",
   "$defs": {
+    "CSVSpec": {
+      "properties": {
+        "skip_header": {
+          "type": "boolean",
+          "description": "Specifies if the first line of a file should be the header.",
+          "default": false
+        },
+        "delimiter": {
+          "type": "string",
+          "pattern": "^.$",
+          "description": "Character that will be used as the delimiter.",
+          "default": ","
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "CloudQuery CSV file output spec."
+    },
     "FileSpec": {
       "oneOf": [
         {
@@ -14,7 +32,7 @@
             "format_spec": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/Spec"
+                  "$ref": "#/$defs/CSVSpec"
                 },
                 {
                   "type": "null"
@@ -32,7 +50,7 @@
             "format_spec": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/Spec-1"
+                  "$ref": "#/$defs/JSONSpec"
                 },
                 {
                   "type": "null"
@@ -50,7 +68,7 @@
             "format_spec": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/Spec-2"
+                  "$ref": "#/$defs/ParquetSpec"
                 },
                 {
                   "type": "null"
@@ -75,13 +93,13 @@
             {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/Spec"
+                  "$ref": "#/$defs/CSVSpec"
                 },
                 {
-                  "$ref": "#/$defs/Spec-1"
+                  "$ref": "#/$defs/JSONSpec"
                 },
                 {
-                  "$ref": "#/$defs/Spec-2"
+                  "$ref": "#/$defs/ParquetSpec"
                 }
               ]
             },
@@ -105,30 +123,12 @@
         "format"
       ]
     },
-    "Spec": {
-      "properties": {
-        "skip_header": {
-          "type": "boolean",
-          "description": "Specifies if the first line of a file should be the header.",
-          "default": false
-        },
-        "delimiter": {
-          "type": "string",
-          "pattern": "^.$",
-          "description": "Character that will be used as the delimiter.",
-          "default": ","
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "description": "CloudQuery CSV file output spec."
-    },
-    "Spec-1": {
+    "JSONSpec": {
       "additionalProperties": false,
       "type": "object",
       "description": "CloudQuery JSON file output spec."
     },
-    "Spec-2": {
+    "ParquetSpec": {
       "additionalProperties": false,
       "type": "object",
       "description": "CloudQuery Parquet file output spec."

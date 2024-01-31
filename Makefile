@@ -8,6 +8,8 @@ lint:
 
 .PHONY: gen-spec-schema
 gen-spec-schema:
+	# vendor for gen
+	go mod vendor
 	go run schemagen/main.go
 
 # All gen targets

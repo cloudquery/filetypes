@@ -11,10 +11,10 @@ import (
 func TestSpecMethods(t *testing.T) {
 	testCases := []struct {
 		FileSpec         *FileSpec
-		preDefaultsCSV   *csv.Spec
-		preDefaultsJSON  *json.Spec
-		postDefaultsCSV  *csv.Spec
-		postDefaultsJSON *json.Spec
+		preDefaultsCSV   *csv.CSVSpec
+		preDefaultsJSON  *json.JSONSpec
+		postDefaultsCSV  *csv.CSVSpec
+		postDefaultsJSON *json.JSONSpec
 		expectError      bool
 	}{
 		{
@@ -22,8 +22,8 @@ func TestSpecMethods(t *testing.T) {
 				Format:     FormatTypeCSV,
 				FormatSpec: map[string]any{},
 			},
-			preDefaultsCSV: &csv.Spec{},
-			postDefaultsCSV: &csv.Spec{
+			preDefaultsCSV: &csv.CSVSpec{},
+			postDefaultsCSV: &csv.CSVSpec{
 				SkipHeader: false,
 				Delimiter:  ",",
 			},
@@ -36,11 +36,11 @@ func TestSpecMethods(t *testing.T) {
 					"skip_header": true,
 				},
 			},
-			preDefaultsCSV: &csv.Spec{
+			preDefaultsCSV: &csv.CSVSpec{
 				SkipHeader: true,
 				Delimiter:  ",",
 			},
-			postDefaultsCSV: &csv.Spec{
+			postDefaultsCSV: &csv.CSVSpec{
 				SkipHeader: true,
 				Delimiter:  ",",
 			},
@@ -50,11 +50,11 @@ func TestSpecMethods(t *testing.T) {
 				Format:     FormatTypeCSV,
 				FormatSpec: map[string]any{},
 			},
-			preDefaultsCSV: &csv.Spec{
+			preDefaultsCSV: &csv.CSVSpec{
 				SkipHeader: false,
 				Delimiter:  "",
 			},
-			postDefaultsCSV: &csv.Spec{
+			postDefaultsCSV: &csv.CSVSpec{
 				SkipHeader: false,
 				Delimiter:  ",",
 			},
@@ -63,8 +63,8 @@ func TestSpecMethods(t *testing.T) {
 			FileSpec: &FileSpec{
 				Format: FormatTypeJSON,
 			},
-			preDefaultsJSON:  &json.Spec{},
-			postDefaultsJSON: &json.Spec{},
+			preDefaultsJSON:  &json.JSONSpec{},
+			postDefaultsJSON: &json.JSONSpec{},
 		},
 
 		{

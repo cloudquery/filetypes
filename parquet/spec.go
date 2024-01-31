@@ -2,9 +2,10 @@ package parquet
 
 import "github.com/invopop/jsonschema"
 
-type Spec struct{}
+// nolint:revive
+type ParquetSpec struct{}
 
-func (Spec) JSONSchema() *jsonschema.Schema {
+func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 	return &jsonschema.Schema{
 		Description:          "CloudQuery Parquet file output spec.",
 		Type:                 "object",
@@ -12,9 +13,9 @@ func (Spec) JSONSchema() *jsonschema.Schema {
 	}
 }
 
-func (*Spec) SetDefaults() {
+func (*ParquetSpec) SetDefaults() {
 }
 
-func (*Spec) Validate() error {
+func (*ParquetSpec) Validate() error {
 	return nil
 }
