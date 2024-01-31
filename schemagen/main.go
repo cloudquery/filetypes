@@ -13,7 +13,9 @@ import (
 func main() {
 	fmt.Println("Generating JSON schema for plugin spec")
 	jsonschema.GenerateIntoFile(new(filetypes.FileSpec), path.Join(currDir(), "..", "schema.json"),
-		jsonschema.WithAddGoComments("github.com/cloudquery/filetypes/v4", path.Join(currDir(), "..")),
+		append(filetypes.FileSpec{}.JSONSchemaOptions(),
+			jsonschema.WithAddGoComments("github.com/cloudquery/filetypes/v4", path.Join(currDir(), "..")),
+		)...,
 	)
 }
 
