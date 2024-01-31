@@ -6,12 +6,13 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-type Spec struct {
+// nolint:revive
+type CSVSpec struct {
 	SkipHeader bool   `json:"skip_header,omitempty"`
 	Delimiter  string `json:"delimiter,omitempty"`
 }
 
-func (Spec) JSONSchema() *jsonschema.Schema {
+func (CSVSpec) JSONSchema() *jsonschema.Schema {
 	properties := jsonschema.NewProperties()
 	properties.Set("skip_header", &jsonschema.Schema{
 		Type:        "boolean",
@@ -32,13 +33,13 @@ func (Spec) JSONSchema() *jsonschema.Schema {
 	}
 }
 
-func (s *Spec) SetDefaults() {
+func (s *CSVSpec) SetDefaults() {
 	if s.Delimiter == "" {
 		s.Delimiter = ","
 	}
 }
 
-func (s *Spec) Validate() error {
+func (s *CSVSpec) Validate() error {
 	if len(s.Delimiter) != 1 {
 		return fmt.Errorf("delimiter must be a single character")
 	}

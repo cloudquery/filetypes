@@ -20,9 +20,9 @@ func (FileSpec) JSONSchemaOptions() []cqjsonschema.Option {
 				return nil
 			}
 			return reflect.VisibleFields(reflect.TypeOf(struct {
-				CSVSpec     csv.Spec
-				JSONSpec    jsonfile.Spec
-				ParquetSpec parquet.Spec
+				CSVSpec     csv.CSVSpec
+				JSONSpec    jsonfile.JSONSpec
+				ParquetSpec parquet.ParquetSpec
 			}{}))
 		}
 		if r.AdditionalFields == nil {

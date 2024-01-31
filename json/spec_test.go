@@ -8,7 +8,7 @@ import (
 )
 
 func TestSpec_JSONSchema(t *testing.T) {
-	schema, err := jsonschema.Generate(Spec{})
+	schema, err := jsonschema.Generate(JSONSpec{})
 	require.NoError(t, err)
 
 	jsonschema.TestJSONSchema(t, string(schema), []jsonschema.TestCase{

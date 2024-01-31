@@ -37,9 +37,9 @@ type FileSpec struct {
 	// Empty or missing stands for no compression.
 	Compression CompressionType `json:"compression,omitempty" jsonschema:"enum=,enum=gzip"`
 
-	csvSpec     *csv.Spec
-	jsonSpec    *jsonfile.Spec
-	parquetSpec *parquet.Spec
+	csvSpec     *csv.CSVSpec
+	jsonSpec    *jsonfile.JSONSpec
+	parquetSpec *parquet.ParquetSpec
 }
 
 func (s *FileSpec) SetDefaults() {
@@ -87,13 +87,13 @@ func (s *FileSpec) UnmarshalSpec() error {
 
 	switch s.Format {
 	case FormatTypeCSV:
-		s.csvSpec = &csv.Spec{}
+		s.csvSpec = &csv.CSVSpec{}
 		return dec.Decode(s.csvSpec)
 	case FormatTypeJSON:
-		s.jsonSpec = &jsonfile.Spec{}
+		s.jsonSpec = &jsonfile.JSONSpec{}
 		return dec.Decode(s.jsonSpec)
 	case FormatTypeParquet:
-		s.parquetSpec = &parquet.Spec{}
+		s.parquetSpec = &parquet.ParquetSpec{}
 		return dec.Decode(s.parquetSpec)
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
