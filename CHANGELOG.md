@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.8](https://github.com/cloudquery/filetypes/compare/v4.2.7...v4.2.8) (2024-01-31)
+
+
+### Bug Fixes
+
+* Better JSON schema for embedding ([#418](https://github.com/cloudquery/filetypes/issues/418)) ([f5dfada](https://github.com/cloudquery/filetypes/commit/f5dfada69094f35e3eb0f0741328ba7403239517))
+
 ## [4.2.7](https://github.com/cloudquery/filetypes/compare/v4.2.6...v4.2.7) (2024-01-30)
 
 
