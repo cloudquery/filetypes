@@ -3,7 +3,7 @@ package filetypes
 import (
 	"reflect"
 
-	cq_jsonschema "github.com/cloudquery/codegen/jsonschema"
+	cqjsonschema "github.com/cloudquery/codegen/jsonschema"
 	"github.com/cloudquery/filetypes/v4/csv"
 	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
@@ -12,9 +12,9 @@ import (
 )
 
 // JSONSchemaOptions should be used when generating schema to add the nested spec info
-func (FileSpec) JSONSchemaOptions() []cq_jsonschema.Option {
+func (FileSpec) JSONSchemaOptions() []cqjsonschema.Option {
 	fileSpecType := reflect.TypeOf(FileSpec{})
-	return []cq_jsonschema.Option{func(r *jsonschema.Reflector) {
+	return []cqjsonschema.Option{func(r *jsonschema.Reflector) {
 		fileSpecFields := func(t reflect.Type) []reflect.StructField {
 			if t != fileSpecType {
 				return nil
