@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.2.9](https://github.com/cloudquery/filetypes/compare/v4.2.8...v4.2.9) (2024-02-01)
+
+
+### Bug Fixes
+
+* **deps:** Update golang.org/x/exp digest to 1b97071 ([#425](https://github.com/cloudquery/filetypes/issues/425)) ([e4b0584](https://github.com/cloudquery/filetypes/commit/e4b05844066de9e3421d8e3ed4b250e75102dbb1))
+* **deps:** Update google.golang.org/genproto/googleapis/rpc digest to 1f4bbc5 ([#426](https://github.com/cloudquery/filetypes/issues/426)) ([f98c99f](https://github.com/cloudquery/filetypes/commit/f98c99f9cbae05cab9273a862833e28ec1a147cd))
+* **deps:** Update module github.com/cloudquery/cloudquery-api-go to v1.7.1 ([#420](https://github.com/cloudquery/filetypes/issues/420)) ([64974a0](https://github.com/cloudquery/filetypes/commit/64974a0bce7afad2adbed32e8d6b276456d1041b))
+* **deps:** Update module github.com/cloudquery/cloudquery-api-go to v1.7.2 ([#422](https://github.com/cloudquery/filetypes/issues/422)) ([d1a53cd](https://github.com/cloudquery/filetypes/commit/d1a53cda25b30a4239196221bf23d081468fb490))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.29.0 ([#423](https://github.com/cloudquery/filetypes/issues/423)) ([96ffdd3](https://github.com/cloudquery/filetypes/commit/96ffdd3ff90a6b6dcaefe735051f4d4fa346aa9a))
+* **deps:** Update module github.com/kataras/iris/v12 to v12.2.10 ([#427](https://github.com/cloudquery/filetypes/issues/427)) ([376f86d](https://github.com/cloudquery/filetypes/commit/376f86d01c94d05b3b21437adeabe53cfdcd6741))
+* **deps:** Update module github.com/klauspost/compress to v1.17.5 ([#428](https://github.com/cloudquery/filetypes/issues/428)) ([d71c817](https://github.com/cloudquery/filetypes/commit/d71c817f318d8aaff715a30e11f129bd6f8710fa))
+* **deps:** Update module github.com/pierrec/lz4/v4 to v4.1.21 ([#429](https://github.com/cloudquery/filetypes/issues/429)) ([3898470](https://github.com/cloudquery/filetypes/commit/389847070471fcf3ccd6c90ba1a266d370501f74))
+* **deps:** Update module github.com/tdewolff/minify/v2 to v2.20.16 ([#430](https://github.com/cloudquery/filetypes/issues/430)) ([a42418e](https://github.com/cloudquery/filetypes/commit/a42418e528bfa0d7fdd69aec42752917c60d48b2))
+* Rename spec structs for better representation in JSON schema ([#424](https://github.com/cloudquery/filetypes/issues/424)) ([efeef19](https://github.com/cloudquery/filetypes/commit/efeef19692c93966d4fc3f9e8906b78b1339d715))
+
 ## [4.2.8](https://github.com/cloudquery/filetypes/compare/v4.2.7...v4.2.8) (2024-01-31)
 
 
