@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.2.10](https://github.com/cloudquery/filetypes/compare/v4.2.9...v4.2.10) (2024-02-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.29.1 ([#434](https://github.com/cloudquery/filetypes/issues/434)) ([5e23b07](https://github.com/cloudquery/filetypes/commit/5e23b07059379ba3a28de9bf11f84a4f2d21104c))
+* **deps:** Update module github.com/deepmap/oapi-codegen to v1.16.2 ([#432](https://github.com/cloudquery/filetypes/issues/432)) ([37a784b](https://github.com/cloudquery/filetypes/commit/37a784b0d04b0421d53ccb66142f2ceee9bf7b62))
+* **deps:** Update module github.com/ugorji/go/codec to v1.2.12 ([#431](https://github.com/cloudquery/filetypes/issues/431)) ([7375cce](https://github.com/cloudquery/filetypes/commit/7375ccea36a2305835e58bf819383b172b5b0059))
+
 ## [4.2.9](https://github.com/cloudquery/filetypes/compare/v4.2.8...v4.2.9) (2024-02-01)
 
 
