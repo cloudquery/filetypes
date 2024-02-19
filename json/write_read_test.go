@@ -25,7 +25,7 @@ func TestWriteRead(t *testing.T) {
 		MaxRows:    2,
 		StableTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
 	}
-	tg := schema.NewTestDataGenerator()
+	tg := schema.NewTestDataGenerator(0)
 	record := tg.Generate(table, opts)
 
 	cl, err := NewClient()
@@ -78,7 +78,7 @@ func BenchmarkWrite(b *testing.B) {
 		SyncTime:   syncTime,
 		MaxRows:    1000,
 	}
-	tg := schema.NewTestDataGenerator()
+	tg := schema.NewTestDataGenerator(0)
 	record := tg.Generate(table, opts)
 
 	cl, err := NewClient()
