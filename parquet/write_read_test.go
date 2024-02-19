@@ -25,7 +25,7 @@ func TestWriteRead(t *testing.T) {
 		SyncTime:   syncTime,
 		MaxRows:    rows,
 	}
-	tg := schema.NewTestDataGenerator()
+	tg := schema.NewTestDataGenerator(0)
 	record := tg.Generate(table, opts)
 
 	writer := bufio.NewWriter(&b)
@@ -73,7 +73,7 @@ func TestWriteReadSliced(t *testing.T) {
 		SyncTime:   syncTime,
 		MaxRows:    rows,
 	}
-	tg := schema.NewTestDataGenerator()
+	tg := schema.NewTestDataGenerator(0)
 	record := tg.Generate(table, opts)
 
 	writer := bufio.NewWriter(&b)
@@ -120,7 +120,7 @@ func BenchmarkWrite(b *testing.B) {
 		SyncTime:   syncTime,
 		MaxRows:    b.N,
 	}
-	tg := schema.NewTestDataGenerator()
+	tg := schema.NewTestDataGenerator(0)
 	record := tg.Generate(table, opts)
 
 	cl, err := NewClient()
