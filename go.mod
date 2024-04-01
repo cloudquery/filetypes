@@ -6,7 +6,7 @@ require (
 	github.com/apache/arrow/go/v15 v15.0.0-20240115115805-d7bc55542e61
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.13
-	github.com/cloudquery/plugin-sdk/v4 v4.36.1
+	github.com/cloudquery/plugin-sdk/v4 v4.36.2
 	github.com/goccy/go-json v0.10.2
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.9.0
@@ -75,7 +75,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rs/zerolog v1.31.0 // indirect
+	github.com/rs/zerolog v1.32.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
