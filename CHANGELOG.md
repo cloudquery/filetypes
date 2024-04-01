@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.2.12](https://github.com/cloudquery/filetypes/compare/v4.2.11...v4.2.12) (2024-04-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.32.1 ([#457](https://github.com/cloudquery/filetypes/issues/457)) ([199e492](https://github.com/cloudquery/filetypes/commit/199e492c47f5c5f25bb19d7b3f8b61cbed7831fa))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.33.0 ([#458](https://github.com/cloudquery/filetypes/issues/458)) ([05dbef5](https://github.com/cloudquery/filetypes/commit/05dbef5e90e701365b8879d67a3220ec09f123af))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.34.0 ([#459](https://github.com/cloudquery/filetypes/issues/459)) ([e19fe52](https://github.com/cloudquery/filetypes/commit/e19fe52d5dced3ef0568548e97fe758936450737))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.34.1 ([#460](https://github.com/cloudquery/filetypes/issues/460)) ([b52aacf](https://github.com/cloudquery/filetypes/commit/b52aacf938767d2e7f7d1b146bd7b8244ab6084a))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.34.2 ([#461](https://github.com/cloudquery/filetypes/issues/461)) ([dcf5a54](https://github.com/cloudquery/filetypes/commit/dcf5a5473bcc561de3bc9056ad05099d45ffab6d))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.35.0 ([#462](https://github.com/cloudquery/filetypes/issues/462)) ([6353efb](https://github.com/cloudquery/filetypes/commit/6353efb37c52a6a2815d6b870fa78d7bc95c3aa0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.36.0 ([#463](https://github.com/cloudquery/filetypes/issues/463)) ([b9dee2b](https://github.com/cloudquery/filetypes/commit/b9dee2bbeaca921ea41b7f644d6677ad4cb716e9))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.36.1 ([#464](https://github.com/cloudquery/filetypes/issues/464)) ([c1bb510](https://github.com/cloudquery/filetypes/commit/c1bb51062f70f2de4d0fe73a95263ab8607f1b27))
+* **deps:** Update module github.com/stretchr/testify to v1.9.0 ([#466](https://github.com/cloudquery/filetypes/issues/466)) ([828d3db](https://github.com/cloudquery/filetypes/commit/828d3db4b6ab5b82c10f375625b4e83fcf34ac5f))
+* **deps:** Update module google.golang.org/grpc to v1.62.0 ([#455](https://github.com/cloudquery/filetypes/issues/455)) ([d77769f](https://github.com/cloudquery/filetypes/commit/d77769f7a62526305020cf0641235e0b6c2d4799))
+
 ## [4.2.11](https://github.com/cloudquery/filetypes/compare/v4.2.10...v4.2.11) (2024-03-01)
 
 
