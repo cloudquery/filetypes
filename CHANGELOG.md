@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.19](https://github.com/cloudquery/filetypes/compare/v4.2.18...v4.2.19) (2024-05-06)
+
+
+### Bug Fixes
+
+* **deps:** Upgrade `github.com/apache/arrow/go` to `v16` ([#494](https://github.com/cloudquery/filetypes/issues/494)) ([9626869](https://github.com/cloudquery/filetypes/commit/96268690c38fd51d28fd9e211cf67d80c18f2202))
+* Timestamp now includes zone in the marshalled format for JSON & CSV ([#494](https://github.com/cloudquery/filetypes/issues/494)) ([9626869](https://github.com/cloudquery/filetypes/commit/96268690c38fd51d28fd9e211cf67d80c18f2202))
+
 ## [4.2.18](https://github.com/cloudquery/filetypes/compare/v4.2.17...v4.2.18) (2024-05-06)
 
 
