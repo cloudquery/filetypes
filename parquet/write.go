@@ -3,12 +3,12 @@ package parquet
 import (
 	"io"
 
-	"github.com/apache/arrow/go/v15/arrow"
-	"github.com/apache/arrow/go/v15/arrow/array"
-	"github.com/apache/arrow/go/v15/arrow/memory"
-	"github.com/apache/arrow/go/v15/parquet"
-	"github.com/apache/arrow/go/v15/parquet/compress"
-	"github.com/apache/arrow/go/v15/parquet/pqarrow"
+	"github.com/apache/arrow/go/v16/arrow"
+	"github.com/apache/arrow/go/v16/arrow/array"
+	"github.com/apache/arrow/go/v16/arrow/memory"
+	"github.com/apache/arrow/go/v16/parquet"
+	"github.com/apache/arrow/go/v16/parquet/compress"
+	"github.com/apache/arrow/go/v16/parquet/pqarrow"
 	ftypes "github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 	"github.com/cloudquery/plugin-sdk/v4/types"

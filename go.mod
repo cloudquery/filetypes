@@ -3,10 +3,10 @@ module github.com/cloudquery/filetypes/v4
 go 1.21.5
 
 require (
-	github.com/apache/arrow/go/v15 v15.0.0-20240115115805-d7bc55542e61
+	github.com/apache/arrow/go/v16 v16.0.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/codegen v0.3.15
-	github.com/cloudquery/plugin-sdk/v4 v4.40.1
+	github.com/cloudquery/codegen v0.3.16
+	github.com/cloudquery/plugin-sdk/v4 v4.40.2
 	github.com/goccy/go-json v0.10.2
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.9.0
@@ -42,7 +42,7 @@ require (
 	github.com/go-playground/validator/v10 v10.18.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47 // indirect
-	github.com/google/flatbuffers v23.5.26+incompatible // indirect
+	github.com/google/flatbuffers v24.3.25+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
