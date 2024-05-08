@@ -35,23 +35,13 @@ func (*Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arro
 
 	sc := table.ToArrowSchema()
 	for rr.Next() {
-		for _, r := range slice(reverseTransformRecord(sc, rr.Record())) {
-			res <- r
-		}
+		res <- reverseTransformRecord(sc, rr.Record())
 	}
 	if rr.Err() != nil && rr.Err() != io.EOF {
 		return fmt.Errorf("failed to read parquet record: %w", rr.Err())
 	}
 
 	return nil
-}
-
-func slice(r arrow.Record) []arrow.Record {
-	res := make([]arrow.Record, r.NumRows())
-	for i := int64(0); i < r.NumRows(); i++ {
-		res[i] = r.NewSlice(i, i+1)
-	}
-	return res
 }
 
 func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
@@ -63,6 +53,10 @@ func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
 }
 
 func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
+	if arrow.TypeEqual(dt, arr.DataType()) {
+		return arr
+	}
+
 	switch arr := arr.(type) {
 	case *array.String:
 		return reverseTransformFromString(dt, arr)
@@ -102,7 +96,7 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 		))
 
 	default:
-		return arr
+		panic(fmt.Errorf("unsupported conversion from %s to %s", arr.DataType(), dt))
 	}
 }
 
