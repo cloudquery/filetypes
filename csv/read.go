@@ -24,7 +24,7 @@ func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- a
 			return reader.Err()
 		}
 		rec := reader.Record()
-		castRec, err := castFromString(rec, arrowSchema)
+		castRec, err := reverseTransformRecord(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
 		}
@@ -33,27 +33,57 @@ func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- a
 	return nil
 }
 
-// castFromString casts extension columns to string.
-func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+func reverseTransformRecord(rec arrow.Record, sc *arrow.Schema) (arrow.Record, error) {
+	if sc.Equal(rec.Schema()) {
+		return rec, nil
+	}
+
 	cols := make([]arrow.Array, rec.NumCols())
-	for c, f := range arrowSchema.Fields() {
-		col := rec.Column(c)
-		if isTypeSupported(f.Type) {
-			cols[c] = col
+	var err error
+	for i, col := range rec.Columns() {
+		cols[i], err = reverseTransformArray(col, sc.Field(i).Type)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return array.NewRecord(sc, cols, rec.NumRows()), nil
+}
+
+func reverseTransformArray(arr arrow.Array, dt arrow.DataType) (arrow.Array, error) {
+	if arrow.TypeEqual(arr.DataType(), dt) {
+		return arr, nil
+	}
+
+	if str, ok := arr.(*array.String); ok {
+		return reverseTransformArrayFromString(str, dt)
+	}
+
+	// only lists left
+	listDT, listArr := dt.(arrow.ListLikeType), arr.(array.ListLike)
+	elems, err := reverseTransformArray(listArr.ListValues(), listDT.Elem())
+	if err != nil {
+		return nil, err
+	}
+	return array.MakeFromData(array.NewData(
+		listDT, listArr.Len(),
+		listArr.Data().Buffers(),
+		[]arrow.ArrayData{elems.Data()},
+		listArr.NullN(),
+		listArr.Data().Offset(),
+	)), nil
+}
+
+func reverseTransformArrayFromString(arr *array.String, dt arrow.DataType) (arrow.Array, error) {
+	builder := array.NewBuilder(memory.DefaultAllocator, dt)
+	builder.Reserve(arr.Len())
+	for i := 0; i < arr.Len(); i++ {
+		if arr.IsNull(i) {
+			builder.AppendNull()
 			continue
 		}
-
-		sb := array.NewBuilder(memory.DefaultAllocator, f.Type)
-		for i := 0; i < col.Len(); i++ {
-			if col.IsNull(i) {
-				sb.AppendNull()
-				continue
-			}
-			if err := sb.AppendValueFromString(col.ValueStr(i)); err != nil {
-				return nil, fmt.Errorf("failed to AppendValueFromString col %v: %w", rec.ColumnName(c), err)
-			}
+		if err := builder.AppendValueFromString(arr.Value(i)); err != nil {
+			return nil, err
 		}
-		cols[c] = sb.NewArray()
 	}
-	return array.NewRecord(arrowSchema, cols, rec.NumRows()), nil
+	return builder.NewArray(), nil
 }
