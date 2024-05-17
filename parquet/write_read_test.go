@@ -54,13 +54,14 @@ func TestWriteRead(t *testing.T) {
 		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
-	received := make([]arrow.Record, 0, rows)
+	received, total := make([]arrow.Record, 0, rows), 0
 	for got := range ch {
 		received = append(received, got)
+		total += int(got.NumRows())
 	}
 	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
 	require.NoError(t, readErr)
-	require.Equalf(t, rows, len(received), "got %d row(s), want %d", len(received), rows)
+	require.Equalf(t, rows, total, "got %d row(s), want %d", total, rows)
 }
 func TestWriteReadSliced(t *testing.T) {
 	const rows = 10
@@ -102,13 +103,22 @@ func TestWriteReadSliced(t *testing.T) {
 		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
-	received := make([]arrow.Record, 0, rows)
+	received, total := make([]arrow.Record, 0, rows), 0
 	for got := range ch {
 		received = append(received, got)
+		total += int(got.NumRows())
 	}
 	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
 	require.NoError(t, readErr)
-	require.Equalf(t, rows, len(received), "got %d row(s), want %d", len(received), rows)
+	require.Equalf(t, rows, total, "got %d row(s), want %d", total, rows)
+}
+
+func slice(r arrow.Record) []arrow.Record {
+	res := make([]arrow.Record, r.NumRows())
+	for i := int64(0); i < r.NumRows(); i++ {
+		res[i] = r.NewSlice(i, i+1)
+	}
+	return res
 }
 
 func BenchmarkWrite(b *testing.B) {
