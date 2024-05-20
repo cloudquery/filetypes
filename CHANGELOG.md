@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.2.20](https://github.com/cloudquery/filetypes/compare/v4.2.19...v4.2.20) (2024-05-20)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/apache/arrow/go/v16 to v16.1.0 ([#505](https://github.com/cloudquery/filetypes/issues/505)) ([4050a91](https://github.com/cloudquery/filetypes/commit/4050a91cb0d8bf66cf520093366ca0cf8e4dfb26))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.41.0 ([#499](https://github.com/cloudquery/filetypes/issues/499)) ([124a682](https://github.com/cloudquery/filetypes/commit/124a682e741bf81d34479084b580039120f1301b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.41.1 ([#501](https://github.com/cloudquery/filetypes/issues/501)) ([3b7ea6a](https://github.com/cloudquery/filetypes/commit/3b7ea6ae8b8675891793effdd1e3e860d891b1c6))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.42.0 ([#502](https://github.com/cloudquery/filetypes/issues/502)) ([2e4ebdf](https://github.com/cloudquery/filetypes/commit/2e4ebdfb8226184f0cb66a8fa41fb75fea8dbd37))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.42.1 ([#503](https://github.com/cloudquery/filetypes/issues/503)) ([8cc722e](https://github.com/cloudquery/filetypes/commit/8cc722ea5711fc4dab8a812dd93fd93e07b1b071))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.42.2 ([#504](https://github.com/cloudquery/filetypes/issues/504)) ([931b024](https://github.com/cloudquery/filetypes/commit/931b0240d41cfd3117f9b1a6490bfc381b58de2c))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.43.0 ([#506](https://github.com/cloudquery/filetypes/issues/506)) ([54decd9](https://github.com/cloudquery/filetypes/commit/54decd9ae0f28e56444e789e05638521823147c4))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.43.1 ([#507](https://github.com/cloudquery/filetypes/issues/507)) ([94ecc9d](https://github.com/cloudquery/filetypes/commit/94ecc9d54d954faf8112c57ef78ae1e206e03add))
+
 ## [4.2.19](https://github.com/cloudquery/filetypes/compare/v4.2.18...v4.2.19) (2024-05-06)
 
 
