@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.2.21](https://github.com/cloudquery/filetypes/compare/v4.2.20...v4.2.21) (2024-06-03)
+
+
+### Bug Fixes
+
+* **deps:** Update golangci/golangci-lint-action action to v6 ([#513](https://github.com/cloudquery/filetypes/issues/513)) ([47c44e2](https://github.com/cloudquery/filetypes/commit/47c44e280bafd35b500dd3601cdb90041d196150))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.44.0 ([#508](https://github.com/cloudquery/filetypes/issues/508)) ([cd0c681](https://github.com/cloudquery/filetypes/commit/cd0c681bbe0511333e345a9ac02ad797d2348394))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.44.1 ([#510](https://github.com/cloudquery/filetypes/issues/510)) ([45ba569](https://github.com/cloudquery/filetypes/commit/45ba569040c217ff7c3c842d2e83623952100d75))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.44.2 ([#514](https://github.com/cloudquery/filetypes/issues/514)) ([59eb2f5](https://github.com/cloudquery/filetypes/commit/59eb2f5fa174008cd24ed8280a5abfe4bc9a7fae))
+* **deps:** Update module github.com/goccy/go-json to v0.10.3 ([#511](https://github.com/cloudquery/filetypes/issues/511)) ([5932c6e](https://github.com/cloudquery/filetypes/commit/5932c6e3298362a09d14b4916c8cf77b826f041f))
+
 ## [4.2.20](https://github.com/cloudquery/filetypes/compare/v4.2.19...v4.2.20) (2024-05-20)
 
 
