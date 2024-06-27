@@ -6,7 +6,7 @@ require (
 	github.com/apache/arrow/go/v16 v16.1.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.16
-	github.com/cloudquery/plugin-sdk/v4 v4.48.0
+	github.com/cloudquery/plugin-sdk/v4 v4.49.0
 	github.com/goccy/go-json v0.10.3
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.9.0
@@ -46,7 +46,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-retryablehttp v0.7.5 // indirect
+	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/iris-contrib/schema v0.0.6 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
