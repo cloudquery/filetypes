@@ -1,5 +1,31 @@
 # Changelog
 
+## [4.2.23](https://github.com/cloudquery/filetypes/compare/v4.2.22...v4.2.23) (2024-06-27)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.46.0 ([#525](https://github.com/cloudquery/filetypes/issues/525)) ([baa70ca](https://github.com/cloudquery/filetypes/commit/baa70ca08b8b8ece7469c2215cfbd82a75d7f233))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.46.1 ([#527](https://github.com/cloudquery/filetypes/issues/527)) ([6a3544a](https://github.com/cloudquery/filetypes/commit/6a3544a9bad6710367dde597f527cafa5a3cb5c1))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.47.0 ([#528](https://github.com/cloudquery/filetypes/issues/528)) ([cfb6d17](https://github.com/cloudquery/filetypes/commit/cfb6d17785ae604c28a24b78a94192f9cb977e33))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.47.1 ([#529](https://github.com/cloudquery/filetypes/issues/529)) ([ccfc43c](https://github.com/cloudquery/filetypes/commit/ccfc43c5fafad21451762d5977c5434a5aaf700f))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.48.0 ([#530](https://github.com/cloudquery/filetypes/issues/530)) ([b7e1bd6](https://github.com/cloudquery/filetypes/commit/b7e1bd6ac69fa9b0f67b85930db4a2a71eafe22e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.49.0 ([#531](https://github.com/cloudquery/filetypes/issues/531)) ([8a08779](https://github.com/cloudquery/filetypes/commit/8a0877974d3974de9a0012d7207ad71c50cf9e3f))
+
+## [4.2.22](https://github.com/cloudquery/filetypes/compare/v4.2.21...v4.2.22) (2024-06-20)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency go to v1.21.11 ([#522](https://github.com/cloudquery/filetypes/issues/522)) ([cffe489](https://github.com/cloudquery/filetypes/commit/cffe48992ecf1d72b7409ddb5bc15c20ff002c68))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.0 ([#515](https://github.com/cloudquery/filetypes/issues/515)) ([26de545](https://github.com/cloudquery/filetypes/commit/26de5455f94317a29d01b5abb7d636f06d66957e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.1 ([#517](https://github.com/cloudquery/filetypes/issues/517)) ([7bd1256](https://github.com/cloudquery/filetypes/commit/7bd12564862fe16482a6308f8c6d68f0e81ddbd2))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.2 ([#518](https://github.com/cloudquery/filetypes/issues/518)) ([a0bb039](https://github.com/cloudquery/filetypes/commit/a0bb039c9ce927279b936b357222752790a86ed3))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.3 ([#519](https://github.com/cloudquery/filetypes/issues/519)) ([8828557](https://github.com/cloudquery/filetypes/commit/88285579e2f36043d3a4a131dd746d226675d554))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.4 ([#520](https://github.com/cloudquery/filetypes/issues/520)) ([f58a861](https://github.com/cloudquery/filetypes/commit/f58a86102eb20a1e754cfe3d252d0c0204be45de))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.5 ([#521](https://github.com/cloudquery/filetypes/issues/521)) ([b43f25e](https://github.com/cloudquery/filetypes/commit/b43f25ee4aecc3e1dff0757e70aa461f67627963))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.45.6 ([#524](https://github.com/cloudquery/filetypes/issues/524)) ([bf89d24](https://github.com/cloudquery/filetypes/commit/bf89d240318add1805a2be6d5c598de9d7156592))
+
 ## [4.2.21](https://github.com/cloudquery/filetypes/compare/v4.2.20...v4.2.21) (2024-06-03)
 
 
