@@ -1,9 +1,9 @@
 run:
   tests: true
   timeout: 10m
-  skip-dirs:
+issues:
+  exclude-dirs:
     - internal/pb
-
 linters-settings:
   errcheck:
     check-blank: false
