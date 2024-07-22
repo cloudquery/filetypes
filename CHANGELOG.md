@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.2.26](https://github.com/cloudquery/filetypes/compare/v4.2.25...v4.2.26) (2024-07-22)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/apache/arrow/go/v16 to v17 ([#545](https://github.com/cloudquery/filetypes/issues/545)) ([355c36f](https://github.com/cloudquery/filetypes/commit/355c36f6e41de8e1b41da7c2b84ad10bb2b66834))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.49.3 ([#539](https://github.com/cloudquery/filetypes/issues/539)) ([e585be3](https://github.com/cloudquery/filetypes/commit/e585be3054c4208b9e4f88cbe284909d5a12cbdf))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.49.4 ([#543](https://github.com/cloudquery/filetypes/issues/543)) ([b0d9a02](https://github.com/cloudquery/filetypes/commit/b0d9a022ea5c27d56b3d79840d5b0831811c720e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.50.0 ([#544](https://github.com/cloudquery/filetypes/issues/544)) ([6890276](https://github.com/cloudquery/filetypes/commit/68902766660db5035d5c1f86bb5b84bcdb0b521d))
+
 ## [4.2.25](https://github.com/cloudquery/filetypes/compare/v4.2.24...v4.2.25) (2024-07-09)
 
 
