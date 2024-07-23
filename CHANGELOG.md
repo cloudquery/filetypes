@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.29](https://github.com/cloudquery/filetypes/compare/v4.2.28...v4.2.29) (2024-07-23)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.19 ([#551](https://github.com/cloudquery/filetypes/issues/551)) ([7c2cafb](https://github.com/cloudquery/filetypes/commit/7c2cafb59076dda286a68a0d96d52336aff2ac49))
+
 ## [4.2.28](https://github.com/cloudquery/filetypes/compare/v4.2.27...v4.2.28) (2024-07-22)
 
 
