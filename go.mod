@@ -6,7 +6,7 @@ require (
 	github.com/apache/arrow/go/v17 v17.0.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.19
-	github.com/cloudquery/plugin-sdk/v4 v4.58.1
+	github.com/cloudquery/plugin-sdk/v4 v4.59.0
 	github.com/goccy/go-json v0.10.3
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.9.0
@@ -20,7 +20,7 @@ require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/cloudquery/cloudquery-api-go v1.12.6 // indirect
+	github.com/cloudquery/cloudquery-api-go v1.12.7 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v24.3.25+incompatible // indirect
