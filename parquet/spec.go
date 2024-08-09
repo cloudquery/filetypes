@@ -12,6 +12,7 @@ import (
 var allowedVersions = []string{"v1.0", "v2.4", "v2.6", "v2Latest"}
 var allowedRootRepetitions = []string{"undefined", "required", "optional", "repeated"}
 
+// nolint:revive
 type ParquetSpec struct {
 	Version        string `json:"version,omitempty"`
 	RootRepetition string `json:"root_repetition,omitempty"`
@@ -47,7 +48,7 @@ func (s *ParquetSpec) GetRootRepetition() parquet.Repetition {
 
 func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 	properties := jsonschema.NewProperties()
-	allowedVersionsAsAny := make([]interface{}, len(allowedVersions))
+	allowedVersionsAsAny := make([]any, len(allowedVersions))
 	for i, v := range allowedVersions {
 		allowedVersionsAsAny[i] = v
 	}
@@ -57,6 +58,18 @@ func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 		Enum:        allowedVersionsAsAny,
 		Default:     "v2Latest",
 	})
+
+	allowedRootRepetitionsAsAny := make([]any, len(allowedRootRepetitions))
+	for i, v := range allowedRootRepetitions {
+		allowedRootRepetitionsAsAny[i] = v
+	}
+	properties.Set("root_repetition", &jsonschema.Schema{
+		Type:        "string",
+		Description: "Root repetition",
+		Enum:        allowedRootRepetitionsAsAny,
+		Default:     "repeated",
+	})
+
 	return &jsonschema.Schema{
 		Description:          "CloudQuery Parquet file output spec.",
 		Properties:           properties,

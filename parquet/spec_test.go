@@ -30,5 +30,14 @@ func TestSpec_JSONSchema(t *testing.T) {
 			Name: "valid version",
 			Spec: `{"version":"v1.0"}`,
 		},
+		{
+			Name: "valid root_repetition",
+			Spec: `{"root_repetition":"undefined"}`,
+		},
+		{
+			Name:         "invalid root_repetition",
+			ErrorMessage: "at '/root_repetition': value must be one of 'undefined', 'required', 'optional', 'repeated'",
+			Spec:         `{"root_repetition":"invalid"}`,
+		},
 	})
 }

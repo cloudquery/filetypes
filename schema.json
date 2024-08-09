@@ -140,6 +140,17 @@
           ],
           "description": "Parquet format version",
           "default": "v2Latest"
+        },
+        "root_repetition": {
+          "type": "string",
+          "enum": [
+            "undefined",
+            "required",
+            "optional",
+            "repeated"
+          ],
+          "description": "Root repetition",
+          "default": "repeated"
         }
       },
       "additionalProperties": false,
