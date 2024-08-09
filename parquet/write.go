@@ -26,6 +26,7 @@ func (c *Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error
 		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
 		parquet.WithCompression(compress.Codecs.Snappy),
 		parquet.WithVersion(c.spec.GetVersion()),
+		parquet.WithRootRepetition(c.spec.GetRootRepetition()),
 	)
 	arrprops := pqarrow.DefaultWriterProps()
 	newSchema := convertSchema(t.ToArrowSchema())

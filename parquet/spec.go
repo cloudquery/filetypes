@@ -10,9 +10,11 @@ import (
 )
 
 var allowedVersions = []string{"v1.0", "v2.4", "v2.6", "v2Latest"}
+var allowedRootRepetitions = []string{"undefined", "required", "optional", "repeated"}
 
 type ParquetSpec struct {
-	Version string `json:"version,omitempty"`
+	Version        string `json:"version,omitempty"`
+	RootRepetition string `json:"root_repetition,omitempty"`
 }
 
 func (s *ParquetSpec) GetVersion() parquet.Version {
@@ -27,6 +29,20 @@ func (s *ParquetSpec) GetVersion() parquet.Version {
 		return parquet.V2_LATEST
 	}
 	return parquet.V2_LATEST
+}
+
+func (s *ParquetSpec) GetRootRepetition() parquet.Repetition {
+	switch s.RootRepetition {
+	case "undefined":
+		return parquet.Repetitions.Undefined
+	case "required":
+		return parquet.Repetitions.Required
+	case "optional":
+		return parquet.Repetitions.Optional
+	case "repeated":
+		return parquet.Repetitions.Repeated
+	}
+	return parquet.Repetitions.Repeated
 }
 
 func (ParquetSpec) JSONSchema() *jsonschema.Schema {
@@ -53,11 +69,17 @@ func (s *ParquetSpec) SetDefaults() {
 	if s.Version == "" {
 		s.Version = "v2Latest"
 	}
+	if s.RootRepetition == "" {
+		s.RootRepetition = "repeated"
+	}
 }
 
 func (s *ParquetSpec) Validate() error {
 	if !slices.Contains(allowedVersions, s.Version) {
 		return fmt.Errorf("invalid version: %s. Allowed values are %s", s.Version, strings.Join(allowedVersions, ", "))
+	}
+	if !slices.Contains(allowedRootRepetitions, s.RootRepetition) {
+		return fmt.Errorf("invalid rootRepetition: %s. Allowed values are %s", s.RootRepetition, strings.Join(allowedRootRepetitions, ", "))
 	}
 	return nil
 }
