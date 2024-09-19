@@ -9,7 +9,7 @@ This is the repository for CloudQuery FileTypes utility module. If you are looki
 - [Homepage](https://cloudquery.io)
 - [Documentation](https://docs.cloudquery.io)
 - [CLI and Plugins Monorepo](https://github.com/cloudquery/cloudquery)
-- [Discord](https://cloudquery.io/discord)
+- [Community](https://community.cloudquery.io)
 
 ## Development
 
