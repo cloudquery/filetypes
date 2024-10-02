@@ -14,7 +14,18 @@ func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, records 
 	return types.WriteAll(cl, w, table, records)
 }
 
-func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error) {
+func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (h types.Handle, retErr error) {
+	defer func() {
+		if msg := recover(); msg != nil {
+			switch v := msg.(type) {
+			case error:
+				retErr = fmt.Errorf("panic: %w [recovered]", v)
+			default:
+				retErr = fmt.Errorf("panic: %v [recovered]", msg)
+			}
+		}
+	}()
+
 	switch cl.spec.Compression {
 	case CompressionTypeNone:
 		return cl.filetype.WriteHeader(w, t)

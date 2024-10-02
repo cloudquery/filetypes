@@ -1,6 +1,7 @@
 package filetypes
 
 import (
+	"errors"
 	"fmt"
 	"io"
 
@@ -54,10 +55,21 @@ func (cl *Client) StartStream(table *schema.Table, uploadFunc func(io.Reader) er
 }
 
 // Write to the stream opened with StartStream.
-func (s *Stream) Write(records []arrow.Record) error {
+func (s *Stream) Write(records []arrow.Record) (retErr error) {
 	if len(records) == 0 {
 		return nil
 	}
+
+	defer func() {
+		if msg := recover(); msg != nil {
+			switch v := msg.(type) {
+			case error:
+				retErr = fmt.Errorf("panic: %w [recovered]", v)
+			default:
+				retErr = fmt.Errorf("panic: %v [recovered]", msg)
+			}
+		}
+	}()
 
 	return s.h.WriteContent(records)
 }
@@ -74,11 +86,11 @@ func (s *Stream) FinishWithError(finishError error) error {
 		return <-s.done
 	}
 
-	if err := s.h.WriteFooter(); err != nil {
+	if err := s.writeFooter(); err != nil {
 		if !s.wc.closed {
 			_ = s.wc.CloseWithError(err)
 		}
-		return fmt.Errorf("failed to write footer: %w", <-s.done)
+		return fmt.Errorf("failed to write footer: %w", errors.Join(err, <-s.done))
 	}
 
 	// ParquetWriter likes to close the underlying writer, so we need to check if it's already closed
@@ -89,4 +101,19 @@ func (s *Stream) FinishWithError(finishError error) error {
 	}
 
 	return <-s.done
+}
+
+func (s *Stream) writeFooter() (retErr error) {
+	defer func() {
+		if msg := recover(); msg != nil {
+			switch v := msg.(type) {
+			case error:
+				retErr = fmt.Errorf("panic: %w [recovered]", v)
+			default:
+				retErr = fmt.Errorf("panic: %v [recovered]", msg)
+			}
+		}
+	}()
+
+	return s.h.WriteFooter()
 }
