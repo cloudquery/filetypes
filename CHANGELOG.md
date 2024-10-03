@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.4.0](https://github.com/cloudquery/filetypes/compare/v4.3.0...v4.4.0) (2024-10-02)
+
+
+### Features
+
+* Handle panics in handlers ([#575](https://github.com/cloudquery/filetypes/issues/575)) ([ba69c91](https://github.com/cloudquery/filetypes/commit/ba69c91ca79de23e361d93b42646fd184d3424f5))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.60.0 ([#568](https://github.com/cloudquery/filetypes/issues/568)) ([8acf4fa](https://github.com/cloudquery/filetypes/commit/8acf4fad2161a8b79fcc6e746c411c12ef3e5553))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.61.0 ([#571](https://github.com/cloudquery/filetypes/issues/571)) ([07c1721](https://github.com/cloudquery/filetypes/commit/07c1721b634591ec3553b2ab1c59cf1be01eef11))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.62.0 ([#572](https://github.com/cloudquery/filetypes/issues/572)) ([bff5c4a](https://github.com/cloudquery/filetypes/commit/bff5c4a9ba8f5b93a11807962a6ae6f4b5512be0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.63.0 ([#573](https://github.com/cloudquery/filetypes/issues/573)) ([680cccb](https://github.com/cloudquery/filetypes/commit/680cccbe70af8e299323a5d39e9dd6d5b851c2bc))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.64.0 ([#577](https://github.com/cloudquery/filetypes/issues/577)) ([7b77f7c](https://github.com/cloudquery/filetypes/commit/7b77f7c6f4a82905620cf5cbb976086835ff086f))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.64.1 ([#578](https://github.com/cloudquery/filetypes/issues/578)) ([40c0f19](https://github.com/cloudquery/filetypes/commit/40c0f19dcd5e0f8d35995c82cad269035db236b3))
+
 ## [4.3.0](https://github.com/cloudquery/filetypes/compare/v4.2.29...v4.3.0) (2024-08-12)
 
 
