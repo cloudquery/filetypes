@@ -15,7 +15,8 @@ import (
 )
 
 type Handle struct {
-	w *csv.Writer
+	w      *csv.Writer
+	schema *arrow.Schema
 }
 
 var _ types.Handle = (*Handle)(nil)
@@ -30,13 +31,14 @@ func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error
 	)
 
 	return &Handle{
-		w: writer,
+		w:      writer,
+		schema: newSchema,
 	}, nil
 }
 
 func (h *Handle) WriteContent(records []arrow.Record) error {
 	for _, record := range records {
-		castRec := castToString(record)
+		castRec := h.castToString(record)
 		if err := h.w.Write(castRec); err != nil {
 			return fmt.Errorf("failed to write record to csv: %w", err)
 		}
@@ -89,10 +91,9 @@ func isTypeSupported(t arrow.DataType) bool {
 }
 
 // castToString casts extension columns or unsupported columns to string. It does not release the original record.
-func castToString(rec arrow.Record) arrow.Record {
-	newSchema := convertSchema(rec.Schema())
-	cols := make([]arrow.Array, rec.NumCols())
-	for c := 0; c < int(rec.NumCols()); c++ {
+func (h *Handle) castToString(rec arrow.Record) arrow.Record {
+	cols := make([]arrow.Array, h.schema.NumFields())
+	for c := 0; c < h.schema.NumFields(); c++ {
 		col := rec.Column(c)
 		if isTypeSupported(col.DataType()) {
 			cols[c] = col
@@ -109,7 +110,7 @@ func castToString(rec arrow.Record) arrow.Record {
 		}
 		cols[c] = sb.NewArray()
 	}
-	return array.NewRecord(newSchema, cols, rec.NumRows())
+	return array.NewRecord(h.schema, cols, rec.NumRows())
 }
 
 func stripCQExtensionMetadata(md arrow.Metadata) arrow.Metadata {
