@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.4.1](https://github.com/cloudquery/filetypes/compare/v4.4.0...v4.4.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.65.0 ([#581](https://github.com/cloudquery/filetypes/issues/581)) ([136b836](https://github.com/cloudquery/filetypes/commit/136b8361e997c1cae54981cd20399e57d54c7132))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.66.0 ([#582](https://github.com/cloudquery/filetypes/issues/582)) ([5ca0a10](https://github.com/cloudquery/filetypes/commit/5ca0a10308122f3a223c2fa81eeee8537ff3c258))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.66.1 ([#583](https://github.com/cloudquery/filetypes/issues/583)) ([69a6156](https://github.com/cloudquery/filetypes/commit/69a615654b26048873412591d59239dd17d7653b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.67.0 ([#584](https://github.com/cloudquery/filetypes/issues/584)) ([cab4c19](https://github.com/cloudquery/filetypes/commit/cab4c1919d0f1432d3e0f9d1d0e07a82ed9972a6))
+* Optimized CSV writing ([#579](https://github.com/cloudquery/filetypes/issues/579)) ([d688971](https://github.com/cloudquery/filetypes/commit/d68897126397bd29c943d13b9116bf5b790ea34f))
+
 ## [4.4.0](https://github.com/cloudquery/filetypes/compare/v4.3.0...v4.4.0) (2024-10-02)
 
 
