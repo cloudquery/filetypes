@@ -115,7 +115,7 @@ func (s *ParquetSpec) Validate() error {
 	if !slices.Contains(allowedRootRepetitions, s.RootRepetition) {
 		return fmt.Errorf("invalid rootRepetition: %s. Allowed values are %s", s.RootRepetition, strings.Join(allowedRootRepetitions, ", "))
 	}
-	if s.MaxRowGroupLength != nil && *s.MaxRowGroupLength <= 0 {
+	if s.MaxRowGroupLength != nil && *s.MaxRowGroupLength < 0 {
 		return fmt.Errorf("invalid: maxRowGroupLength: %v. Must be zero or positive", *s.MaxRowGroupLength)
 	}
 	return nil
