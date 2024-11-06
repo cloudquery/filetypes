@@ -39,5 +39,14 @@ func TestSpec_JSONSchema(t *testing.T) {
 			ErrorMessage: "at '/root_repetition': value must be one of 'undefined', 'required', 'optional', 'repeated'",
 			Spec:         `{"root_repetition":"invalid"}`,
 		},
+		{
+			Name: "valid max_row_group_length",
+			Spec: `{"max_row_group_length":256}`,
+		},
+		{
+			Name:         "invalid max_row_group_length",
+			ErrorMessage: "at '/max_row_group_length': minimum: got",
+			Spec:         `{"max_row_group_length":-4}`,
+		},
 	})
 }
