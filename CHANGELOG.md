@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.5.0](https://github.com/cloudquery/filetypes/compare/v4.4.0...v4.5.0) (2024-11-07)
+
+
+### Features
+
+* Expose `max_row_group_length` option for Parquet writer ([#589](https://github.com/cloudquery/filetypes/issues/589)) ([4a4b389](https://github.com/cloudquery/filetypes/commit/4a4b3898502f3a5fdccc4e28191096c7898fd80b))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.65.0 ([#581](https://github.com/cloudquery/filetypes/issues/581)) ([136b836](https://github.com/cloudquery/filetypes/commit/136b8361e997c1cae54981cd20399e57d54c7132))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.66.0 ([#582](https://github.com/cloudquery/filetypes/issues/582)) ([5ca0a10](https://github.com/cloudquery/filetypes/commit/5ca0a10308122f3a223c2fa81eeee8537ff3c258))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.66.1 ([#583](https://github.com/cloudquery/filetypes/issues/583)) ([69a6156](https://github.com/cloudquery/filetypes/commit/69a615654b26048873412591d59239dd17d7653b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.67.0 ([#584](https://github.com/cloudquery/filetypes/issues/584)) ([cab4c19](https://github.com/cloudquery/filetypes/commit/cab4c1919d0f1432d3e0f9d1d0e07a82ed9972a6))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.67.1 ([#585](https://github.com/cloudquery/filetypes/issues/585)) ([d590743](https://github.com/cloudquery/filetypes/commit/d5907435d020543f6773ec0926d4af3167a73a7e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.68.0 ([#586](https://github.com/cloudquery/filetypes/issues/586)) ([b19c239](https://github.com/cloudquery/filetypes/commit/b19c239d177b0d14be67b12954120d8f91e8a8f6))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.68.1 ([#587](https://github.com/cloudquery/filetypes/issues/587)) ([3b9f708](https://github.com/cloudquery/filetypes/commit/3b9f70861d32bfd885bb85591298e31b28bae12b))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.68.2 ([#588](https://github.com/cloudquery/filetypes/issues/588)) ([f2be0a6](https://github.com/cloudquery/filetypes/commit/f2be0a6c9735c40b0f14f97d0a9a529d55f4bde2))
+* Optimized CSV writing ([#579](https://github.com/cloudquery/filetypes/issues/579)) ([d688971](https://github.com/cloudquery/filetypes/commit/d68897126397bd29c943d13b9116bf5b790ea34f))
+
 ## [4.4.0](https://github.com/cloudquery/filetypes/compare/v4.3.0...v4.4.0) (2024-10-02)
 
 
