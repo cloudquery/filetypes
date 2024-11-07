@@ -9,13 +9,16 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
+const defaultMaxRowGroupLength = 128 * 1024 * 1024
+
 var allowedVersions = []string{"v1.0", "v2.4", "v2.6", "v2Latest"}
 var allowedRootRepetitions = []string{"undefined", "required", "optional", "repeated"}
 
 // nolint:revive
 type ParquetSpec struct {
-	Version        string `json:"version,omitempty"`
-	RootRepetition string `json:"root_repetition,omitempty"`
+	Version           string `json:"version,omitempty"`
+	RootRepetition    string `json:"root_repetition,omitempty"`
+	MaxRowGroupLength *int64 `json:"max_row_group_length,omitempty"`
 }
 
 func (s *ParquetSpec) GetVersion() parquet.Version {
@@ -46,6 +49,13 @@ func (s *ParquetSpec) GetRootRepetition() parquet.Repetition {
 	return parquet.Repetitions.Repeated
 }
 
+func (s *ParquetSpec) GetMaxRowGroupLength() int64 {
+	if s.MaxRowGroupLength == nil {
+		return defaultMaxRowGroupLength
+	}
+	return *s.MaxRowGroupLength
+}
+
 func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 	properties := jsonschema.NewProperties()
 	allowedVersionsAsAny := make([]any, len(allowedVersions))
@@ -70,6 +80,13 @@ func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 		Default:     "repeated",
 	})
 
+	properties.Set("max_row_group_length", &jsonschema.Schema{
+		Type:        "integer",
+		Description: "Max row group length",
+		Default:     defaultMaxRowGroupLength,
+		Minimum:     "0",
+	})
+
 	return &jsonschema.Schema{
 		Description:          "CloudQuery Parquet file output spec.",
 		Properties:           properties,
@@ -85,6 +102,10 @@ func (s *ParquetSpec) SetDefaults() {
 	if s.RootRepetition == "" {
 		s.RootRepetition = "repeated"
 	}
+	if s.MaxRowGroupLength == nil {
+		i := int64(defaultMaxRowGroupLength)
+		s.MaxRowGroupLength = &i
+	}
 }
 
 func (s *ParquetSpec) Validate() error {
@@ -93,6 +114,9 @@ func (s *ParquetSpec) Validate() error {
 	}
 	if !slices.Contains(allowedRootRepetitions, s.RootRepetition) {
 		return fmt.Errorf("invalid rootRepetition: %s. Allowed values are %s", s.RootRepetition, strings.Join(allowedRootRepetitions, ", "))
+	}
+	if s.MaxRowGroupLength != nil && *s.MaxRowGroupLength < 0 {
+		return fmt.Errorf("invalid: maxRowGroupLength: %v. Must be zero or positive", *s.MaxRowGroupLength)
 	}
 	return nil
 }

@@ -23,7 +23,7 @@ var _ ftypes.Handle = (*Handle)(nil)
 
 func (c *Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error) {
 	props := parquet.NewWriterProperties(
-		parquet.WithMaxRowGroupLength(128*1024*1024), // 128M
+		parquet.WithMaxRowGroupLength(c.spec.GetMaxRowGroupLength()),
 		parquet.WithCompression(compress.Codecs.Snappy),
 		parquet.WithVersion(c.spec.GetVersion()),
 		parquet.WithRootRepetition(c.spec.GetRootRepetition()),
