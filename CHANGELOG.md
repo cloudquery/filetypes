@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.5.1](https://github.com/cloudquery/filetypes/compare/v4.5.0...v4.5.1) (2024-12-09)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.20 ([#595](https://github.com/cloudquery/filetypes/issues/595)) ([f4ca54c](https://github.com/cloudquery/filetypes/commit/f4ca54c6c7c6643e1343f8cc626ad19c0d3bf04d))
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.21 ([#599](https://github.com/cloudquery/filetypes/issues/599)) ([c3b7e30](https://github.com/cloudquery/filetypes/commit/c3b7e3011c1a7374b3b37dc13f7454b9be9ecfda))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.68.3 ([#590](https://github.com/cloudquery/filetypes/issues/590)) ([a72845c](https://github.com/cloudquery/filetypes/commit/a72845ceb31e4a2212df7ed24f32f441d632d982))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.69.0 ([#592](https://github.com/cloudquery/filetypes/issues/592)) ([5501d70](https://github.com/cloudquery/filetypes/commit/5501d702a65f21423c72ed4f1a806801961bcccb))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.70.0 ([#596](https://github.com/cloudquery/filetypes/issues/596)) ([b56ff1f](https://github.com/cloudquery/filetypes/commit/b56ff1fb7eb19954d883fec68f5e2d8f09f76186))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.70.1 ([#597](https://github.com/cloudquery/filetypes/issues/597)) ([96724a8](https://github.com/cloudquery/filetypes/commit/96724a866949cddd90a54917361e8c9bda6b8eee))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.70.2 ([#598](https://github.com/cloudquery/filetypes/issues/598)) ([da92ff3](https://github.com/cloudquery/filetypes/commit/da92ff3b6c3f9319b63c66eb0f7cb4be14b9f146))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.71.0 ([#600](https://github.com/cloudquery/filetypes/issues/600)) ([0a9b501](https://github.com/cloudquery/filetypes/commit/0a9b501b0a9ae60ae81214876b09d8abd33ab011))
+* **deps:** Update module github.com/stretchr/testify to v1.10.0 ([#594](https://github.com/cloudquery/filetypes/issues/594)) ([e148e80](https://github.com/cloudquery/filetypes/commit/e148e80eee57d3e995cf961e601fa058ba031957))
+
 ## [4.5.0](https://github.com/cloudquery/filetypes/compare/v4.4.0...v4.5.0) (2024-11-07)
 
 
