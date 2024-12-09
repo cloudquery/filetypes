@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/apache/arrow/go/v17/parquet"
+	"github.com/apache/arrow-go/v18/parquet"
 	"github.com/invopop/jsonschema"
 )
 
