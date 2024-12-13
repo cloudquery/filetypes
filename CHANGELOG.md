@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.6.0](https://github.com/cloudquery/filetypes/compare/v4.5.1...v4.6.0) (2024-12-13)
+
+
+### Features
+
+* Update to Arrow v18 ([#601](https://github.com/cloudquery/filetypes/issues/601)) ([5f04c38](https://github.com/cloudquery/filetypes/commit/5f04c38a5fa85e897e1bc9ca1e0cdc4f693707d7))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.71.1 ([#602](https://github.com/cloudquery/filetypes/issues/602)) ([a517ed5](https://github.com/cloudquery/filetypes/commit/a517ed5871a6ea63195bb3e51afa14043957bf02))
+
 ## [4.5.1](https://github.com/cloudquery/filetypes/compare/v4.5.0...v4.5.1) (2024-12-09)
 
 
