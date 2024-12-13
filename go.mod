@@ -5,10 +5,10 @@ go 1.22.7
 toolchain go1.23.3
 
 require (
-	github.com/apache/arrow/go/v17 v17.0.0
+	github.com/apache/arrow-go/v18 v18.0.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.21
-	github.com/cloudquery/plugin-sdk/v4 v4.71.1
+	github.com/cloudquery/plugin-sdk/v4 v4.72.0
 	github.com/goccy/go-json v0.10.3
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.10.0
@@ -17,8 +17,8 @@ require (
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
-	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/apache/thrift v0.20.0 // indirect
+	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/apache/thrift v0.21.0 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
@@ -30,7 +30,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
