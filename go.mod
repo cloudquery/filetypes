@@ -8,7 +8,7 @@ require (
 	github.com/apache/arrow-go/v18 v18.0.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.22
-	github.com/cloudquery/plugin-sdk/v4 v4.72.1
+	github.com/cloudquery/plugin-sdk/v4 v4.72.2
 	github.com/goccy/go-json v0.10.3
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.10.0
