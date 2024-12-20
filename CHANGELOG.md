@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.6.1](https://github.com/cloudquery/filetypes/compare/v4.6.0...v4.6.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.22 ([#604](https://github.com/cloudquery/filetypes/issues/604)) ([233cf09](https://github.com/cloudquery/filetypes/commit/233cf0909e477187adbc796e19fd9f8b5f3ee9e5))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.72.1 ([#607](https://github.com/cloudquery/filetypes/issues/607)) ([075138b](https://github.com/cloudquery/filetypes/commit/075138bee11047ab5a1fc110370d54ce1290431f))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.72.2 ([#608](https://github.com/cloudquery/filetypes/issues/608)) ([9cba0e3](https://github.com/cloudquery/filetypes/commit/9cba0e3d75e31bb00a1f7101bc7bd878d15c4dfe))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.72.3 ([#609](https://github.com/cloudquery/filetypes/issues/609)) ([428afc7](https://github.com/cloudquery/filetypes/commit/428afc7411e8398c722cd441a476b5a03fe733ca))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.72.4 ([#610](https://github.com/cloudquery/filetypes/issues/610)) ([ce59cf3](https://github.com/cloudquery/filetypes/commit/ce59cf3d6d835e678cf64bca842fb7a026e73f19))
+* **deps:** Update module golang.org/x/net to v0.33.0 [SECURITY] ([#606](https://github.com/cloudquery/filetypes/issues/606)) ([2ddabf4](https://github.com/cloudquery/filetypes/commit/2ddabf4b40e1f9e5c6520e1d69db08502e7cd250))
+
 ## [4.6.0](https://github.com/cloudquery/filetypes/compare/v4.5.1...v4.6.0) (2024-12-13)
 
 
