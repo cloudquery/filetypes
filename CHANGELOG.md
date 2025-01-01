@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.3](https://github.com/cloudquery/filetypes/compare/v4.6.2...v4.6.3) (2025-01-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/goccy/go-json to v0.10.4 ([#614](https://github.com/cloudquery/filetypes/issues/614)) ([53bd0ee](https://github.com/cloudquery/filetypes/commit/53bd0ee98a4c430bd9452b0cbf28c2d0abcfac8c))
+
 ## [4.6.2](https://github.com/cloudquery/filetypes/compare/v4.6.1...v4.6.2) (2024-12-23)
 
 
