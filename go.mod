@@ -8,7 +8,7 @@ require (
 	github.com/apache/arrow-go/v18 v18.0.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.22
-	github.com/cloudquery/plugin-sdk/v4 v4.72.5
+	github.com/cloudquery/plugin-sdk/v4 v4.72.6
 	github.com/goccy/go-json v0.10.4
 	github.com/invopop/jsonschema v0.12.0
 	github.com/stretchr/testify v1.10.0
@@ -52,9 +52,9 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.28.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241209162323-e6fa225c2576 // indirect
 	google.golang.org/grpc v1.69.2 // indirect
-	google.golang.org/protobuf v1.36.0 // indirect
+	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
