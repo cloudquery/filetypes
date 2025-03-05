@@ -1,7 +1,7 @@
 package csv
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/invopop/jsonschema"
 )
@@ -41,7 +41,7 @@ func (s *CSVSpec) SetDefaults() {
 
 func (s *CSVSpec) Validate() error {
 	if len(s.Delimiter) != 1 {
-		return fmt.Errorf("delimiter must be a single character")
+		return errors.New("delimiter must be a single character")
 	}
 	return nil
 }
