@@ -3,6 +3,7 @@ package filetypes
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/cloudquery/filetypes/v4/csv"
@@ -58,7 +59,7 @@ func (s *FileSpec) Validate() error {
 		return fmt.Errorf("`compression` must be either empty or `%s`", CompressionTypeGZip)
 	}
 	if s.Format == "" {
-		return fmt.Errorf("format is required")
+		return errors.New("format is required")
 	}
 	switch s.Format {
 	case FormatTypeCSV:
@@ -67,7 +68,7 @@ func (s *FileSpec) Validate() error {
 		return s.jsonSpec.Validate()
 	case FormatTypeParquet:
 		if s.Compression != CompressionTypeNone {
-			return fmt.Errorf("compression is not supported for parquet format") // This won't work even if we wanted to, because parquet writer prematurely closes the file handle
+			return errors.New("compression is not supported for parquet format") // This won't work even if we wanted to, because parquet writer prematurely closes the file handle
 		}
 
 		return s.parquetSpec.Validate()

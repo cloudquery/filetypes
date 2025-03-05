@@ -4,10 +4,11 @@ run:
 issues:
   exclude-dirs:
     - internal/pb
+  max-issues-per-linter: 0
+  max-same-issues: 0
 linters-settings:
   errcheck:
     check-blank: false
-    ignore: fmt:.*,[rR]ead|[wW]rite|[cC]lose,io:Copy
   gocritic:
     disabled-checks:
       - commentFormatting
