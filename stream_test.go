@@ -2,7 +2,7 @@ package filetypes_test
 
 import (
 	"bufio"
-	"fmt"
+	"errors"
 	"io"
 	"testing"
 
@@ -22,7 +22,7 @@ type uploadHelper struct {
 	expectAt  int
 }
 
-var errTest = fmt.Errorf("test error")
+var errTest = errors.New("test error")
 
 func (u *uploadHelper) Upload(r io.Reader) error {
 	s := bufio.NewScanner(r)
@@ -33,7 +33,7 @@ func (u *uploadHelper) Upload(r io.Reader) error {
 		}
 		if u.expect != nil && i == u.expectAt {
 			if !assert.Equal(u.t, u.expect, s.Bytes()) {
-				return fmt.Errorf("assertion failed")
+				return errors.New("assertion failed")
 			}
 		}
 		i++
