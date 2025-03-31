@@ -20,8 +20,8 @@ github.com/cloudquery/codegen v0.3.23 h1:nd34I1BD3qb5li8Jttg0AqzHPwThTv7vHHn1zHU
 github.com/cloudquery/codegen v0.3.23/go.mod h1:KgHyHocpyWGHmnhVHyJnHpCjVClaHPgu6BaF3QAVhiQ=
 github.com/cloudquery/jsonschema v0.0.0-20240220124159-92878faa2a66 h1:OZLPSIBYEfvkAUeOeM8CwTgVQy5zhayI99ishCrsFV0=
 github.com/cloudquery/jsonschema v0.0.0-20240220124159-92878faa2a66/go.mod h1:0SoZ/U7yJlNOR+fWsBSeTvTbGXB6DK01tzJ7m2Xfg34=
-github.com/cloudquery/plugin-sdk/v4 v4.74.2 h1:AHQZ9zxm0kLummKrT+dBYAvI6zf4j4DxfFXypg7kblw=
-github.com/cloudquery/plugin-sdk/v4 v4.74.2/go.mod h1:dDLB0XrS3R+nIWh4X8J8/ZQcsJ+lmjxUxoBxhAq8iCA=
+github.com/cloudquery/plugin-sdk/v4 v4.75.0 h1:N/edo8VA+YzfjIC+bQ3y7AAUHQEYzF6y+ZFYLyHKFMI=
+github.com/cloudquery/plugin-sdk/v4 v4.75.0/go.mod h1:dDLB0XrS3R+nIWh4X8J8/ZQcsJ+lmjxUxoBxhAq8iCA=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
@@ -87,6 +87,8 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/rs/xid v1.5.0/go.mod h1:trrq9SKmegXys3aeAKXMUTdJsYXVwGY3RLcfgqegfbg=
 github.com/rs/zerolog v1.33.0 h1:1cU2KZkvPxNyfgEmhHAz/1A9Bz+llsdYzklWFzgp0r8=
 github.com/rs/zerolog v1.33.0/go.mod h1:/7mN4D5sKwJLZQ2b/znpjC3/GQWY/xaDXUM0kKWRHss=
+github.com/samber/lo v1.47.0 h1:z7RynLwP5nbyRscyvcD043DWYoOcYRv3mV8lBeqOCLc=
+github.com/samber/lo v1.47.0/go.mod h1:RmDH9Ct32Qy3gduHQuKJ3gW1fMHAnE/fAzQuf6He5cU=
 github.com/santhosh-tekuri/jsonschema/v6 v6.0.1 h1:PKK9DyHxif4LZo+uQSgXNqs0jj5+xZwwfKHgph2lxBw=
 github.com/santhosh-tekuri/jsonschema/v6 v6.0.1/go.mod h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU=
 github.com/spkg/bom v0.0.0-20160624110644-59b7046e48ad/go.mod h1:qLr4V1qq6nMqFKkMo8ZTx3f+BZEkzsRUY10Xsm2mwU0=
