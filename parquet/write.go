@@ -30,7 +30,7 @@ func (c *Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error
 	)
 	arrprops := pqarrow.DefaultWriterProps()
 	newSchema := convertSchema(t.ToArrowSchema())
-	fw, err := pqarrow.NewFileWriter(newSchema, w, props, arrprops)
+	fw, err := pqarrow.NewFileWriter(newSchema, &nopCloseWriter{Writer: w}, props, arrprops)
 	if err != nil {
 		return nil, err
 	}
@@ -159,3 +159,13 @@ func transformToString(arr arrow.Array) arrow.Array {
 
 	return builder.NewArray()
 }
+
+type nopCloseWriter struct {
+	io.Writer
+}
+
+func (*nopCloseWriter) Close() error {
+	return nil
+}
+
+var _ io.WriteCloser = (*nopCloseWriter)(nil)
