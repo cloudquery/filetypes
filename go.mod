@@ -1,14 +1,12 @@
 module github.com/cloudquery/filetypes/v4
 
-go 1.24.3
-
-toolchain go1.24.4
+go 1.24.4
 
 require (
 	github.com/apache/arrow-go/v18 v18.3.1
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/cloudquery/codegen v0.3.28
-	github.com/cloudquery/plugin-sdk/v4 v4.86.0
+	github.com/cloudquery/plugin-sdk/v4 v4.86.1
 	github.com/goccy/go-json v0.10.5
 	github.com/invopop/jsonschema v0.13.0
 	github.com/stretchr/testify v1.10.0
@@ -44,13 +42,13 @@ require (
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
-	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0 // indirect
-	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
+	golang.org/x/mod v0.25.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
-	golang.org/x/tools v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
+	golang.org/x/tools v0.34.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237 // indirect
 	google.golang.org/grpc v1.73.0 // indirect
