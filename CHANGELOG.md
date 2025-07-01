@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.6.5](https://github.com/cloudquery/filetypes/compare/v4.6.4...v4.6.5) (2025-07-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.29 ([#642](https://github.com/cloudquery/filetypes/issues/642)) ([0139219](https://github.com/cloudquery/filetypes/commit/0139219dcb17b14a8e12f2c47d343c2fd3e7c91e))
+* Parquet premature closing ([#652](https://github.com/cloudquery/filetypes/issues/652)) ([5a9dfc3](https://github.com/cloudquery/filetypes/commit/5a9dfc3b9bf722f7d33b53ac8a3e98186172e6aa))
+
 ## [4.6.4](https://github.com/cloudquery/filetypes/compare/v4.6.3...v4.6.4) (2025-07-01)
 
 
