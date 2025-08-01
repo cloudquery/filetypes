@@ -69,7 +69,9 @@ linters:
           disabled: true
         - name: var-naming
           arguments:
-            - skip-package-name-checks: true
+            - [] # AllowList
+            - [] # DenyList
+            - - skip-package-name-checks: true
   exclusions:
     generated: lax
     presets:
