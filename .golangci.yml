@@ -65,6 +65,8 @@ linters:
           disabled: true
         - name: unchecked-type-assertion
           disabled: true
+        - name: enforce-switch-style
+          disabled: true
   exclusions:
     generated: lax
     presets:
