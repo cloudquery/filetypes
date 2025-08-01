@@ -65,6 +65,13 @@ linters:
           disabled: true
         - name: unchecked-type-assertion
           disabled: true
+        - name: enforce-switch-style
+          disabled: true
+        - name: var-naming
+          arguments:
+            - [] # AllowList
+            - [] # DenyList
+            - - skip-package-name-checks: true
   exclusions:
     generated: lax
     presets:
