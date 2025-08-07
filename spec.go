@@ -9,6 +9,7 @@ import (
 	"github.com/cloudquery/filetypes/v4/csv"
 	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
+	"github.com/cloudquery/filetypes/v4/xlsx"
 )
 
 type FormatType string
@@ -17,6 +18,7 @@ const (
 	FormatTypeCSV     = "csv"
 	FormatTypeJSON    = "json"
 	FormatTypeParquet = "parquet"
+	FormatTypeXLSX    = "xlsx"
 )
 
 // Compression type.
@@ -41,6 +43,7 @@ type FileSpec struct {
 	csvSpec     *csv.CSVSpec
 	jsonSpec    *jsonfile.JSONSpec
 	parquetSpec *parquet.ParquetSpec
+	xlsxSpec    *xlsx.Spec
 }
 
 func (s *FileSpec) SetDefaults() {
@@ -51,6 +54,8 @@ func (s *FileSpec) SetDefaults() {
 		s.jsonSpec.SetDefaults()
 	case FormatTypeParquet:
 		s.parquetSpec.SetDefaults()
+	case FormatTypeXLSX:
+		s.xlsxSpec.SetDefaults()
 	}
 }
 
@@ -68,10 +73,14 @@ func (s *FileSpec) Validate() error {
 		return s.jsonSpec.Validate()
 	case FormatTypeParquet:
 		if s.Compression != CompressionTypeNone {
-			return errors.New("compression is not supported for parquet format") // This won't work even if we wanted to, because parquet writer prematurely closes the file handle
+			return fmt.Errorf("compression is not supported for the %s format", s.Format)
 		}
-
 		return s.parquetSpec.Validate()
+	case FormatTypeXLSX:
+		if s.Compression != CompressionTypeNone {
+			return fmt.Errorf("compression is not supported for the %s format", s.Format)
+		}
+		return s.xlsxSpec.Validate()
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
 	}
@@ -96,6 +105,9 @@ func (s *FileSpec) UnmarshalSpec() error {
 	case FormatTypeParquet:
 		s.parquetSpec = &parquet.ParquetSpec{}
 		return dec.Decode(s.parquetSpec)
+	case FormatTypeXLSX:
+		s.xlsxSpec = &xlsx.Spec{}
+		return dec.Decode(s.xlsxSpec)
 	default:
 		return fmt.Errorf("unknown format %s", s.Format)
 	}
