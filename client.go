@@ -5,6 +5,7 @@ import (
 	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
 	"github.com/cloudquery/filetypes/v4/types"
+	"github.com/cloudquery/filetypes/v4/xlsx"
 )
 
 type Client struct {
@@ -17,6 +18,7 @@ var (
 	_ types.FileType = (*csvfile.Client)(nil)
 	_ types.FileType = (*jsonfile.Client)(nil)
 	_ types.FileType = (*parquet.Client)(nil)
+	_ types.FileType = (*xlsx.Client)(nil)
 )
 
 // NewClient creates a new client for the given spec
@@ -48,6 +50,9 @@ func NewClient(spec *FileSpec) (*Client, error) {
 
 	case FormatTypeParquet:
 		client, err = parquet.NewClient(parquet.WithSpec(*spec.parquetSpec))
+
+	case FormatTypeXLSX:
+		client, err = xlsx.NewClient()
 
 	default:
 		// shouldn't be possible as Validate checks for type
