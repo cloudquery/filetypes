@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.6.10](https://github.com/cloudquery/filetypes/compare/v4.6.9...v4.6.10) (2025-09-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.88.0 ([#666](https://github.com/cloudquery/filetypes/issues/666)) ([b476837](https://github.com/cloudquery/filetypes/commit/b476837b4e74cefc3668351efa8dbe1428400988))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.88.1 ([#668](https://github.com/cloudquery/filetypes/issues/668)) ([fec32e6](https://github.com/cloudquery/filetypes/commit/fec32e6124985b0d04bd4de5c1bc3e58ece3c3a1))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.89.0 ([#673](https://github.com/cloudquery/filetypes/issues/673)) ([4c9f5ed](https://github.com/cloudquery/filetypes/commit/4c9f5edb545fb7d85a544f549a8e11ad75aecffa))
+* **deps:** Update module github.com/stretchr/testify to v1.11.0 ([#675](https://github.com/cloudquery/filetypes/issues/675)) ([2d84f33](https://github.com/cloudquery/filetypes/commit/2d84f33e829080a0088494ffae8208da4e893437))
+
 ## [4.6.9](https://github.com/cloudquery/filetypes/compare/v4.6.8...v4.6.9) (2025-07-23)
 
 
