@@ -6,6 +6,9 @@ on:
       - ".github/workflow/lint_markdown.yml"
       - "**.md"
 
+permissions:
+  contents: read
+
 jobs:
   lint-grammar:
     runs-on: ubuntu-latest
@@ -18,7 +21,7 @@ jobs:
           vale_flags: "--glob=!{CHANGELOG.md,.github/styles/proselint/README.md}"
           filter_mode: nofilter
           fail_on_error: true
-          version: '3.0.3'
+          version: "3.0.3"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   lint-structure:
