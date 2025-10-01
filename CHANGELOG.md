@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.6.11](https://github.com/cloudquery/filetypes/compare/v4.6.10...v4.6.11) (2025-10-01)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency go to v1.25.1 ([#685](https://github.com/cloudquery/filetypes/issues/685)) ([b628b6b](https://github.com/cloudquery/filetypes/commit/b628b6bb50b87241c3554e9f4f9ae1f31002368e))
+* **deps:** Update module github.com/cloudquery/codegen to v0.3.32 ([#681](https://github.com/cloudquery/filetypes/issues/681)) ([803c598](https://github.com/cloudquery/filetypes/commit/803c598cd757d39d7098327fdb1d482d9236365e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.89.1 ([#678](https://github.com/cloudquery/filetypes/issues/678)) ([5a55b3d](https://github.com/cloudquery/filetypes/commit/5a55b3d01859f13f01c8ae6ceaabb1200e5b9b05))
+* **deps:** Update module github.com/stretchr/testify to v1.11.1 ([#683](https://github.com/cloudquery/filetypes/issues/683)) ([1454fd3](https://github.com/cloudquery/filetypes/commit/1454fd3bc0186a349444283d98e261abb35750ad))
+
 ## [4.6.10](https://github.com/cloudquery/filetypes/compare/v4.6.9...v4.6.10) (2025-09-01)
 
 
