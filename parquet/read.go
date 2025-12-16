@@ -14,7 +14,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (*Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error {
+func (*Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.RecordBatch) error {
 	ctx := context.Background()
 	rdr, err := file.NewParquetReader(f)
 	if err != nil {
@@ -35,7 +35,7 @@ func (*Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arro
 
 	sc := table.ToArrowSchema()
 	for rr.Next() {
-		res <- reverseTransformRecord(sc, rr.Record())
+		res <- reverseTransformRecord(sc, rr.RecordBatch())
 	}
 	if rr.Err() != nil && rr.Err() != io.EOF {
 		return fmt.Errorf("failed to read parquet record: %w", rr.Err())
@@ -44,12 +44,12 @@ func (*Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arro
 	return nil
 }
 
-func reverseTransformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
+func reverseTransformRecord(sc *arrow.Schema, rec arrow.RecordBatch) arrow.RecordBatch {
 	cols := make([]arrow.Array, rec.NumCols())
 	for i := 0; i < int(rec.NumCols()); i++ {
 		cols[i] = reverseTransformArray(sc.Field(i).Type, rec.Column(i))
 	}
-	return array.NewRecord(sc, cols, -1)
+	return array.NewRecordBatch(sc, cols, -1)
 }
 
 func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {

@@ -65,9 +65,9 @@ func TestHappyPath(t *testing.T) {
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
-	record := bldr.NewRecord()
+	record := bldr.NewRecordBatch()
 
-	require.NoError(t, s.Write([]arrow.Record{record}))
+	require.NoError(t, s.Write([]arrow.RecordBatch{record}))
 	require.NoError(t, s.Finish())
 }
 
@@ -94,9 +94,9 @@ func TestWriteError(t *testing.T) {
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
-	record := bldr.NewRecord()
+	record := bldr.NewRecordBatch()
 
-	require.NoError(t, s.Write([]arrow.Record{record}))
+	require.NoError(t, s.Write([]arrow.RecordBatch{record}))
 	require.ErrorIs(t, s.Finish(), errTest)
 }
 
@@ -122,8 +122,8 @@ func TestCloseError(t *testing.T) {
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
-	record := bldr.NewRecord()
+	record := bldr.NewRecordBatch()
 
-	require.NoError(t, s.Write([]arrow.Record{record}))
+	require.NoError(t, s.Write([]arrow.RecordBatch{record}))
 	require.ErrorIs(t, s.FinishWithError(errTest), errTest)
 }

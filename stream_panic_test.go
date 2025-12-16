@@ -52,13 +52,13 @@ func TestPanicOnWrite(t *testing.T) {
 	bldr := array.NewRecordBuilder(memory.DefaultAllocator, table.ToArrowSchema())
 	bldr.Field(0).(*array.StringBuilder).Append("foo")
 	bldr.Field(0).(*array.StringBuilder).Append("bar")
-	record := bldr.NewRecord()
+	record := bldr.NewRecordBatch()
 
 	stream, err := cl.StartStream(table, func(io.Reader) error {
 		return nil
 	})
 	r.NoError(err)
-	err = stream.Write([]arrow.Record{record})
+	err = stream.Write([]arrow.RecordBatch{record})
 	r.Error(err)
 	r.ErrorContains(err, "panic:")
 
@@ -103,11 +103,11 @@ func (w *customWriter) WriteHeader(io.Writer, *schema.Table) (types.Handle, erro
 	return &customHandle{w: w}, nil
 }
 
-func (*customWriter) Read(types.ReaderAtSeeker, *schema.Table, chan<- arrow.Record) error {
+func (*customWriter) Read(types.ReaderAtSeeker, *schema.Table, chan<- arrow.RecordBatch) error {
 	return errors.New("not implemented")
 }
 
-func (h *customHandle) WriteContent([]arrow.Record) error {
+func (h *customHandle) WriteContent([]arrow.RecordBatch) error {
 	if h.w.PanicOnWrite {
 		panic("test panic")
 	}

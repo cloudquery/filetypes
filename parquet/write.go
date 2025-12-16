@@ -47,7 +47,7 @@ func (h *Handle) WriteFooter() error {
 	return err
 }
 
-func (h *Handle) WriteContent(records []arrow.Record) error {
+func (h *Handle) WriteContent(records []arrow.RecordBatch) error {
 	for _, rec := range records {
 		if err := h.w.WriteBuffered(transformRecord(h.s, rec)); err != nil {
 			return err
@@ -101,12 +101,12 @@ func transformDataType(t arrow.DataType) arrow.DataType {
 }
 
 // transformRecord casts extension columns or unsupported columns to string. It does not release the original record.
-func transformRecord(sc *arrow.Schema, rec arrow.Record) arrow.Record {
+func transformRecord(sc *arrow.Schema, rec arrow.RecordBatch) arrow.RecordBatch {
 	cols := make([]arrow.Array, rec.NumCols())
 	for i := 0; i < int(rec.NumCols()); i++ {
 		cols[i] = transformArray(rec.Column(i))
 	}
-	return array.NewRecord(sc, cols, rec.NumRows())
+	return array.NewRecordBatch(sc, cols, rec.NumRows())
 }
 
 func transformArray(arr arrow.Array) arrow.Array {

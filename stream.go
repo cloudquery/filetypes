@@ -55,7 +55,7 @@ func (cl *Client) StartStream(table *schema.Table, uploadFunc func(io.Reader) er
 }
 
 // Write to the stream opened with StartStream.
-func (s *Stream) Write(records []arrow.Record) (retErr error) {
+func (s *Stream) Write(records []arrow.RecordBatch) (retErr error) {
 	if len(records) == 0 {
 		return nil
 	}
