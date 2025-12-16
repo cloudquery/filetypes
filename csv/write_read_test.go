@@ -50,7 +50,7 @@ func TestWriteRead(t *testing.T) {
 			writer := bufio.NewWriter(&b)
 			reader := bufio.NewReader(&b)
 
-			if err := types.WriteAll(cl, writer, table, []arrow.Record{record}); err != nil {
+			if err := types.WriteAll(cl, writer, table, []arrow.RecordBatch{record}); err != nil {
 				t.Fatal(err)
 			}
 			writer.Flush()
@@ -67,17 +67,17 @@ func TestWriteRead(t *testing.T) {
 
 			byteReader := bytes.NewReader(rawBytes)
 
-			ch := make(chan arrow.Record)
+			ch := make(chan arrow.RecordBatch)
 			var readErr error
 			go func() {
 				readErr = cl.Read(byteReader, table, ch)
 				close(ch)
 			}()
-			received := make([]arrow.Record, 0, tc.outputCount)
+			received := make([]arrow.RecordBatch, 0, tc.outputCount)
 			for got := range ch {
 				received = append(received, got)
 			}
-			require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
+			require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.RecordBatch{record}, received))
 			require.NoError(t, readErr)
 			require.Equalf(t, tc.outputCount, len(received), "got %d row(s), want %d", len(received), tc.outputCount)
 		})
@@ -104,7 +104,7 @@ func BenchmarkWrite(b *testing.B) {
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		if err := types.WriteAll(cl, writer, table, []arrow.Record{record}); err != nil {
+		if err := types.WriteAll(cl, writer, table, []arrow.RecordBatch{record}); err != nil {
 			b.Fatal(err)
 		}
 

@@ -10,7 +10,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (cl *Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error {
+func (cl *Client) Read(f types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.RecordBatch) error {
 	if cl.spec.Compression == CompressionTypeGZip {
 		rr, err := gzip.NewReader(f)
 		if err != nil {

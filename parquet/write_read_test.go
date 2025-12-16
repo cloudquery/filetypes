@@ -35,7 +35,7 @@ func TestWriteRead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := types.WriteAll(cl, writer, table, []arrow.Record{record}); err != nil {
+	if err := types.WriteAll(cl, writer, table, []arrow.RecordBatch{record}); err != nil {
 		t.Fatal(err)
 	}
 	err = writer.Flush()
@@ -48,18 +48,18 @@ func TestWriteRead(t *testing.T) {
 		t.Fatal(err)
 	}
 	byteReader := bytes.NewReader(rawBytes)
-	ch := make(chan arrow.Record)
+	ch := make(chan arrow.RecordBatch)
 	var readErr error
 	go func() {
 		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
-	received, total := make([]arrow.Record, 0, rows), 0
+	received, total := make([]arrow.RecordBatch, 0, rows), 0
 	for got := range ch {
 		received = append(received, got)
 		total += int(got.NumRows())
 	}
-	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
+	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.RecordBatch{record}, received))
 	require.NoError(t, readErr)
 	require.Equalf(t, rows, total, "got %d row(s), want %d", total, rows)
 }
@@ -97,24 +97,24 @@ func TestWriteReadSliced(t *testing.T) {
 		t.Fatal(err)
 	}
 	byteReader := bytes.NewReader(rawBytes)
-	ch := make(chan arrow.Record)
+	ch := make(chan arrow.RecordBatch)
 	var readErr error
 	go func() {
 		readErr = cl.Read(byteReader, table, ch)
 		close(ch)
 	}()
-	received, total := make([]arrow.Record, 0, rows), 0
+	received, total := make([]arrow.RecordBatch, 0, rows), 0
 	for got := range ch {
 		received = append(received, got)
 		total += int(got.NumRows())
 	}
-	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.Record{record}, received))
+	require.Empty(t, plugin.RecordsDiff(table.ToArrowSchema(), []arrow.RecordBatch{record}, received))
 	require.NoError(t, readErr)
 	require.Equalf(t, rows, total, "got %d row(s), want %d", total, rows)
 }
 
-func slice(r arrow.Record) []arrow.Record {
-	res := make([]arrow.Record, r.NumRows())
+func slice(r arrow.RecordBatch) []arrow.RecordBatch {
+	res := make([]arrow.RecordBatch, r.NumRows())
 	for i := int64(0); i < r.NumRows(); i++ {
 		res[i] = r.NewSlice(i, i+1)
 	}
@@ -141,7 +141,7 @@ func BenchmarkWrite(b *testing.B) {
 	writer := bufio.NewWriter(&buf)
 	b.ResetTimer()
 
-	if err := types.WriteAll(cl, writer, table, []arrow.Record{record}); err != nil {
+	if err := types.WriteAll(cl, writer, table, []arrow.RecordBatch{record}); err != nil {
 		b.Fatal(err)
 	}
 	err = writer.Flush()

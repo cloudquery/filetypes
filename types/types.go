@@ -15,15 +15,15 @@ type ReaderAtSeeker interface {
 
 type FileType interface {
 	WriteHeader(io.Writer, *schema.Table) (Handle, error)
-	Read(ReaderAtSeeker, *schema.Table, chan<- arrow.Record) error
+	Read(ReaderAtSeeker, *schema.Table, chan<- arrow.RecordBatch) error
 }
 
 type Handle interface {
-	WriteContent([]arrow.Record) error
+	WriteContent([]arrow.RecordBatch) error
 	WriteFooter() error
 }
 
-func WriteAll(f FileType, w io.Writer, t *schema.Table, records []arrow.Record) error {
+func WriteAll(f FileType, w io.Writer, t *schema.Table, records []arrow.RecordBatch) error {
 	h, err := f.WriteHeader(w, t)
 	if err != nil {
 		return err

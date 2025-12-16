@@ -10,7 +10,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, records []arrow.Record) error {
+func (cl *Client) WriteTableBatchFile(w io.Writer, table *schema.Table, records []arrow.RecordBatch) error {
 	return types.WriteAll(cl, w, table, records)
 }
 

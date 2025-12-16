@@ -11,7 +11,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
-func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.Record) error {
+func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- arrow.RecordBatch) error {
 	arrowSchema := table.ToArrowSchema()
 	newSchema := convertSchema(arrowSchema)
 	reader := csv.NewReader(r, newSchema,
@@ -23,7 +23,7 @@ func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- a
 		if reader.Err() != nil {
 			return reader.Err()
 		}
-		rec := reader.Record()
+		rec := reader.RecordBatch()
 		castRec, err := castFromString(rec, arrowSchema)
 		if err != nil {
 			return fmt.Errorf("failed to cast extension types: %w", err)
@@ -34,7 +34,7 @@ func (cl *Client) Read(r types.ReaderAtSeeker, table *schema.Table, res chan<- a
 }
 
 // castFromString casts extension columns to string.
-func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, error) {
+func castFromString(rec arrow.RecordBatch, arrowSchema *arrow.Schema) (arrow.RecordBatch, error) {
 	cols := make([]arrow.Array, rec.NumCols())
 	for c, f := range arrowSchema.Fields() {
 		col := rec.Column(c)
@@ -55,5 +55,5 @@ func castFromString(rec arrow.Record, arrowSchema *arrow.Schema) (arrow.Record, 
 		}
 		cols[c] = sb.NewArray()
 	}
-	return array.NewRecord(arrowSchema, cols, rec.NumRows()), nil
+	return array.NewRecordBatch(arrowSchema, cols, rec.NumRows()), nil
 }

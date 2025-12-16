@@ -26,7 +26,7 @@ func (*Handle) WriteFooter() error {
 	return nil
 }
 
-func (h *Handle) WriteContent(records []arrow.Record) error {
+func (h *Handle) WriteContent(records []arrow.RecordBatch) error {
 	for _, r := range records {
 		err := writeRecord(h.w, r)
 		if err != nil {
@@ -36,7 +36,7 @@ func (h *Handle) WriteContent(records []arrow.Record) error {
 	return nil
 }
 
-func writeRecord(w io.Writer, record arrow.Record) error {
+func writeRecord(w io.Writer, record arrow.RecordBatch) error {
 	arr := array.RecordToStructArray(record)
 	enc := json.NewEncoder(w)
 	enc.SetEscapeHTML(false)

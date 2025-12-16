@@ -36,7 +36,7 @@ func (cl *Client) WriteHeader(w io.Writer, t *schema.Table) (types.Handle, error
 	}, nil
 }
 
-func (h *Handle) WriteContent(records []arrow.Record) error {
+func (h *Handle) WriteContent(records []arrow.RecordBatch) error {
 	for _, record := range records {
 		castRec := h.castToString(record)
 		if err := h.w.Write(castRec); err != nil {
@@ -91,7 +91,7 @@ func isTypeSupported(t arrow.DataType) bool {
 }
 
 // castToString casts extension columns or unsupported columns to string. It does not release the original record.
-func (h *Handle) castToString(rec arrow.Record) arrow.Record {
+func (h *Handle) castToString(rec arrow.RecordBatch) arrow.RecordBatch {
 	cols := make([]arrow.Array, h.schema.NumFields())
 	for c := 0; c < h.schema.NumFields(); c++ {
 		col := rec.Column(c)
@@ -110,7 +110,7 @@ func (h *Handle) castToString(rec arrow.Record) arrow.Record {
 		}
 		cols[c] = sb.NewArray()
 	}
-	return array.NewRecord(h.schema, cols, rec.NumRows())
+	return array.NewRecordBatch(h.schema, cols, rec.NumRows())
 }
 
 func stripCQExtensionMetadata(md arrow.Metadata) arrow.Metadata {
