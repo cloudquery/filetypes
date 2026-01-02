@@ -1,6 +1,6 @@
 module github.com/cloudquery/filetypes/v4
 
-go 1.25.1
+go 1.25.5
 
 require (
 	github.com/apache/arrow-go/v18 v18.5.0
