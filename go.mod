@@ -5,7 +5,7 @@ go 1.25.5
 require (
 	github.com/apache/arrow-go/v18 v18.5.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/codegen v0.3.33
+	github.com/cloudquery/codegen v0.3.34
 	github.com/cloudquery/plugin-sdk/v4 v4.93.1
 	github.com/goccy/go-json v0.10.5
 	github.com/invopop/jsonschema v0.13.0
@@ -43,7 +43,7 @@ require (
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
-	golang.org/x/exp v0.0.0-20251209150349-8475f28825e9 // indirect
+	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 // indirect
 	golang.org/x/mod v0.31.0 // indirect
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
