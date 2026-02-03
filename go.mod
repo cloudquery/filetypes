@@ -5,7 +5,7 @@ go 1.25.5
 require (
 	github.com/apache/arrow-go/v18 v18.5.1
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/codegen v0.3.35
+	github.com/cloudquery/codegen v0.3.36
 	github.com/cloudquery/plugin-sdk/v4 v4.94.1
 	github.com/goccy/go-json v0.10.5
 	github.com/invopop/jsonschema v0.13.0
