@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.6.15](https://github.com/cloudquery/filetypes/compare/v4.6.14...v4.6.15) (2026-03-19)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.94.5 ([#717](https://github.com/cloudquery/filetypes/issues/717)) ([8512c59](https://github.com/cloudquery/filetypes/commit/8512c595255358a8278065172279c54edf7ed165))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.94.6 ([#720](https://github.com/cloudquery/filetypes/issues/720)) ([c3c0fb5](https://github.com/cloudquery/filetypes/commit/c3c0fb50f3f89511bf1f27b1e6588862e046ce8e))
+* **deps:** Update module google.golang.org/grpc to v1.79.3 [SECURITY] ([#719](https://github.com/cloudquery/filetypes/issues/719)) ([7fe222c](https://github.com/cloudquery/filetypes/commit/7fe222c01d286407d1844466be9071dba289c3a3))
+
 ## [4.6.14](https://github.com/cloudquery/filetypes/compare/v4.6.13...v4.6.14) (2026-03-09)
 
 
