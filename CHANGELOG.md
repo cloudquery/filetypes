@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.6.15](https://github.com/cloudquery/filetypes/compare/v4.6.14...v4.6.15) (2026-03-23)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/buger/jsonparser to v1.1.2 [SECURITY] ([#722](https://github.com/cloudquery/filetypes/issues/722)) ([6a1cecb](https://github.com/cloudquery/filetypes/commit/6a1cecb7daae7fcd524d1a56ed305d114f41e918))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.94.5 ([#717](https://github.com/cloudquery/filetypes/issues/717)) ([8512c59](https://github.com/cloudquery/filetypes/commit/8512c595255358a8278065172279c54edf7ed165))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.94.6 ([#720](https://github.com/cloudquery/filetypes/issues/720)) ([c3c0fb5](https://github.com/cloudquery/filetypes/commit/c3c0fb50f3f89511bf1f27b1e6588862e046ce8e))
+* **deps:** Update module google.golang.org/grpc to v1.79.3 [SECURITY] ([#719](https://github.com/cloudquery/filetypes/issues/719)) ([7fe222c](https://github.com/cloudquery/filetypes/commit/7fe222c01d286407d1844466be9071dba289c3a3))
+* **parquet:** Handle uint32 to uint64 array widening in reverseTransformArray ([#721](https://github.com/cloudquery/filetypes/issues/721)) ([ee835b6](https://github.com/cloudquery/filetypes/commit/ee835b6142e8e233cc55cc17f3cbdb6325c3649b))
+
 ## [4.6.14](https://github.com/cloudquery/filetypes/compare/v4.6.13...v4.6.14) (2026-03-09)
 
 
