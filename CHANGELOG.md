@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.16](https://github.com/cloudquery/filetypes/compare/v4.6.15...v4.6.16) (2026-03-23)
+
+
+### Bug Fixes
+
+* Revert "fix(deps): Update dependency go to v1.26.0" ([#724](https://github.com/cloudquery/filetypes/issues/724)) ([c412a86](https://github.com/cloudquery/filetypes/commit/c412a867292ab46cf12e5690904ef6cc322ea1a0))
+
 ## [4.6.15](https://github.com/cloudquery/filetypes/compare/v4.6.14...v4.6.15) (2026-03-23)
 
 
