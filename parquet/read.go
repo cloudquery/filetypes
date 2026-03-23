@@ -68,6 +68,8 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 		return reverseTransformTime64(dt.(*arrow.Time64Type), arr)
 	case *array.Date32:
 		return reverseTransformFromDate32(dt, arr)
+	case *array.Int32:
+		return reverseTransformFromInt32(dt, arr)
 	case *array.Uint32:
 		return reverseTransformFromUint32(dt, arr)
 	case *array.Struct:
@@ -97,6 +99,27 @@ func reverseTransformArray(dt arrow.DataType, arr arrow.Array) arrow.Array {
 			arr.Data().Offset(),
 		))
 
+	default:
+		panic(fmt.Errorf("unsupported conversion from %s to %s", arr.DataType(), dt))
+	}
+}
+
+func reverseTransformFromInt32(dt arrow.DataType, arr *array.Int32) arrow.Array {
+	switch dt {
+	case arrow.PrimitiveTypes.Uint64:
+		builder := array.NewUint64Builder(memory.DefaultAllocator)
+		for i := 0; i < arr.Len(); i++ {
+			if arr.IsNull(i) {
+				builder.AppendNull()
+				continue
+			}
+			v := arr.Value(i)
+			if v < 0 {
+				panic(fmt.Errorf("negative int32 value %d at index %d cannot be converted to uint64", v, i))
+			}
+			builder.Append(uint64(v))
+		}
+		return builder.NewArray()
 	default:
 		panic(fmt.Errorf("unsupported conversion from %s to %s", arr.DataType(), dt))
 	}
