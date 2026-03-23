@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.7.0](https://github.com/cloudquery/filetypes/compare/v4.6.16...v4.7.0) (2026-03-23)
+
+
+### Features
+
+* Support int32 to uint64 in reverseTransformArray ([#728](https://github.com/cloudquery/filetypes/issues/728)) ([5ed6ca8](https://github.com/cloudquery/filetypes/commit/5ed6ca88a5b2dd9655f0b28acf65f24ebdc0e344))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.94.7 ([#726](https://github.com/cloudquery/filetypes/issues/726)) ([ccf6a31](https://github.com/cloudquery/filetypes/commit/ccf6a313aa6859bc9112431fddbe51bf3a91877b))
+
 ## [4.6.16](https://github.com/cloudquery/filetypes/compare/v4.6.15...v4.6.16) (2026-03-23)
 
 
