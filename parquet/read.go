@@ -113,7 +113,11 @@ func reverseTransformFromInt32(dt arrow.DataType, arr *array.Int32) arrow.Array 
 				builder.AppendNull()
 				continue
 			}
-			builder.Append(uint64(arr.Value(i)))
+			v := arr.Value(i)
+			if v < 0 {
+				panic(fmt.Errorf("negative int32 value %d at index %d cannot be converted to uint64", v, i))
+			}
+			builder.Append(uint64(v))
 		}
 		return builder.NewArray()
 	default:

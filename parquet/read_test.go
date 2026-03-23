@@ -170,3 +170,17 @@ func TestReverseTransformArray_Int32ToUint64_ListOf(t *testing.T) {
 	require.Equal(t, uint64(2), values.Value(1))
 	require.Equal(t, uint64(3), values.Value(2))
 }
+
+func TestReverseTransformArray_Int32ToUint64_NegativePanics(t *testing.T) {
+	builder := array.NewInt32Builder(memory.DefaultAllocator)
+	defer builder.Release()
+
+	builder.Append(-1)
+
+	arr := builder.NewArray()
+	defer arr.Release()
+
+	require.PanicsWithError(t, "negative int32 value -1 at index 0 cannot be converted to uint64", func() {
+		reverseTransformArray(arrow.PrimitiveTypes.Uint64, arr)
+	})
+}
