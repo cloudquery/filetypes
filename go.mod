@@ -1,11 +1,11 @@
 module github.com/cloudquery/filetypes/v4
 
-go 1.25.5
+go 1.26.1
 
 require (
 	github.com/apache/arrow-go/v18 v18.5.2
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
-	github.com/cloudquery/codegen v0.3.37
+	github.com/cloudquery/codegen v0.4.0
 	github.com/cloudquery/plugin-sdk/v4 v4.94.7
 	github.com/goccy/go-json v0.10.6
 	github.com/invopop/jsonschema v0.13.0
