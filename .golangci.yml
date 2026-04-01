@@ -63,6 +63,8 @@ linters:
           disabled: true
         - name: nested-structs
           disabled: true
+        - name: package-naming
+          disabled: true
         - name: unchecked-type-assertion
           disabled: true
         - name: enforce-switch-style
