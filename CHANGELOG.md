@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.7.1](https://github.com/cloudquery/filetypes/compare/v4.7.0...v4.7.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/cloudquery/jsonschema digest to 8dfb902 ([#736](https://github.com/cloudquery/filetypes/issues/736)) ([854adac](https://github.com/cloudquery/filetypes/commit/854adac3d00ab7faf6cdfc0c13d555369e3246a9))
+* **deps:** Update go module directive to v1.26.4 ([#742](https://github.com/cloudquery/filetypes/issues/742)) ([dcaa891](https://github.com/cloudquery/filetypes/commit/dcaa891a9e3969e93f709be5144e29723fbe23d6))
+* **deps:** Update module github.com/apache/arrow-go/v18 to v18.6.0 ([#746](https://github.com/cloudquery/filetypes/issues/746)) ([4e067ef](https://github.com/cloudquery/filetypes/commit/4e067ef9205c017a3cf5974957ab8786cdc5a278))
+* **deps:** Update module github.com/apache/thrift to v0.23.0 [SECURITY] ([#748](https://github.com/cloudquery/filetypes/issues/748)) ([37837e7](https://github.com/cloudquery/filetypes/commit/37837e731ec00e5b323f7fa9bc89c70c63cc824b))
+* **deps:** Update module github.com/cloudquery/codegen to v0.4.0 ([#729](https://github.com/cloudquery/filetypes/issues/729)) ([cf48f40](https://github.com/cloudquery/filetypes/commit/cf48f403df04306853fcc5eeb229f7946338b4e8))
+* **deps:** Update module github.com/cloudquery/codegen to v0.4.1 ([#737](https://github.com/cloudquery/filetypes/issues/737)) ([8c17b3e](https://github.com/cloudquery/filetypes/commit/8c17b3ef7a329a932915f67847197c093397d787))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.95.0 ([#733](https://github.com/cloudquery/filetypes/issues/733)) ([c8a1988](https://github.com/cloudquery/filetypes/commit/c8a1988b48533b89c421f6b39f0494d400305803))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.95.1 ([#740](https://github.com/cloudquery/filetypes/issues/740)) ([987df58](https://github.com/cloudquery/filetypes/commit/987df584d99462aea65a42fa8e0e5385662bf2aa))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.95.2 ([#747](https://github.com/cloudquery/filetypes/issues/747)) ([cde4439](https://github.com/cloudquery/filetypes/commit/cde4439bd3952670f42375d178b563cbbb2a9319))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.95.3 ([#751](https://github.com/cloudquery/filetypes/issues/751)) ([e4c9f4b](https://github.com/cloudquery/filetypes/commit/e4c9f4b8b35f5d965a777ced8e0be7f33d1fbe42))
+* **deps:** Update module github.com/invopop/jsonschema to v0.14.0 ([#743](https://github.com/cloudquery/filetypes/issues/743)) ([e74e9b7](https://github.com/cloudquery/filetypes/commit/e74e9b7a04fe1ce07a89933513651e2aa20b5398))
+
 ## [4.7.0](https://github.com/cloudquery/filetypes/compare/v4.6.16...v4.7.0) (2026-03-23)
 
 
