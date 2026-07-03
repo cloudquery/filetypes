@@ -8,7 +8,7 @@ import (
 	jsonfile "github.com/cloudquery/filetypes/v4/json"
 	"github.com/cloudquery/filetypes/v4/parquet"
 	"github.com/invopop/jsonschema"
-	orderedmap "github.com/wk8/go-ordered-map/v2"
+	orderedmap "github.com/pb33f/ordered-map/v2"
 )
 
 // JSONSchemaOptions should be used when generating schema to add the nested spec info
