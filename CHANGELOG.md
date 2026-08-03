@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.7.2](https://github.com/cloudquery/filetypes/compare/v4.7.1...v4.7.2) (2026-08-03)
+
+
+### Bug Fixes
+
+* **deps:** Update go module directive to v1.26.5 ([#760](https://github.com/cloudquery/filetypes/issues/760)) ([fe81729](https://github.com/cloudquery/filetypes/commit/fe817299970047e21609c50f842ca52e059d8f09))
+* **deps:** Update module github.com/apache/arrow-go/v18 to v18.7.0 ([#757](https://github.com/cloudquery/filetypes/issues/757)) ([4b47c87](https://github.com/cloudquery/filetypes/commit/4b47c87b0dbdd3df694b915f60a778aee0b98c0c))
+* **deps:** Update module golang.org/x/net to v0.55.0 [SECURITY] ([#755](https://github.com/cloudquery/filetypes/issues/755)) ([4bfa4c8](https://github.com/cloudquery/filetypes/commit/4bfa4c8ab59a9703e6054b278a4cf1ac7fd0d043))
+* **deps:** Update module google.golang.org/grpc to v1.82.1 [SECURITY] ([#758](https://github.com/cloudquery/filetypes/issues/758)) ([cbaed1f](https://github.com/cloudquery/filetypes/commit/cbaed1f51945cf7ca0968e75dcfa334905a33adf))
+
 ## [4.7.1](https://github.com/cloudquery/filetypes/compare/v4.7.0...v4.7.1) (2026-07-03)
 
 
