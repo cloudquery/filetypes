@@ -22,8 +22,8 @@ github.com/cloudquery/codegen v0.4.1 h1:c9D18N925tUvnDeGHIl3JWKj37TyII9daHufkf8h
 github.com/cloudquery/codegen v0.4.1/go.mod h1:QWIOD6R1aCa+YM+th+9Qt9lZw+ztdJR9JDEMLWyazwM=
 github.com/cloudquery/jsonschema v0.0.0-20260703174721-45e7e20e0ed8 h1:s7B+c57yTtVL8Zhcebae5poFInJwTftuMakj625CRbw=
 github.com/cloudquery/jsonschema v0.0.0-20260703174721-45e7e20e0ed8/go.mod h1:KMcD1TlufeD5r5DmbYvYWs+cyULzIVuKkd7jpoKWVjk=
-github.com/cloudquery/plugin-sdk/v4 v4.96.0 h1:z/1pa55e3lcde1X0NImrlMrQNlUmoUV67esIowtz4QU=
-github.com/cloudquery/plugin-sdk/v4 v4.96.0/go.mod h1:MT53VfMPOtNZKsrlGHX9BI00jRssS7QrMQhsjjSt7FY=
+github.com/cloudquery/plugin-sdk/v4 v4.96.1 h1:uNQZlipeu9S3tT83qxv1UgPLfBGofmriICigNWz0zJo=
+github.com/cloudquery/plugin-sdk/v4 v4.96.1/go.mod h1:MT53VfMPOtNZKsrlGHX9BI00jRssS7QrMQhsjjSt7FY=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
