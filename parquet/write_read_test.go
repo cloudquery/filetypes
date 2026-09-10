@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/parquet/file"
 	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/plugin"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
@@ -148,4 +149,34 @@ func BenchmarkWrite(b *testing.B) {
 	if err != nil {
 		b.Fatal(err)
 	}
+}
+
+func TestWriteMultipleRowGroups(t *testing.T) {
+	const rows = 20
+	const maxRowGroupLength = 5
+
+	table := schema.TestTable("test", schema.TestSourceOptions{})
+	tg := schema.NewTestDataGenerator(0)
+	record := tg.Generate(table, schema.GenTestDataOptions{
+		SourceName: "test-source",
+		SyncTime:   time.Now().UTC().Round(time.Second),
+		MaxRows:    rows,
+	})
+
+	maxRowGroupLengthValue := int64(maxRowGroupLength)
+	cl, err := NewClient(WithSpec(ParquetSpec{MaxRowGroupLength: &maxRowGroupLengthValue}))
+	require.NoError(t, err)
+
+	var b bytes.Buffer
+	writer := bufio.NewWriter(&b)
+	require.NoError(t, types.WriteAll(cl, writer, table, []arrow.RecordBatch{record}))
+	require.NoError(t, writer.Flush())
+
+	pf, err := file.NewParquetReader(bytes.NewReader(b.Bytes()))
+	require.NoError(t, err)
+	defer pf.Close()
+
+	require.Equal(t, rows/maxRowGroupLength, pf.NumRowGroups())
+	require.Greater(t, pf.NumRowGroups(), 1)
+	require.EqualValues(t, rows, pf.NumRows())
 }

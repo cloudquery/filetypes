@@ -9,15 +9,17 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-const defaultMaxRowGroupLength = 128 * 1024 * 1024
+// defaultMaxRowGroupLength is a number of rows, not a number of bytes.
+const defaultMaxRowGroupLength = 1024 * 1024
 
 var allowedVersions = []string{"v1.0", "v2.4", "v2.6", "v2Latest"}
 var allowedRootRepetitions = []string{"undefined", "required", "optional", "repeated"}
 
 // nolint:revive
 type ParquetSpec struct {
-	Version           string `json:"version,omitempty"`
-	RootRepetition    string `json:"root_repetition,omitempty"`
+	Version        string `json:"version,omitempty"`
+	RootRepetition string `json:"root_repetition,omitempty"`
+	// MaxRowGroupLength is the maximum number of rows in a single Parquet row group.
 	MaxRowGroupLength *int64 `json:"max_row_group_length,omitempty"`
 }
 
@@ -82,7 +84,7 @@ func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 
 	properties.Set("max_row_group_length", &jsonschema.Schema{
 		Type:        "integer",
-		Description: "Max row group length",
+		Description: "Maximum number of rows per Parquet row group.",
 		Default:     defaultMaxRowGroupLength,
 		Minimum:     "0",
 	})
