@@ -26,9 +26,11 @@ jobs:
       - name: Parse semver string
         if: steps.release.outputs.release_created
         id: semver_parser
-        uses: booxmedialtd/ws-action-parse-semver@7784200024d6b3fc01253e617ec0168daf603de3
-        with:
-          input_string: ${{ steps.release.outputs.tag_name }}
+        env:
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          prerelease="$(printf '%s' "${TAG_NAME#v}" | sed -n 's/^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*-\([^+]*\).*$/\1/p')"
+          echo "prerelease=${prerelease}" >> "$GITHUB_OUTPUT"
       - name: Mark as pre-release
         if: steps.semver_parser.outputs.prerelease != ''
         uses: tubone24/update_release@1cfa79ccf7422570d9a9c6b6de749ff4b280e48b
