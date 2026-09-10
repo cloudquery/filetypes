@@ -9,7 +9,6 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-// defaultMaxRowGroupLength is a number of rows, not a number of bytes.
 const defaultMaxRowGroupLength = 1024 * 1024
 
 var allowedVersions = []string{"v1.0", "v2.4", "v2.6", "v2Latest"}
