@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.7.6](https://github.com/cloudquery/filetypes/compare/v4.7.5...v4.7.6) (2026-10-01)
+
+
+### Bug Fixes
+
+* **deps:** Update go module directive to v1.27.1 ([#783](https://github.com/cloudquery/filetypes/issues/783)) ([e103465](https://github.com/cloudquery/filetypes/commit/e103465ffd4a6320a5cf11f2b592f44ec23c66c0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.96.6 ([#779](https://github.com/cloudquery/filetypes/issues/779)) ([781f0dc](https://github.com/cloudquery/filetypes/commit/781f0dc632a3fd4aac611c11a89767ffd476c2a0))
+
 ## [4.7.5](https://github.com/cloudquery/filetypes/compare/v4.7.4...v4.7.5) (2026-09-30)
 
 
