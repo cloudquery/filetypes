@@ -76,8 +76,7 @@ func (cl *Client) AssessTable(pair plugin.TablePair) (plugin.TableFinding, error
 		if finding.Category == plugin.AssessCategoryNoChange {
 			finding.Category = plugin.AssessCategoryUnknown
 		}
-		finding.CoverageIncomplete = true
-		finding.CoverageIncompleteReason = "unable to compare: no equivalent values for columns " + strings.Join(unknownColumns, ", ")
+		finding.IncompleteCoverageReason = "unable to compare: no equivalent values for columns " + strings.Join(unknownColumns, ", ")
 	}
 	return finding, nil
 }

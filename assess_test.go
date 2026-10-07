@@ -168,8 +168,7 @@ func TestAssessTable(t *testing.T) {
 				TableName:                "datadog_monitors",
 				Category:                 plugin.AssessCategoryUnknown,
 				Columns:                  []plugin.ColumnFinding{{ColumnName: "count", Category: plugin.AssessCategoryUnknown, OldType: "int64", NewType: "utf8"}},
-				CoverageIncomplete:       true,
-				CoverageIncompleteReason: "unable to compare: no equivalent values for columns count",
+				IncompleteCoverageReason: "unable to compare: no equivalent values for columns count",
 			},
 		},
 		{
@@ -194,8 +193,7 @@ func TestAssessTable(t *testing.T) {
 					},
 					{ColumnName: "count", Category: plugin.AssessCategoryUnknown, OldType: "int64", NewType: "utf8"},
 				},
-				CoverageIncomplete:       true,
-				CoverageIncompleteReason: "unable to compare: no equivalent values for columns count",
+				IncompleteCoverageReason: "unable to compare: no equivalent values for columns count",
 			},
 		},
 		{
