@@ -21,16 +21,18 @@ type Handle struct {
 
 var _ ftypes.Handle = (*Handle)(nil)
 
-func (c *Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error) {
-	props := parquet.NewWriterProperties(
+func (c *Client) writerProps() *parquet.WriterProperties {
+	return parquet.NewWriterProperties(
 		parquet.WithMaxRowGroupLength(c.spec.GetMaxRowGroupLength()),
 		parquet.WithCompression(compress.Codecs.Snappy),
 		parquet.WithVersion(c.spec.GetVersion()),
 		parquet.WithRootRepetition(c.spec.GetRootRepetition()),
 	)
-	arrprops := pqarrow.DefaultWriterProps()
+}
+
+func (c *Client) WriteHeader(w io.Writer, t *schema.Table) (ftypes.Handle, error) {
 	newSchema := convertSchema(t.ToArrowSchema())
-	fw, err := pqarrow.NewFileWriter(newSchema, &nopCloseWriter{Writer: w}, props, arrprops)
+	fw, err := pqarrow.NewFileWriter(newSchema, &nopCloseWriter{Writer: w}, c.writerProps(), pqarrow.DefaultWriterProps())
 	if err != nil {
 		return nil, err
 	}
