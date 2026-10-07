@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.8.0](https://github.com/cloudquery/filetypes/compare/v4.7.5...v4.8.0) (2026-10-07)
+
+
+### Features
+
+* Compare generated Parquet schemas between table versions ([#784](https://github.com/cloudquery/filetypes/issues/784)) ([4195d3c](https://github.com/cloudquery/filetypes/commit/4195d3cbe1b7862181a6c60a62deda172a1cb572))
+* Compare JSON and CSV output for equivalent synthetic records ([#785](https://github.com/cloudquery/filetypes/issues/785)) ([e8c0823](https://github.com/cloudquery/filetypes/commit/e8c08239e3d5a0de92dcc915b5240618ae42cf53))
+
+
+### Bug Fixes
+
+* **deps:** Update go module directive to v1.27.1 ([#783](https://github.com/cloudquery/filetypes/issues/783)) ([e103465](https://github.com/cloudquery/filetypes/commit/e103465ffd4a6320a5cf11f2b592f44ec23c66c0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.96.6 ([#779](https://github.com/cloudquery/filetypes/issues/779)) ([781f0dc](https://github.com/cloudquery/filetypes/commit/781f0dc632a3fd4aac611c11a89767ffd476c2a0))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.97.0 ([#786](https://github.com/cloudquery/filetypes/issues/786)) ([cfbc968](https://github.com/cloudquery/filetypes/commit/cfbc96824af47532318ce7005d6f3777c42af363))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.98.0 ([#787](https://github.com/cloudquery/filetypes/issues/787)) ([28be9fe](https://github.com/cloudquery/filetypes/commit/28be9fedff3598b2e7b8701e916b523c72a0cac7))
+
 ## [4.7.5](https://github.com/cloudquery/filetypes/compare/v4.7.4...v4.7.5) (2026-09-30)
 
 
