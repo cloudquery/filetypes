@@ -10,23 +10,43 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/memory"
+	csvfile "github.com/cloudquery/filetypes/v4/csv"
 	"github.com/cloudquery/filetypes/v4/parquet"
 	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/plugin"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
 )
 
+const (
+	behaviorNewColumns = "new files add the new columns, existing files are not changed"
+	behaviorNewTable   = "new files add the new table"
+)
+
 // AssessTable reports how the table change affects the files written with the configured format.
 // Parquet compares generated schemas. JSON and CSV serialize equivalent synthetic values under both schemas.
 func (cl *Client) AssessTable(pair plugin.TablePair) (plugin.TableFinding, error) {
-	if pq, ok := cl.filetype.(*parquet.Client); ok {
-		return pq.AssessTable(pair)
-	}
-	finding := plugin.TableFinding{TableName: pair.TableName(), Category: plugin.AssessCategoryNoChange}
 	if pair.New == nil {
-		finding.Category = plugin.AssessCategoryTableRemoved
-		return finding, nil
+		return plugin.TableFinding{TableName: pair.TableName(), Category: plugin.AssessCategoryTableRemoved}, nil
 	}
+	finding, outputChanged, err := cl.compareTables(pair)
+	if err != nil {
+		return plugin.TableFinding{}, err
+	}
+	for i, column := range finding.Columns {
+		if column.OldType == "" && cl.isAdditiveColumn(pair, column.ColumnName) {
+			finding.Columns[i].Category = plugin.AssessCategoryAutomaticallyMigratable
+		}
+	}
+	classifyTable(&finding, pair, outputChanged)
+	return finding, nil
+}
+
+func (cl *Client) compareTables(pair plugin.TablePair) (plugin.TableFinding, bool, error) {
+	if pq, ok := cl.filetype.(*parquet.Client); ok {
+		finding, err := pq.AssessTable(pair)
+		return finding, false, err
+	}
+	finding := plugin.TableFinding{TableName: pair.TableName()}
 	oldTable := pair.Old
 	if oldTable == nil {
 		oldTable = &schema.Table{Name: pair.New.Name}
@@ -43,7 +63,7 @@ func (cl *Client) AssessTable(pair plugin.TablePair) (plugin.TableFinding, error
 		}
 		column, err := cl.assessColumn(oldTable.Name, oldColumn, *newColumn)
 		if err != nil {
-			return plugin.TableFinding{}, err
+			return plugin.TableFinding{}, false, err
 		}
 		finding.Columns = append(finding.Columns, column)
 	}
@@ -52,25 +72,64 @@ func (cl *Client) AssessTable(pair plugin.TablePair) (plugin.TableFinding, error
 			finding.Columns = append(finding.Columns, outputChange(newColumn.Name, "", newColumn.Type.String()))
 		}
 	}
-	if !slices.Equal(oldTable.Columns.Names(), pair.New.Columns.Names()) {
-		evidence, err := cl.rowEvidence(oldTable, pair.New)
-		if err != nil {
-			return plugin.TableFinding{}, err
-		}
-		finding.Evidence = append(finding.Evidence, evidence)
-		if evidence.Before != evidence.After {
-			finding.Category = plugin.AssessCategoryFileSchemaChanged
-		}
+	if pair.Old == nil || slices.Equal(oldTable.Columns.Names(), pair.New.Columns.Names()) {
+		return finding, false, nil
 	}
+	evidence, err := cl.rowEvidence(oldTable, pair.New)
+	if err != nil {
+		return plugin.TableFinding{}, false, err
+	}
+	finding.Evidence = append(finding.Evidence, evidence)
+	existingColumns, err := cl.rowEvidence(oldTable, retainedColumns(oldTable, pair.New))
+	if err != nil {
+		return plugin.TableFinding{}, false, err
+	}
+	return finding, existingColumns.Before != existingColumns.After, nil
+}
 
+func retainedColumns(oldTable, newTable *schema.Table) *schema.Table {
+	retained := *newTable
+	retained.Columns = slices.DeleteFunc(slices.Clone(newTable.Columns), func(column schema.Column) bool {
+		return oldTable.Columns.Get(column.Name) == nil
+	})
+	return &retained
+}
+
+func (cl *Client) isAdditiveColumn(pair plugin.TablePair, name string) bool {
+	if pair.Old == nil {
+		return true
+	}
+	if column := pair.New.Columns.Get(name); column == nil || column.NotNull {
+		return false
+	}
+	csvClient, ok := cl.filetype.(*csvfile.Client)
+	if !ok {
+		return true
+	}
+	oldNames, newNames := pair.Old.Columns.Names(), pair.New.Columns.Names()
+	return csvClient.IncludeHeaders && len(newNames) >= len(oldNames) && slices.Equal(newNames[:len(oldNames)], oldNames)
+}
+
+func classifyTable(finding *plugin.TableFinding, pair plugin.TablePair, outputChanged bool) {
+	finding.Category = plugin.AssessCategoryNoChange
 	var unknownColumns []string
 	for _, column := range finding.Columns {
 		switch column.Category {
 		case plugin.AssessCategoryFileSchemaChanged:
-			finding.Category = plugin.AssessCategoryFileSchemaChanged
+			outputChanged = true
+		case plugin.AssessCategoryAutomaticallyMigratable:
+			finding.Category = plugin.AssessCategoryAutomaticallyMigratable
 		case plugin.AssessCategoryUnknown:
 			unknownColumns = append(unknownColumns, column.ColumnName)
 		}
+	}
+	switch {
+	case outputChanged:
+		finding.Category = plugin.AssessCategoryFileSchemaChanged
+	case finding.Category == plugin.AssessCategoryAutomaticallyMigratable && pair.Old == nil:
+		finding.SafeModeBehavior, finding.ForcedModeBehavior = behaviorNewTable, behaviorNewTable
+	case finding.Category == plugin.AssessCategoryAutomaticallyMigratable:
+		finding.SafeModeBehavior, finding.ForcedModeBehavior = behaviorNewColumns, behaviorNewColumns
 	}
 	if len(unknownColumns) > 0 {
 		if finding.Category == plugin.AssessCategoryNoChange {
@@ -78,7 +137,6 @@ func (cl *Client) AssessTable(pair plugin.TablePair) (plugin.TableFinding, error
 		}
 		finding.IncompleteCoverageReason = "unable to compare: no equivalent values for columns " + strings.Join(unknownColumns, ", ")
 	}
-	return finding, nil
 }
 
 func outputChange(name, oldType, newType string) plugin.ColumnFinding {
