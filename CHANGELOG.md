@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.9.0](https://github.com/cloudquery/filetypes/compare/v4.8.0...v4.9.0) (2026-10-09)
+
+
+### Features
+
+* Classify new nullable columns and new tables as additive file changes ([#788](https://github.com/cloudquery/filetypes/issues/788)) ([5685244](https://github.com/cloudquery/filetypes/commit/5685244c9eab1db4b81257c42f20f6678dbd8c8d))
+
+
+### Bug Fixes
+
+* Correct Parquet root_repetition description ([#789](https://github.com/cloudquery/filetypes/issues/789)) ([112a935](https://github.com/cloudquery/filetypes/commit/112a9356561716a5262d43fae8cc93e746c187cb))
+
 ## [4.8.0](https://github.com/cloudquery/filetypes/compare/v4.7.5...v4.8.0) (2026-10-07)
 
 
