@@ -76,7 +76,7 @@ func (ParquetSpec) JSONSchema() *jsonschema.Schema {
 	}
 	properties.Set("root_repetition", &jsonschema.Schema{
 		Type:        "string",
-		Description: "Root repetition",
+		Description: "Root repetition. This option is kept for compatibility. Since arrow-go v18.6.0, the Parquet writer does not write the root repetition. The value has no effect on the file.",
 		Enum:        allowedRootRepetitionsAsAny,
 		Default:     "repeated",
 	})
