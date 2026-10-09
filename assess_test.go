@@ -26,10 +26,16 @@ var (
 	escapingValue    = `"comma, \"quote\", back\\slash\nnew line\ttab é"`
 	jsonSpec         = &filetypes.FileSpec{Format: filetypes.FormatTypeJSON}
 	csvSpec          = &filetypes.FileSpec{Format: filetypes.FormatTypeCSV}
+	parquetSpec      = &filetypes.FileSpec{Format: filetypes.FormatTypeParquet}
 	csvNoHeaderSpec  = &filetypes.FileSpec{Format: filetypes.FormatTypeCSV, FormatSpec: map[string]any{"skip_header": true, "delimiter": ";"}}
 	datadogTagsPair  = plugin.TablePair{Old: table(idColumn, tagsStringList), New: table(idColumn, tagsJSON)}
 	datadogTagsTypes = plugin.ColumnFinding{ColumnName: "tags", OldType: "list<item: utf8, nullable>", NewType: "json"}
 )
+
+func notNull(column schema.Column) schema.Column {
+	column.NotNull = true
+	return column
+}
 
 func columnFinding(base plugin.ColumnFinding, category plugin.AssessCategory, evidence ...plugin.Evidence) plugin.ColumnFinding {
 	base.Category = category
@@ -155,7 +161,7 @@ func TestAssessTable(t *testing.T) {
 				Category:  plugin.AssessCategoryFileSchemaChanged,
 				Columns: []plugin.ColumnFinding{
 					{ColumnName: "name", Category: plugin.AssessCategoryFileSchemaChanged, OldType: "utf8"},
-					{ColumnName: "tags", Category: plugin.AssessCategoryFileSchemaChanged, NewType: "json"},
+					{ColumnName: "tags", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "json"},
 				},
 				Evidence: []plugin.Evidence{{Before: `{"id":42,"name":"env:prod"}`, After: `{"id":42,"tags":{"env":"prod"}}`}},
 			},
@@ -213,15 +219,125 @@ func TestAssessTable(t *testing.T) {
 			spec: csvSpec,
 			pair: plugin.TablePair{New: table(idColumn)},
 			want: plugin.TableFinding{
+				TableName:          "datadog_monitors",
+				Category:           plugin.AssessCategoryAutomaticallyMigratable,
+				SafeModeBehavior:   "new files add the new table",
+				ForcedModeBehavior: "new files add the new table",
+				Columns:            []plugin.ColumnFinding{{ColumnName: "id", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "int64"}},
+			},
+		},
+		{
+			name: "json added nullable column extends output",
+			spec: jsonSpec,
+			pair: plugin.TablePair{Old: table(idColumn, nameString), New: table(tagsJSON, idColumn, nameString)},
+			want: plugin.TableFinding{
+				TableName:          "datadog_monitors",
+				Category:           plugin.AssessCategoryAutomaticallyMigratable,
+				SafeModeBehavior:   "new files add the new columns, existing files are not changed",
+				ForcedModeBehavior: "new files add the new columns, existing files are not changed",
+				Columns:            []plugin.ColumnFinding{{ColumnName: "tags", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "json"}},
+				Evidence:           []plugin.Evidence{{Before: `{"id":42,"name":"env:prod"}`, After: `{"id":42,"name":"env:prod","tags":{"env":"prod"}}`}},
+			},
+		},
+		{
+			name: "json added not null column changes output",
+			spec: jsonSpec,
+			pair: plugin.TablePair{Old: table(idColumn), New: table(idColumn, notNull(nameString))},
+			want: plugin.TableFinding{
 				TableName: "datadog_monitors",
 				Category:  plugin.AssessCategoryFileSchemaChanged,
-				Columns:   []plugin.ColumnFinding{{ColumnName: "id", Category: plugin.AssessCategoryFileSchemaChanged, NewType: "int64"}},
-				Evidence:  []plugin.Evidence{{Before: "", After: "id\n42"}},
+				Columns:   []plugin.ColumnFinding{{ColumnName: "name", Category: plugin.AssessCategoryFileSchemaChanged, NewType: "utf8"}},
+				Evidence:  []plugin.Evidence{{Before: `{"id":42}`, After: `{"id":42,"name":"env:prod"}`}},
+			},
+		},
+		{
+			name: "csv column appended with header extends output",
+			spec: csvSpec,
+			pair: plugin.TablePair{Old: table(idColumn), New: table(idColumn, nameString)},
+			want: plugin.TableFinding{
+				TableName:          "datadog_monitors",
+				Category:           plugin.AssessCategoryAutomaticallyMigratable,
+				SafeModeBehavior:   "new files add the new columns, existing files are not changed",
+				ForcedModeBehavior: "new files add the new columns, existing files are not changed",
+				Columns:            []plugin.ColumnFinding{{ColumnName: "name", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "utf8"}},
+				Evidence:           []plugin.Evidence{{Before: "id\n42", After: "id,name\n42,env:prod"}},
+			},
+		},
+		{
+			name: "csv column appended without header changes output",
+			spec: csvNoHeaderSpec,
+			pair: plugin.TablePair{Old: table(idColumn), New: table(idColumn, nameString)},
+			want: plugin.TableFinding{
+				TableName: "datadog_monitors",
+				Category:  plugin.AssessCategoryFileSchemaChanged,
+				Columns:   []plugin.ColumnFinding{{ColumnName: "name", Category: plugin.AssessCategoryFileSchemaChanged, NewType: "utf8"}},
+				Evidence:  []plugin.Evidence{{Before: "42", After: "42;env:prod"}},
+			},
+		},
+		{
+			name: "csv column inserted before existing columns changes output",
+			spec: csvSpec,
+			pair: plugin.TablePair{Old: table(idColumn), New: table(nameString, idColumn)},
+			want: plugin.TableFinding{
+				TableName: "datadog_monitors",
+				Category:  plugin.AssessCategoryFileSchemaChanged,
+				Columns:   []plugin.ColumnFinding{{ColumnName: "name", Category: plugin.AssessCategoryFileSchemaChanged, NewType: "utf8"}},
+				Evidence:  []plugin.Evidence{{Before: "id\n42", After: "name,id\nenv:prod,42"}},
+			},
+		},
+		{
+			name: "parquet added nullable columns extend schema",
+			spec: parquetSpec,
+			pair: plugin.TablePair{Old: table(notNull(idColumn)), New: table(nameString, notNull(idColumn), tagsStringList)},
+			want: plugin.TableFinding{
+				TableName:          "datadog_monitors",
+				Category:           plugin.AssessCategoryAutomaticallyMigratable,
+				SafeModeBehavior:   "new files add the new columns, existing files are not changed",
+				ForcedModeBehavior: "new files add the new columns, existing files are not changed",
+				Columns: []plugin.ColumnFinding{
+					{ColumnName: "name", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "optional byte_array (String)"},
+					{ColumnName: "tags", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "optional group (List) {list: repeated group {element: optional byte_array (String)}}"},
+				},
+			},
+		},
+		{
+			name: "parquet added required column changes schema",
+			spec: parquetSpec,
+			pair: plugin.TablePair{Old: table(nameString), New: table(nameString, notNull(idColumn))},
+			want: plugin.TableFinding{
+				TableName: "datadog_monitors",
+				Category:  plugin.AssessCategoryFileSchemaChanged,
+				Columns:   []plugin.ColumnFinding{{ColumnName: "id", Category: plugin.AssessCategoryFileSchemaChanged, NewType: "required int64 (Int(bitWidth=64, isSigned=true))"}},
+			},
+		},
+		{
+			name: "parquet optional to required column changes schema",
+			spec: parquetSpec,
+			pair: plugin.TablePair{Old: table(idColumn), New: table(notNull(idColumn), nameString)},
+			want: plugin.TableFinding{
+				TableName: "datadog_monitors",
+				Category:  plugin.AssessCategoryFileSchemaChanged,
+				Columns: []plugin.ColumnFinding{
+					{ColumnName: "id", Category: plugin.AssessCategoryFileSchemaChanged, OldType: "optional int64 (Int(bitWidth=64, isSigned=true))", NewType: "required int64 (Int(bitWidth=64, isSigned=true))"},
+					{ColumnName: "name", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "optional byte_array (String)"},
+				},
+			},
+		},
+		{
+			name: "parquet added table",
+			spec: parquetSpec,
+			pair: plugin.TablePair{New: table(notNull(idColumn))},
+			want: plugin.TableFinding{
+				TableName:          "datadog_monitors",
+				Category:           plugin.AssessCategoryAutomaticallyMigratable,
+				SafeModeBehavior:   "new files add the new table",
+				ForcedModeBehavior: "new files add the new table",
+				Columns:            []plugin.ColumnFinding{{ColumnName: "id", Category: plugin.AssessCategoryAutomaticallyMigratable, NewType: "required int64 (Int(bitWidth=64, isSigned=true))"}},
 			},
 		},
 		{
 			name: "parquet compares generated schemas",
-			spec: &filetypes.FileSpec{Format: filetypes.FormatTypeParquet},
+			spec: parquetSpec,
 			pair: plugin.TablePair{Old: table(idColumn, nameString), New: table(idColumn)},
 			want: plugin.TableFinding{
 				TableName: "datadog_monitors",
