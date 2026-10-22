@@ -3,15 +3,19 @@ package parquet
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"testing"
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/apache/arrow-go/v18/parquet/file"
 	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/plugin"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
+	sdktypes "github.com/cloudquery/plugin-sdk/v4/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -179,4 +183,89 @@ func TestWriteMultipleRowGroups(t *testing.T) {
 	require.Equal(t, rows/maxRowGroupLength, pf.NumRowGroups())
 	require.Greater(t, pf.NumRowGroups(), 1)
 	require.EqualValues(t, rows, pf.NumRows())
+}
+
+func TestWriteReadSlicedNestedNullableStructWithLists(t *testing.T) {
+	const (
+		rows       = 100
+		subStructs = 8
+	)
+
+	subType := arrow.StructOf(
+		arrow.Field{Name: "ids", Type: arrow.ListOf(arrow.PrimitiveTypes.Int64), Nullable: true},
+		arrow.Field{Name: "n", Type: arrow.PrimitiveTypes.Int64, Nullable: true},
+		arrow.Field{Name: "doc", Type: sdktypes.ExtensionTypes.JSON, Nullable: true},
+	)
+	fields := make([]arrow.Field, subStructs)
+	for i := range fields {
+		fields[i] = arrow.Field{Name: fmt.Sprintf("sub_%d", i), Type: subType, Nullable: true}
+	}
+	outerType := arrow.StructOf(fields...)
+	sc := arrow.NewSchema([]arrow.Field{{Name: "outer", Type: outerType, Nullable: true}}, nil)
+
+	bldr := array.NewRecordBuilder(memory.DefaultAllocator, sc)
+	defer bldr.Release()
+	outer := bldr.Field(0).(*array.StructBuilder)
+	for row := 0; row < rows; row++ {
+		outer.Append(true)
+		for i := 0; i < subStructs; i++ {
+			sub := outer.FieldBuilder(i).(*array.StructBuilder)
+			if i != row%subStructs {
+				sub.AppendNull()
+				continue
+			}
+			sub.Append(true)
+			ids := sub.FieldBuilder(0).(*array.ListBuilder)
+			ids.Append(true)
+			for j := 0; j <= row%5; j++ {
+				ids.ValueBuilder().(*array.Int64Builder).Append(int64(row*10 + j))
+			}
+			sub.FieldBuilder(1).(*array.Int64Builder).Append(int64(row))
+			sub.FieldBuilder(2).(*sdktypes.JSONBuilder).Append(map[string]any{"row": row})
+		}
+	}
+	record := bldr.NewRecordBatch()
+	defer record.Release()
+
+	table := &schema.Table{Name: "test", Columns: schema.ColumnList{{Name: "outer", Type: outerType}}}
+	cl, err := NewClient()
+	require.NoError(t, err)
+
+	for _, splitAt := range []int64{1, 3, 50, 99} {
+		t.Run(fmt.Sprintf("split_at_%d", splitAt), func(t *testing.T) {
+			head, tail := record.NewSlice(0, splitAt), record.NewSlice(splitAt, rows)
+			defer head.Release()
+			defer tail.Release()
+
+			var b bytes.Buffer
+			writer := bufio.NewWriter(&b)
+			require.NoError(t, types.WriteAll(cl, writer, table, []arrow.RecordBatch{head, tail}))
+			require.NoError(t, writer.Flush())
+
+			ch := make(chan arrow.RecordBatch)
+			var readErr error
+			go func() {
+				readErr = cl.Read(bytes.NewReader(b.Bytes()), table, ch)
+				close(ch)
+			}()
+			var received []arrow.RecordBatch
+			for got := range ch {
+				received = append(received, got)
+			}
+			require.NoError(t, readErr)
+			require.Empty(t, plugin.RecordsDiff(sc, []arrow.RecordBatch{record}, received))
+
+			row := 0
+			for _, got := range received {
+				gotOuter := got.Column(0).(*array.Struct)
+				for r := 0; r < gotOuter.Len(); r++ {
+					for i := 0; i < subStructs; i++ {
+						require.Equalf(t, i == row%subStructs, gotOuter.Field(i).IsValid(r), "row %d, sub_%d validity", row, i)
+					}
+					row++
+				}
+			}
+			require.Equal(t, rows, row)
+		})
+	}
 }
