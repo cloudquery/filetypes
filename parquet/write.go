@@ -122,7 +122,7 @@ func transformArray(arr arrow.Array) arrow.Array {
 		children := make([]arrow.ArrayData, arr.NumField())
 		names := make([]string, arr.NumField())
 		for i := range children {
-			children[i] = transformArray(arr.Field(i)).Data()
+			children[i] = transformArray(array.MakeFromData(arr.Data().Children()[i])).Data()
 			names[i] = dt.Field(i).Name
 		}
 
@@ -131,7 +131,7 @@ func transformArray(arr arrow.Array) arrow.Array {
 			arr.Data().Buffers(),
 			children,
 			arr.NullN(),
-			0, // we use 0 as offset for struct arrays, as the child arrays would already be sliced properly
+			arr.Data().Offset(),
 		))
 
 	case array.ListLike: // this also handles maps
