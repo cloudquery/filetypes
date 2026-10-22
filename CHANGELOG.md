@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.9.1](https://github.com/cloudquery/filetypes/compare/v4.9.0...v4.9.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.99.0 ([#791](https://github.com/cloudquery/filetypes/issues/791)) ([5e1b2d5](https://github.com/cloudquery/filetypes/commit/5e1b2d502e3676ce8d53ee6c6910337a9d7e7522))
+* Keep struct offset when transforming sliced Parquet records ([#793](https://github.com/cloudquery/filetypes/issues/793)) ([efebf92](https://github.com/cloudquery/filetypes/commit/efebf922656db02ea43f64714c74d2d49f3e09b2))
+
 ## [4.9.0](https://github.com/cloudquery/filetypes/compare/v4.8.0...v4.9.0) (2026-10-09)
 
 
