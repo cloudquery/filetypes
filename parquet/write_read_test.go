@@ -15,6 +15,7 @@ import (
 	"github.com/cloudquery/filetypes/v4/types"
 	"github.com/cloudquery/plugin-sdk/v4/plugin"
 	"github.com/cloudquery/plugin-sdk/v4/schema"
+	sdktypes "github.com/cloudquery/plugin-sdk/v4/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -193,6 +194,7 @@ func TestWriteReadSlicedNestedNullableStructWithLists(t *testing.T) {
 	subType := arrow.StructOf(
 		arrow.Field{Name: "ids", Type: arrow.ListOf(arrow.PrimitiveTypes.Int64), Nullable: true},
 		arrow.Field{Name: "n", Type: arrow.PrimitiveTypes.Int64, Nullable: true},
+		arrow.Field{Name: "doc", Type: sdktypes.ExtensionTypes.JSON, Nullable: true},
 	)
 	fields := make([]arrow.Field, subStructs)
 	for i := range fields {
@@ -219,6 +221,7 @@ func TestWriteReadSlicedNestedNullableStructWithLists(t *testing.T) {
 				ids.ValueBuilder().(*array.Int64Builder).Append(int64(row*10 + j))
 			}
 			sub.FieldBuilder(1).(*array.Int64Builder).Append(int64(row))
+			sub.FieldBuilder(2).(*sdktypes.JSONBuilder).Append(map[string]any{"row": row})
 		}
 	}
 	record := bldr.NewRecordBatch()
