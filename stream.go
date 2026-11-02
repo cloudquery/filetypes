@@ -43,7 +43,7 @@ func (cl *Client) StartStream(table *schema.Table, uploadFunc func(io.Reader) er
 	h, err := cl.WriteHeader(wc, table)
 	if err != nil {
 		_ = pw.CloseWithError(err)
-		<-doneCh
+		<-doneCh //nolint:errcheck // the upload fails with the same error we already return
 		return nil, err
 	}
 
