@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.9.2](https://github.com/cloudquery/filetypes/compare/v4.9.1...v4.9.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* **deps:** Update go module directive to v1.27.2 ([#797](https://github.com/cloudquery/filetypes/issues/797)) ([fc99f7c](https://github.com/cloudquery/filetypes/commit/fc99f7cc284bd7874a1df5270bd021088e7da364))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.100.0 ([#801](https://github.com/cloudquery/filetypes/issues/801)) ([f55e953](https://github.com/cloudquery/filetypes/commit/f55e9530603a2535c8dd8caeca1eba46e30245b2))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.100.1 ([#802](https://github.com/cloudquery/filetypes/issues/802)) ([60be40a](https://github.com/cloudquery/filetypes/commit/60be40a91d6f0bff8498b24123e1e7cacf00786e))
+* **deps:** Update module github.com/cloudquery/plugin-sdk/v4 to v4.99.1 ([#794](https://github.com/cloudquery/filetypes/issues/794)) ([4aa798f](https://github.com/cloudquery/filetypes/commit/4aa798f433a133526d4356d1d508b0cfb7d5de4d))
+* **deps:** Update module github.com/goccy/go-json to v0.11.2 ([#800](https://github.com/cloudquery/filetypes/issues/800)) ([e2b18cd](https://github.com/cloudquery/filetypes/commit/e2b18cd3e21e69119d70318b1ee54300bd7f1385))
+* **deps:** Update module github.com/pb33f/ordered-map/v2 to v2.3.2 ([#798](https://github.com/cloudquery/filetypes/issues/798)) ([063820d](https://github.com/cloudquery/filetypes/commit/063820d9427d1ea128b0a8dfabbe4b458f48c3a2))
+
 ## [4.9.1](https://github.com/cloudquery/filetypes/compare/v4.9.0...v4.9.1) (2026-10-22)
 
 
