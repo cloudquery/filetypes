@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.9.4](https://github.com/cloudquery/filetypes/compare/v4.9.3...v4.9.4) (2026-11-26)
+
+
+### Bug Fixes
+
+* **deps:** Update github.com/cloudquery/jsonschema digest to 3835a01 ([#807](https://github.com/cloudquery/filetypes/issues/807)) ([a79ba2c](https://github.com/cloudquery/filetypes/commit/a79ba2cc2ad2bbe78fad674e314a60988a12209c))
+
 ## [4.9.3](https://github.com/cloudquery/filetypes/compare/v4.9.2...v4.9.3) (2026-11-24)
 
 
